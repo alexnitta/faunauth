@@ -24,17 +24,21 @@
         "generate-migrations": "node node_modules/.bin/fauna-schema-migrate generate"
     },
     "devDependencies": {
+        "@nrwl/jest": "13.7.2",
+        "@nrwl/react": "13.7.2",
         "@types/http-proxy": "^1.17.5",
         "@types/node": "^14.0.13",
+        "babel-jest": "27.2.3",
         "concurrently": "^6.0.0",
         "cross-var": "^1.1.0",
         "dotenv-cli": "^4.0.0",
         "eslint": "^7.32.0",
         "esm": "^3.2.25",
+        "jest": "27.2.3",
         "lint-staged": "^10.2.9",
         "rimraf": "^3.0.2",
         "typescript": "4.3.5",
-        "ts-node": "10.5.0"
+        "ts-jest": "27.0.5"
     },
     "dependencies": {
         "@fauna-labs/fauna-schema-migrate": "^2.2.1",

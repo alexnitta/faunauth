@@ -1,10 +1,15 @@
-# `@storybox/faunauth`
+# `faunauth`
 
 > FaunaDB authentication tools
 
-## Prior Art
+## Structure
 
-The `fauna` and `tests` folders are based on examples from this blog post: [Refreshing authentication tokens in FQL](https://fauna.com/blog/refreshing-authentication-tokens-in-fql) and this blog post: [Detecting leaked authentication tokens in FQL](https://fauna.com/blog/detecting-leaked-authentication-tokens-in-fql). Note that we are using the [advanced refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-advanced) from the second blog post.
+The `fauna` and `tests` folders are based on examples from two FaunaDB blog posts:
+
+1. [Refreshing authentication tokens in FQL](https://fauna.com/blog/refreshing-authentication-tokens-in-fql) - source code in [simple refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-simple)
+2. [Detecting leaked authentication tokens in FQL](https://fauna.com/blog/detecting-leaked-authentication-tokens-in-fql) - source code in [advanced refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-advanced)
+
+The `fauna` folder contains the building blocks for
 
 #### Starting from a new database
 

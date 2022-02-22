@@ -1,16 +1,17 @@
-import path from 'path';
-import fs from 'fs';
-import shell from 'shelljs';
-import dotenv from 'dotenv';
+import path from "path";
+import fs from "fs";
+import shell from "shelljs";
+import dotenv from "dotenv";
 
-const fullPath = path.resolve(process.cwd(), '.env.' + process.env.NODE_ENV);
-const config = dotenv.config({ path: fullPath });
+const fullPath = path.resolve(process.cwd(), ".env");
+
+dotenv.config({ path: fullPath });
 
 export const populateDatabaseSchemaFromFiles = async (
     schemaMigrate,
     q,
     childClient,
-    paths,
+    paths
 ) => {
     const snippets = await schemaMigrate.getSnippetsFromPaths(paths);
     const emptySnippets = schemaMigrate.getSnippetsFromStrings([]);
@@ -22,12 +23,12 @@ export const populateDatabaseSchemaFromFiles = async (
     return await childClient.query(query);
 };
 
-export const loadApplicationFile = async file => {
-    return fs.readFileSync(path.join(process.cwd(), file), 'utf8');
+export const loadApplicationFile = async (file) => {
+    return fs.readFileSync(path.join(process.cwd(), file), "utf8");
 };
 
 export const deleteMigrationDir = async () => {
-    shell.rm('-rf', './fauna/temp');
+    shell.rm("-rf", "./fauna/temp");
 };
 
 // set up a child database for testing, we pass in the fauna
@@ -44,19 +45,16 @@ export const setupTestDatabase = async (fauna, testName) => {
         Delete,
         Database,
     } = fauna.query;
-    // Seems dotenv is not loading properly although the env file is parsed correctly.
-    const client = getClient(
-        fauna,
-        process.env.FAUNA_ADMIN_KEY || config.parsed.FAUNA_ADMIN_KEY,
-    );
+
+    const client = getClient(fauna, process.env.FAUNA_ADMIN_KEY);
     const key = await client.query(
         Do(
             If(Exists(Database(testName)), Delete(Database(testName)), true),
             CreateKey({
-                database: Select(['ref'], CreateDatabase({ name: testName })),
-                role: 'admin',
-            }),
-        ),
+                database: Select(["ref"], CreateDatabase({ name: testName })),
+                role: "admin",
+            })
+        )
     );
 
     const childDbClient = getClient(fauna, key.secret);
@@ -68,8 +66,8 @@ export const destroyTestDatabase = async (q, testName, parentClient) => {
     await parentClient.query(
         Do(
             cleanUpChildDbKeys(q, testName),
-            If(Exists(Database(testName)), Delete(Database(testName)), true),
-        ),
+            If(Exists(Database(testName)), Delete(Database(testName)), true)
+        )
     );
 };
 
@@ -92,25 +90,22 @@ export const cleanUpChildDbKeys = (q, testName) => {
     return Foreach(
         Paginate(Keys(), { size: 100000 }),
         Lambda(
-            ['k'],
+            ["k"],
             Let(
                 {
-                    key: Get(Var('k')),
+                    key: Get(Var("k")),
                 },
                 If(
                     // Delete all keys that belong to child databases.
                     And(
-                        ContainsField('database', Var('key')),
-                        Equals(
-                            Select(['database', 'id'], Var('key')),
-                            testName,
-                        ),
+                        ContainsField("database", Var("key")),
+                        Equals(Select(["database", "id"], Var("key")), testName)
                     ),
-                    Delete(Select(['ref'], Var('key'))),
-                    false,
-                ),
-            ),
-        ),
+                    Delete(Select(["ref"], Var("key"))),
+                    false
+                )
+            )
+        )
     );
 };
 
