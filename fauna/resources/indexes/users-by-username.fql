@@ -1,0 +1,15 @@
+CreateIndex({
+  name: 'users_by_username',
+  source: Collection('User'),
+  // We will search on username
+  terms: [
+    {
+      field: ['data', 'username']
+    }
+  ],
+  // if no values are added, the index will just return the reference.
+  // Prevent that accounts with duplicate usernames are made.
+  // uniqueness works on the combination of terms/values
+  unique: true,
+  serialized: true
+})

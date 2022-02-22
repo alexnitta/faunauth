@@ -1,0 +1,35 @@
+CreateRole({
+  name: 'public',
+  privileges: [
+    {
+      resource: Function('register'),
+      actions: {
+        call: true
+      }
+    },
+    {
+      resource: Function('resetPassword'),
+      actions: {
+        call: true
+      }
+    },
+    {
+      resource: Function('login'),
+      actions: {
+        call: true
+      }
+    },
+    {
+      resource: Function('logout'),
+      actions: {
+        call: true
+      }
+    },
+    {
+      resource: Function('createEmailConfirmationToken'),
+      actions: {
+        call: true
+      }
+    },
+  ]
+})

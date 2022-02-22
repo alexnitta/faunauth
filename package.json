@@ -1,0 +1,53 @@
+{
+    "name": "@storybox/faunauth",
+    "version": "0.0.1",
+    "main": "./dist/index.cjs.js",
+    "typings": "./dist/index.d.ts",
+    "license": "MIT",
+    "author": "Alex Nitta",
+    "homepage": "https://github.com/storyboxers/storybox",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/storyboxers/storybox.git"
+    },
+    "bugs": {
+        "url": "https://github.com/storyboxers/storybox/issues"
+    },
+    "scripts": {
+        "precommit": "lint-staged",
+        "test": "dotenv -e .env -- cross-var jest",
+        "test-watch": "dotenv -e .env -- cross-var ava -T 200s --fail-fast --watch",
+        "posttest": "npx rimraf fauna/temp",
+        "check-types": "tsc",
+        "create-public-key": "node scripts/createPublicKey.js",
+        "create-user-role": "node scripts/createUserRole.js",
+        "generate-migrations": "node node_modules/.bin/fauna-schema-migrate generate"
+    },
+    "devDependencies": {
+        "@types/http-proxy": "^1.17.5",
+        "@types/node": "^14.0.13",
+        "concurrently": "^6.0.0",
+        "cross-var": "^1.1.0",
+        "dotenv-cli": "^4.0.0",
+        "eslint": "^7.32.0",
+        "esm": "^3.2.25",
+        "lint-staged": "^10.2.9",
+        "rimraf": "^3.0.2",
+        "typescript": "4.3.5",
+        "ts-node": "10.5.0"
+    },
+    "dependencies": {
+        "@fauna-labs/fauna-schema-migrate": "^2.2.1",
+        "@sendgrid/mail": "^7.4.2",
+        "ava": "^4.0.1",
+        "faunadb": "^4.4.1",
+        "graphql": "^15.5.0",
+        "request": "^2.88.2",
+        "shelljs": "^0.8.4"
+    },
+    "peerDependencies": {
+        "lodash": "^4.17.21",
+        "react": "17.0.2",
+        "react-query": "3.24.3"
+    }
+}

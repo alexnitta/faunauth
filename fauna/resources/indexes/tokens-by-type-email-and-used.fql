@@ -1,0 +1,16 @@
+CreateIndex({
+  name: 'tokens_by_type_email_and_used',
+  source: Tokens(),
+  terms: [
+    {
+      field: ['data', 'type']
+    },
+    {
+      field: ['data', 'email']
+    },
+    {
+      field: ['data', 'used']
+    }
+  ],
+  serialized: true
+})
