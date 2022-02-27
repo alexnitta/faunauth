@@ -1,22 +1,22 @@
 {
-    "name": "@storybox/faunauth",
+    "name": "faunauth",
     "version": "0.0.1",
     "main": "./dist/index.cjs.js",
     "typings": "./dist/index.d.ts",
     "license": "MIT",
     "author": "Alex Nitta",
-    "homepage": "https://github.com/storyboxers/storybox",
+    "homepage": "https://github.com/alexnitta/faunauth",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/storyboxers/storybox.git"
+        "url": "git+https://github.com/alexnitta/faunauth.git"
     },
     "bugs": {
-        "url": "https://github.com/storyboxers/storybox/issues"
+        "url": "https://github.com/alexnitta/faunauth/issues"
     },
     "scripts": {
         "precommit": "lint-staged",
         "test": "dotenv -e .env -- cross-var jest",
-        "test-watch": "dotenv -e .env -- cross-var ava -T 200s --fail-fast --watch",
+        "test-watch": "dotenv -e .env -- cross-var jest --watch",
         "posttest": "npx rimraf fauna/temp",
         "check-types": "tsc",
         "create-public-key": "node scripts/createPublicKey.js",
