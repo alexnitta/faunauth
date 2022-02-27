@@ -11,7 +11,9 @@ import {
 const q = fauna.query;
 const { Call, Create, Collection, Get, Paginate, Documents } = q;
 
-jest.setTimeout(70 * 1000);
+import { FAUNA_TEST_TIMEOUT } from "./constants";
+
+jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
 const setUp = async (testName) => {
     const context = {};

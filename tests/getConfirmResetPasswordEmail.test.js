@@ -1,6 +1,7 @@
 import { getConfirmResetPasswordEmail } from "../src/email/getConfirmResetPasswordEmail";
+import { EMAIL_TEST_TIMEOUT } from "./constants";
 
-jest.setTimeout(1000);
+jest.setTimeout(EMAIL_TEST_TIMEOUT);
 
 test("getConfirmResetPasswordEmail should interpolate strings from the input into the output", () => {
     const input = {

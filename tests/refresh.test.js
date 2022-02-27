@@ -17,8 +17,8 @@ import {
     REFRESH_TOKEN_LIFETIME_SECONDS,
     REFRESH_TOKEN_RECLAIMTIME_SECONDS,
 } from "./resources/functions/_refresh-modified";
-
 import { verifyTokens } from "./helpers/_test-extensions";
+import { FAUNA_TEST_TIMEOUT } from "./constants";
 
 const q = fauna.query;
 const {
@@ -33,7 +33,7 @@ const {
     Var,
 } = q;
 
-jest.setTimeout(100 * 1000);
+jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
 const setUp = async (testName) => {
     const context = {};

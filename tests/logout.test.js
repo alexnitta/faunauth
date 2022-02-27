@@ -10,11 +10,12 @@ import {
     setupTestDatabase,
     populateDatabaseSchemaFromFiles,
 } from "./helpers/_setup-db";
+import { FAUNA_TEST_TIMEOUT } from "./constants";
 
 const q = fauna.query;
 const { Call, Create, Collection, Get } = q;
 
-jest.setTimeout(70 * 1000);
+jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
 const setUp = async (testName) => {
     const context = {

@@ -1,6 +1,7 @@
 import { getConfirmSignUpEmail } from "../src/email/getConfirmSignUpEmail";
+import { EMAIL_TEST_TIMEOUT } from "./constants";
 
-jest.setTimeout(1000);
+jest.setTimeout(EMAIL_TEST_TIMEOUT);
 
 test("getConfirmSignUpEmail should interpolate strings from the input into the output", () => {
     const input = {
