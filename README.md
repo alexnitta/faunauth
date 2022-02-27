@@ -1,15 +1,60 @@
 # `faunauth`
 
-> FaunaDB authentication tools
+> Fauna authentication tools
 
 ## Structure
 
-The `fauna` and `tests` folders are based on examples from two FaunaDB blog posts:
+The `fauna` and `tests` folders are based on examples from two Fauna blog posts:
 
 1. [Refreshing authentication tokens in FQL](https://fauna.com/blog/refreshing-authentication-tokens-in-fql) - source code in [simple refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-simple)
 2. [Detecting leaked authentication tokens in FQL](https://fauna.com/blog/detecting-leaked-authentication-tokens-in-fql) - source code in [advanced refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-advanced)
 
-The `fauna` folder contains the building blocks for
+The `fauna` folder contains the building blocks for reusable [FQL](https://docs.fauna.com/fauna/current/api/fql/) statements that can be added to an existing Fauna database. For example, the `login` function at [./fauna/src/login.js](./fauna/src/login.js) is added to a database by running the `CreateFunction` statement in [./fauna/resources/functions/login.js](./fauna/resources/functions/login.js). This creates a [UDF](https://docs.fauna.com/fauna/current/learn/understanding/user_defined_functions) or user-defined function that can later be called with a Fauna client.
+
+To augment a database with the FQL statements provided by `faunauth`, you must use the experimental [fauna-schema-migrate](https://github.com/fauna-labs/fauna-schema-migrate) tool. This is how we are able to define FQL statements outside of your consuming application and reliably add them to your database.
+
+Here is an example of a function that calls the `login` UDF. This example function would typically be used in an API endpoint to allow the client-side application to log a user in.
+
+```TypeScript
+import faunadb, { query as q } from 'faunadb';
+
+interface LoginInput {
+    /**
+     * Email address for the user who wants to log in
+     */
+    email: string;
+    /**
+     * A Fauna secret that is limited to permissions needed for public actions when creating users,
+     * logging in and resetting passwords
+     */
+    publicFaunaKey: string | null;
+    /**
+     * Password to use
+     */
+    password: string;
+}
+
+/**
+ * Logs a user in.
+ */
+export async function login(input: LoginInput): Promise<FaunaLoginResult | null> {
+    const { publicFaunaKey, password } = input;
+
+    const client = new faunadb.Client({
+        secret: publicFaunaKey,
+    });
+
+    // The FaunaLoginResult will contain the access and refresh tokens, as well the user ID and any
+    // other user data.
+
+    return client.query<FaunaLoginResult | null>(
+        // This is the UDF provided by faunauth, which has been added to the database via
+        // fauna-schema-migrate
+        q.Call('login', email, password),
+    );
+}
+
+```
 
 #### Starting from a new database
 
