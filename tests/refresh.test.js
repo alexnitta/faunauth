@@ -33,7 +33,7 @@ const {
     Var,
 } = q;
 
-jest.setTimeout(70 * 1000);
+jest.setTimeout(100 * 1000);
 
 const setUp = async (testName) => {
     const context = {};

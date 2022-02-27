@@ -24,6 +24,8 @@
         "generate-migrations": "node node_modules/.bin/fauna-schema-migrate generate"
     },
     "devDependencies": {
+        "@commitlint/cli": "^16.2.1",
+        "@commitlint/config-conventional": "^16.2.1",
         "@nrwl/jest": "13.7.2",
         "@nrwl/react": "13.7.2",
         "@types/http-proxy": "^1.17.5",
@@ -34,11 +36,12 @@
         "dotenv-cli": "^4.0.0",
         "eslint": "^7.32.0",
         "esm": "^3.2.25",
+        "husky": "^7.0.4",
         "jest": "27.2.3",
         "lint-staged": "^10.2.9",
         "rimraf": "^3.0.2",
-        "typescript": "4.3.5",
-        "ts-jest": "27.0.5"
+        "ts-jest": "27.0.5",
+        "typescript": "4.3.5"
     },
     "dependencies": {
         "@fauna-labs/fauna-schema-migrate": "^2.2.1",
