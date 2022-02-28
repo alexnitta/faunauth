@@ -1,17 +1,32 @@
 # `faunauth`
 
-> Fauna authentication tools
+> Fauna authentication tools for logging in via email (or username) and password
 
-## Structure
+## Workflow
+
+`faunauth` provides you with a set of FQL resources - collections, functions, indexes and roles - that will enable various authentication tasks. This is accomplished with the experimental [fauna-schema-migrate](https://github.com/fauna-labs/fauna-schema-migrate) tool, which will allow you to add these FQL resources to your existing Fauna database. This is what "schema migration" means in this context: your current database schema will be migrated to a new schema that contains the FQL resources provided by `faunauth`.
+
+## Getting started
+
+1. `npm i faunauth` to install this package
+2. `npm i -D @fauna-labs/fauna-schema-migrate` to install `fauna-schema-migrate` as a dev dependency
+3. `npx faunauth import` to copy over files that will be used by `fauna-schema-migrate` to complete the schema migration process. These files should be committed to version control. Note that if you are already using `fauna-schema-migrate` and you have a `/fauna` folder in your application, the `npx fauna import` command will not overwrite any existing files.
+
+## Background
+
+We recommend reading up on a few topics before using `faunauth`:
+
+-   [The Fauna Query Language (FQL)](https://docs.fauna.com/fauna/current/api/fql/)
+-   [User-defined functions (UDFs)](https://docs.fauna.com/fauna/current/learn/understanding/user_defined_functions)
 
 The `fauna` and `tests` folders are based on examples from two Fauna blog posts:
 
 1. [Refreshing authentication tokens in FQL](https://fauna.com/blog/refreshing-authentication-tokens-in-fql) - source code in [simple refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-simple)
 2. [Detecting leaked authentication tokens in FQL](https://fauna.com/blog/detecting-leaked-authentication-tokens-in-fql) - source code in [advanced refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-advanced)
 
-The `fauna` folder contains the building blocks for reusable [FQL](https://docs.fauna.com/fauna/current/api/fql/) statements that can be added to an existing Fauna database. For example, the `login` function at [./fauna/src/login.js](./fauna/src/login.js) is added to a database by running the `CreateFunction` statement in [./fauna/resources/functions/login.js](./fauna/resources/functions/login.js). This creates a [UDF](https://docs.fauna.com/fauna/current/learn/understanding/user_defined_functions) or user-defined function that can later be called with a Fauna client.
+The `fauna` folder contains the building blocks for reusable FQL statements that can be added to an existing Fauna database. For example, the `login` function at [./fauna/src/login.js](./fauna/src/login.js) is added to a database by running the `CreateFunction` statement in [./fauna/resources/functions/login.js](./fauna/resources/functions/login.js). This creates a or user-defined function that can later be called with a Fauna client.
 
-To augment a database with the FQL statements provided by `faunauth`, you must use the experimental [fauna-schema-migrate](https://github.com/fauna-labs/fauna-schema-migrate) tool. This is how we are able to define FQL statements outside of your consuming application and reliably add them to your database.
+To augment a database with the FQL statements provided by `faunauth`, you must use
 
 Here is an example of a function that calls the `login` UDF. This example function would typically be used in an API endpoint to allow the client-side application to log a user in.
 
