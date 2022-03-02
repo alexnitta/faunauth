@@ -25,7 +25,7 @@ Result of sending email
 
 #### Defined in
 
-[src/auth/register.ts:50](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/register.ts#L50)
+[src/auth/register.ts:50](https://github.com/alexnitta/faunauth/blob/cdbb474/src/auth/register.ts#L50)
 
 ___
 
@@ -37,4 +37,4 @@ True if a sign up token was created in database
 
 #### Defined in
 
-[src/auth/register.ts:46](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/register.ts#L46)
+[src/auth/register.ts:46](https://github.com/alexnitta/faunauth/blob/cdbb474/src/auth/register.ts#L46)
