@@ -10,7 +10,7 @@ Note that `fauna-schema-migrate` is experimental; its README lists this disclaim
 
 > This repository contains unofficial patterns, sample code, or tools to help developers build more effectively with Fauna. All Fauna Labs repositories are provided “as-is” and without support. By using this repository or its contents, you agree that this repository may never be officially supported and moved to the Fauna organization.
 
-This means `faunuath` is also experimental; use it at your own discretion.
+This means `faunauth` is also experimental; use it at your own discretion.
 
 ## Getting started
 
@@ -45,7 +45,7 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
     // This handler would be used in an ExpressJS route to handle login requests. You would
     // typically use bodyparser to make sure responses are handled as JSON. Other frameworks will have
     // slight differences in their implementations.
-    import { auth } from 'faunauth';
+    import { login } from 'faunauth';
 
     /**
      * Log in a user in with an email and password, thereby getting access to an accessToken,
@@ -53,12 +53,14 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
      */
     export const loginHandler = async (req, res) => {
         // The `publicFaunaKey` should be created using the faunauth CLI as described above.
+        // Your client-side application will need to store this public key in the browser and send
+        // it to the server for various un-authenticated requests.
         const { email, password, publicFaunaKey } = req.body;
 
         try {
             // Here is where you would validate the input or throw an error if it is invalid
 
-            const { accessToken, refreshToken, user } = await auth.login({
+            const { accessToken, refreshToken, user } = await login({
                 email,
                 password,
                 publicFaunaKey,
@@ -89,26 +91,7 @@ The `fauna` and `tests` folders are based on examples from two Fauna blog posts:
 1. [Refreshing authentication tokens in FQL](https://fauna.com/blog/refreshing-authentication-tokens-in-fql) - source code in [simple refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-simple)
 2. [Detecting leaked authentication tokens in FQL](https://fauna.com/blog/detecting-leaked-authentication-tokens-in-fql) - source code in [advanced refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-advanced)
 
-The `fauna` folder contains the building blocks for reusable FQL statements that can be added to an existing Fauna database. For example, the `login` function at [./fauna/src/login.js](./fauna/src/login.js) is added to a database by running the `CreateFunction` statement in [./fauna/resources/functions/login.js](./fauna/resources/functions/login.js). This creates a or user-defined function that can later be called with a Fauna client. The `signIn` function defined at
-
-#### Starting from a new database
-
-When starting from a new database, steps to get set up are:
-
--   delete existing migrations within packages/stories/fauna/migrations
--   create a new Admin key in the Fauna dashboard; save the key to a password manager
--   save the Admin key in packages/stories/.env.local under the `FAUNA_ADMIN_KEY` variable
--   run `export FAUNA_ADMIN_KEY=<key>` to set the environment variable in your terminal
--   run `npx fauna-schema-migrate run` to start up Fauna Schema Migrate
--   select the `generate` option to create migrations
--   select the `apply` option to apply migrations, which include the migration that creates the `public` role type
--   run `yarn create-public-key` to create a key with the `public` role type; save the key to a password manager
--   copy the public key and use it within your client-side application
-
-## Scripts
-
--   `yarn check-types`: runs `tsc` to validate TypeScript files, but does not generate any output.
--   `yarn create-public-key`: creates a FaunaDB key appropriately scoped for signing up / signing in a user, and reveals the key in the terminal
+The `fauna` folder contains the building blocks for reusable FQL statements that can be added to an existing Fauna database. For example, the `login` function at [./fauna/src/login.js](./fauna/src/login.js) is added to a database by running the `CreateFunction` statement in [./fauna/resources/functions/login.js](./fauna/resources/functions/login.js). This creates a UDF or user-defined function that can later be called with a Fauna client, which is done within [./src/auth/login](./src/auth/login.ts).
 
 ## Error handling
 
