@@ -1,30 +1,20 @@
-export interface ConfirmSignUpLocale {
+export interface AuthEmailLocale {
     body: {
         /**
-         * Introductory statement, i.e.: "Thanks for signing up for an account at [App Name]."
+         * Each of these strings will be rendered as a body paragraph before the call to action
+         * button.
          */
-        intro: string;
+        beforeCallToAction: string[];
         /**
-         * Call to action description, i.e.: "To confirm your email address, please click the link below.",
+         * Text for the call to action button, i.e.: "Confirm"
          */
-        ctaDescription: string;
+        callToAction: string;
         /**
-         * Other content, i.e.: "If you did not create an account, you can safely ignore this email.",
+         * Each of these strings will be rendered as a body paragraph after the call to action
+         * button.
          */
-        ignore: string;
-        /**
-         * Sign off line 1, i.e.: "See you soon,",
-         */
-        signOff1: string;
-        /**
-         * Sign off line 2, i.e.:  "The team at [App Name]"
-         */
-        signOff2: string;
+        afterCallToAction: string[];
     };
-    /**
-     * Text for the call to action button, i.e.: "Confirm"
-     */
-    callToAction: string;
     /**
      * Text shown as preview in email clients, i.e. "Confirm your email to set up [App Name] account"
      */
@@ -35,40 +25,7 @@ export interface ConfirmSignUpLocale {
     subject: string;
 }
 
-export interface ConfirmResetPasswordLocale {
-    body: {
-        /**
-         * Call to action description, i.e.: "To confirm your email address and reset your password, please click the link below."
-         */
-        ctaDescription: string;
-        /**
-         * Other content, i.e.: "If you did not request to reset your password, you can safely ignore this email.",
-         */
-        ignore: string;
-        /**
-         * Sign off line 1, i.e.: "Thanks,",
-         */
-        signOff1: string;
-        /**
-         * Sign off line 2, i.e.:  "The team at [App Name]"
-         */
-        signOff2: string;
-    };
-    /**
-     * Text for the call to action button, i.e.: "Confirm"
-     */
-    callToAction: string;
-    /**
-     * Text shown as preview in email clients, i.e. "Confirm your email to reset your [App Name] password"
-     */
-    previewHeader: string;
-    /**
-     * Email subject, i.e.: "Reset your [App Name] password"
-     */
-    subject: string;
-}
-
-interface BaseGetEmailConfig {
+export interface AuthEmailConfig {
     /**
      * User-facing application name
      */
@@ -105,24 +62,11 @@ interface BaseGetEmailConfig {
      * if you are using a font from Google Fonts as your `fontFamily`.
      */
     linkTags?: string;
-}
-
-interface GetEmailConfigWithCustomLocale<LocaleType>
-    extends BaseGetEmailConfig {
     /**
-     * If provided, locale strings will be sourced from this input. Otherwise, the locale strings
-     * will default to English (United States) values with the `appName` inserted where appropriate.
+     * If provided, this object will be used to populate the text in the email.
      */
-    locale: LocaleType;
+    locale?: AuthEmailLocale;
 }
-
-export type GetConfirmResetPasswordEmailConfig =
-    | BaseGetEmailConfig
-    | GetEmailConfigWithCustomLocale<ConfirmResetPasswordLocale>;
-
-export type GetConfirmSignUpEmailConfig =
-    | BaseGetEmailConfig
-    | GetEmailConfigWithCustomLocale<ConfirmSignUpLocale>;
 
 export interface SendEmailInput {
     /**
@@ -156,5 +100,5 @@ export interface SendEmailInput {
  * `sgMail.setApiKey('API_KEY')` before passing in `sgMail` as a `SendMail` function.
  */
 export type SendEmail<SendEmailResult> = (
-    input: SendEmailInput,
+    input: SendEmailInput
 ) => Promise<SendEmailResult>;

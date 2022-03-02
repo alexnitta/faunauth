@@ -1,25 +1,25 @@
-import faunadb, { query as q } from 'faunadb';
+import faunadb, { query as q } from "faunadb";
 
-import { ErrorWithKey } from '~/utils';
-import { getConfirmSignUpEmail } from '~/email';
+import { ErrorWithKey } from "~/utils";
+import { getEmailContent } from "~/email";
 import type {
     CollectionQueryResult,
-    GetConfirmSignUpEmailConfig,
+    AuthEmailConfig,
     Maybe,
     SendEmail,
     Token,
     UserData,
-} from '~/types';
+} from "~/types";
 
-interface SignUpInput<SendEmailResult> {
+interface RegisterInput<SendEmailResult> {
     /**
      * Email address to use as the sender
      */
     fromEmail: string;
     /**
-     * A configuration object for the email template - see {@link GetConfirmSignUpEmailConfig}
+     * A configuration object for the email template - see {@link AuthEmailConfig}
      */
-    emailTemplateConfig: GetConfirmSignUpEmailConfig;
+    emailConfig: AuthEmailConfig;
     /**
      * A Fauna secret that is limited to permissions needed for public actions when creating users
      * and resetting passwords
@@ -39,7 +39,7 @@ interface SignUpInput<SendEmailResult> {
     userData: UserData;
 }
 
-interface SignUpResult<SendEmailResult> {
+interface RegisterResult<SendEmailResult> {
     /**
      * True if a sign up token was created in database
      */
@@ -51,28 +51,29 @@ interface SignUpResult<SendEmailResult> {
 }
 
 /**
- * Sign a user up by creating a user in the User collection and send the user an email with a
+ * Register a user by creating a user in the User collection and sending the user an email with a
  * confirmation link that will can be used to confirm their account. A unique `input.userData.email`
- * required. If desired, you can provide a unique username on `input.userData.username`. If you do
- * this, you can later call the `signIn` function with the username rather than the email.
- * @returns - {@link SignUpResult}
+ * is required. If desired, you can provide a unique username on `input.userData.username`. If you
+ * do this (or if you later modify the user by adding a username to its `data` property), you can
+ * call the `login` function with the username rather than the email.
+ * @returns - {@link RegisterResult}
  */
-export async function signUp<SendEmailResult>(
-    input: SignUpInput<SendEmailResult>,
-): Promise<SignUpResult<SendEmailResult>> {
+export async function register<SendEmailResult>(
+    input: RegisterInput<SendEmailResult>
+): Promise<RegisterResult<SendEmailResult>> {
     const {
         publicFaunaKey,
         password,
         sendEmail,
         userData: { locale, details },
-        emailTemplateConfig,
+        emailConfig,
         fromEmail,
     } = input;
 
     const email = input.userData.email.toLowerCase();
 
     if (!publicFaunaKey) {
-        throw new ErrorWithKey('publicFaunaKeyMissing');
+        throw new ErrorWithKey("publicFaunaKeyMissing");
     }
 
     const client = new faunadb.Client({
@@ -83,13 +84,13 @@ export async function signUp<SendEmailResult>(
 
     try {
         userResult = await client.query<CollectionQueryResult<UserData>>(
-            q.Call('register', password, {
+            q.Call("register", password, {
                 confirmedEmail: false,
                 details,
                 email,
                 locale,
                 username: input?.userData?.username ?? null,
-            }),
+            })
         );
     } catch (e) {
         // TODO find the Fauna type definition for errors when instance is not unique and use it
@@ -101,15 +102,15 @@ export async function signUp<SendEmailResult>(
             error?.requestResult?.responseContent?.errors?.[0]?.cause?.[0]
                 ?.code;
 
-        if (code === 'instance not unique') {
-            throw new ErrorWithKey('userAlreadyExists');
+        if (code === "instance not unique") {
+            throw new ErrorWithKey("userAlreadyExists");
         } else {
-            throw new ErrorWithKey('queryError', e as Error);
+            throw new ErrorWithKey("queryError", e as Error);
         }
     }
 
     if (!userResult?.ref) {
-        throw new ErrorWithKey('userRefIsMissing');
+        throw new ErrorWithKey("userRefIsMissing");
     }
 
     let createTokenResult = null;
@@ -118,9 +119,9 @@ export async function signUp<SendEmailResult>(
         createTokenResult = await client.query<{
             account: CollectionQueryResult<UserData>;
             token: Token<{ type: string; email: string }>;
-        }>(q.Call('createEmailConfirmationToken', email));
+        }>(q.Call("createEmailConfirmationToken", email));
     } catch (e) {
-        throw new ErrorWithKey('failedToCreateToken', e as Error);
+        throw new ErrorWithKey("failedToCreateToken", e as Error);
     }
 
     if (!createTokenResult) {
@@ -138,13 +139,13 @@ export async function signUp<SendEmailResult>(
         JSON.stringify({
             email,
             token: secret,
-        }),
-    ).toString('base64');
+        })
+    ).toString("base64");
 
-    const finalCallbackUrl = `${emailTemplateConfig.callbackUrl}?data=${data}`;
+    const finalCallbackUrl = `${emailConfig.callbackUrl}?data=${data}`;
 
-    const { html, text, subject } = getConfirmSignUpEmail({
-        ...emailTemplateConfig,
+    const { html, text, subject } = getEmailContent({
+        ...emailConfig,
         callbackUrl: finalCallbackUrl,
     });
 
@@ -161,7 +162,7 @@ export async function signUp<SendEmailResult>(
     try {
         sendEmailResult = await sendEmail(message);
     } catch (e) {
-        throw new ErrorWithKey('failedToSendEmail', e as Error);
+        throw new ErrorWithKey("failedToSendEmail", e as Error);
     }
 
     return { tokenCreated: true, sendEmailResult };

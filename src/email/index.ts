@@ -1,2 +1,1 @@
-export * from './getConfirmResetPasswordEmail';
-export * from './getConfirmSignUpEmail';
+export * from "./getEmailContent";

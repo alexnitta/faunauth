@@ -1,9 +1,9 @@
-import { getConfirmSignUpEmail } from "../src/email/getConfirmSignUpEmail";
+import { getConfirmRegistrationEmail } from "../src/email/getConfirmRegistrationEmail";
 import { EMAIL_TEST_TIMEOUT } from "./constants";
 
 jest.setTimeout(EMAIL_TEST_TIMEOUT);
 
-test("getConfirmSignUpEmail should interpolate strings from the input into the output", () => {
+test("getConfirmRegistrationEmail should interpolate strings from the input into the output", () => {
     const input = {
         appName: "Test App",
         buttonColor: "pink",
@@ -32,7 +32,7 @@ test("getConfirmSignUpEmail should interpolate strings from the input into the o
         },
     };
 
-    const result = getConfirmSignUpEmail(input);
+    const result = getConfirmRegistrationEmail(input);
 
     expect(result.text.includes(input.locale.body.ctaDescription)).toBeTruthy();
     expect(result.html.includes(input.locale.body.ctaDescription)).toBeTruthy();

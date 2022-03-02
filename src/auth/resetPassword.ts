@@ -1,7 +1,7 @@
-import faunadb, { query as q } from 'faunadb';
+import faunadb, { query as q } from "faunadb";
 
-import type { ServerLoginResult, FaunaLoginResult } from '~/types/auth';
-import { ErrorWithKey } from '~/utils';
+import type { ServerLoginResult, FaunaLoginResult } from "~/types/auth";
+import { ErrorWithKey } from "~/utils";
 
 interface SetPasswordInput {
     /**
@@ -24,26 +24,26 @@ interface SetPasswordInput {
 }
 
 /**
- * Finish either the "sign up" or "forgot password" flow for a user. At this point,
- * the user has already triggered either `signUp` or `requestPasswordReset` to request a token. The
- * token has been created in the database, and an email has been sent to the user with a link which
- * includes the token. The user has clicked the link, which opens a page containing a form input for
- * the new password. This function must then check the token to see an exact match for the token
- * exists in the database which:
+ * Finish either the "register" or "forgot password" flow for a user. At this point,
+ * the user has already triggered either `register` or `requestPasswordReset` to request a token.
+ * The token has been created in the database, and an email has been sent to the user with a link
+ * which includes the token. The user has clicked the link, which opens a page containing a form
+ * input for the new password. This function must then check the token to see an exact match for the
+ * token exists in the database which:
  * - has not expired
  * - belongs to the user associated with the given email
- * If all conditions pass, the given password is used to reset the user's password.
+ * If these conditions are met, the given password is used to reset the user's password.
  * @returns - {@link ServerLoginResult}
  */
 export async function resetPassword(
-    input: SetPasswordInput,
+    input: SetPasswordInput
 ): Promise<ServerLoginResult> {
     const { publicFaunaKey, password, token } = input;
 
     const email = input.email.toLowerCase();
 
     if (!publicFaunaKey) {
-        throw new ErrorWithKey('publicFaunaKeyMissing');
+        throw new ErrorWithKey("publicFaunaKeyMissing");
     }
 
     const client = new faunadb.Client({
@@ -54,14 +54,14 @@ export async function resetPassword(
 
     try {
         resetPasswordResult = await client.query(
-            q.Call('resetPassword', email, password, token),
+            q.Call("resetPassword", email, password, token)
         );
     } catch (error) {
-        throw new ErrorWithKey('failedToResetPassword', error as Error);
+        throw new ErrorWithKey("failedToResetPassword", error as Error);
     }
 
     if (!resetPasswordResult) {
-        throw new ErrorWithKey('failedToResetPassword');
+        throw new ErrorWithKey("failedToResetPassword");
     }
 
     const {
