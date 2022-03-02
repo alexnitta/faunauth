@@ -1,59 +1,29 @@
 #! /usr/bin/env node
 const { program } = require("commander");
-const { exec } = require("child_process");
 
-const existingFileWarning = `IMPORTANT: any files listed above with "exists" next to them were not copied
-into your /fauna folder because they already exist. You will need to rename your
-existing files manually and re-run this command in order to make sure things
-will work properly.\n`;
+const { importAction } = require("./importAction");
+const { createPublicKey } = require("./createPublicKey");
+
+const createPublicKeyDescription = `Create a Fauna key that has the "public" role. This key should
+    be used by your client application for authentication requests.
+    Before you run this command, make sure you have:
+    1. Set the value of process.env.FAUNA_ADMIN_KEY by running:
+            export FAUNA_ADMIN_KEY=<your_admin_key>
+    2. Run your schema migration using fauna-schema-migrate in order to
+       make sure the "public" role exists.
+    For more details, see the faunauth README.md file`;
 
 program
     .command("import")
     .description(
-        "Import `faunauth` files to your project for use with fauna-schema-migrate"
+        "Import files into your project to use with fauna-schema-migrate,\n" +
+            "including the /fauna folder and a .fauna-migrate.js config file."
     )
-    .action((options) => {
-        exec(
-            "rsync -r -vv --ignore-existing node_modules/faunauth/fauna/ ./fauna/",
-            (error, stdout, stderr) => {
-                if (error) {
-                    console.log(`error: ${error.message}`);
-                    return;
-                }
-                if (stderr) {
-                    console.log(`stderr: ${stderr}`);
-                    return;
-                }
+    .action(importAction);
 
-                console.log("Copying resources...\n");
-
-                console.log(stdout);
-
-                console.log(existingFileWarning);
-
-                console.log(
-                    "✅ Copied faunauth resources into /fauna folder.\n"
-                );
-            }
-        );
-
-        exec(
-            "cp node_modules/faunauth/.fauna-migrate.js .fauna-migrate.js",
-            (error, stdout, stderr) => {
-                if (error) {
-                    console.log(`error: ${error.message}`);
-                    return;
-                }
-                if (stderr) {
-                    console.log(`stderr: ${stderr}`);
-                    return;
-                }
-
-                console.log(stdout);
-
-                console.log("✅ Created .fauna-migrate.js config file\n");
-            }
-        );
-    });
+program
+    .command("create-public-key")
+    .description(createPublicKeyDescription)
+    .action(createPublicKey);
 
 program.parse();

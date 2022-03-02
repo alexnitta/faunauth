@@ -21,9 +21,7 @@
         "test": "dotenv -e .env -- cross-var jest",
         "test-watch": "dotenv -e .env -- cross-var jest --watch",
         "posttest": "npx rimraf fauna/temp",
-        "check-types": "tsc",
-        "create-public-key": "node scripts/createPublicKey.js",
-        "create-user-role": "node scripts/createUserRole.js"
+        "check-types": "tsc"
     },
     "devDependencies": {
         "@commitlint/cli": "^16.2.1",
