@@ -1,7 +1,7 @@
-import faunadb, { query as q } from "faunadb";
+import faunadb, { query as q } from 'faunadb';
 
-import { ErrorWithKey } from "~/utils";
-import { getEmailContent } from "~/email";
+import { ErrorWithKey } from '~/utils';
+import { getEmailContent } from '~/email';
 import type {
     CollectionQueryResult,
     AuthEmailConfig,
@@ -9,7 +9,7 @@ import type {
     SendEmail,
     Token,
     UserData,
-} from "~/types";
+} from '~/types';
 
 interface RequestPasswordResetInput<SendEmailResult> {
     /**
@@ -54,12 +54,12 @@ interface RequestPasswordResetResult<SendEmailResult> {
  * @returns - {@link RequestPasswordResetResult}
  */
 export async function requestPasswordReset<SendEmailResult>(
-    input: RequestPasswordResetInput<SendEmailResult>
+    input: RequestPasswordResetInput<SendEmailResult>,
 ): Promise<RequestPasswordResetResult<SendEmailResult>> {
     const { email, fromEmail, publicFaunaKey, emailConfig, sendEmail } = input;
 
     if (!publicFaunaKey) {
-        throw new ErrorWithKey("publicFaunaKeyMissing");
+        throw new ErrorWithKey('publicFaunaKeyMissing');
     }
 
     const client = new faunadb.Client({
@@ -72,9 +72,9 @@ export async function requestPasswordReset<SendEmailResult>(
         createTokenResult = await client.query<{
             account: CollectionQueryResult<UserData>;
             token: Token<{ type: string; email: string }>;
-        }>(q.Call("createEmailConfirmationToken", email));
+        }>(q.Call('createEmailConfirmationToken', email));
     } catch (e) {
-        throw new ErrorWithKey("failedToCreateToken", e as Error);
+        throw new ErrorWithKey('failedToCreateToken', e as Error);
     }
 
     if (!createTokenResult) {
@@ -92,8 +92,8 @@ export async function requestPasswordReset<SendEmailResult>(
         JSON.stringify({
             email,
             token: secret,
-        })
-    ).toString("base64");
+        }),
+    ).toString('base64');
 
     const finalCallbackUrl = `${emailConfig.callbackUrl}?data=${data}`;
 
@@ -115,7 +115,7 @@ export async function requestPasswordReset<SendEmailResult>(
     try {
         sendEmailResult = await sendEmail(message);
     } catch (e) {
-        throw new ErrorWithKey("failedToSendEmail", e as Error);
+        throw new ErrorWithKey('failedToSendEmail', e as Error);
     }
 
     return { tokenCreated: true, sendEmailResult };

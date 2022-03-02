@@ -100,5 +100,5 @@ export interface SendEmailInput {
  * `sgMail.setApiKey('API_KEY')` before passing in `sgMail` as a `SendMail` function.
  */
 export type SendEmail<SendEmailResult> = (
-    input: SendEmailInput
+    input: SendEmailInput,
 ) => Promise<SendEmailResult>;

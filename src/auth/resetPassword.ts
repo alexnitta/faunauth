@@ -1,7 +1,7 @@
-import faunadb, { query as q } from "faunadb";
+import faunadb, { query as q } from 'faunadb';
 
-import type { ServerLoginResult, FaunaLoginResult } from "~/types/auth";
-import { ErrorWithKey } from "~/utils";
+import type { ServerLoginResult, FaunaLoginResult } from '~/types/auth';
+import { ErrorWithKey } from '~/utils';
 
 interface SetPasswordInput {
     /**
@@ -36,14 +36,14 @@ interface SetPasswordInput {
  * @returns - {@link ServerLoginResult}
  */
 export async function resetPassword(
-    input: SetPasswordInput
+    input: SetPasswordInput,
 ): Promise<ServerLoginResult> {
     const { publicFaunaKey, password, token } = input;
 
     const email = input.email.toLowerCase();
 
     if (!publicFaunaKey) {
-        throw new ErrorWithKey("publicFaunaKeyMissing");
+        throw new ErrorWithKey('publicFaunaKeyMissing');
     }
 
     const client = new faunadb.Client({
@@ -54,14 +54,14 @@ export async function resetPassword(
 
     try {
         resetPasswordResult = await client.query(
-            q.Call("resetPassword", email, password, token)
+            q.Call('resetPassword', email, password, token),
         );
     } catch (error) {
-        throw new ErrorWithKey("failedToResetPassword", error as Error);
+        throw new ErrorWithKey('failedToResetPassword', error as Error);
     }
 
     if (!resetPasswordResult) {
-        throw new ErrorWithKey("failedToResetPassword");
+        throw new ErrorWithKey('failedToResetPassword');
     }
 
     const {

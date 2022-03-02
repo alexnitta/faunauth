@@ -1,1 +1,1 @@
-export * from "./getEmailContent";
+export * from './getEmailContent';

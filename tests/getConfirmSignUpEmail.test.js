@@ -1,17 +1,17 @@
-import { getConfirmRegistrationEmail } from "../src/email/getConfirmRegistrationEmail";
-import { EMAIL_TEST_TIMEOUT } from "./constants";
+import { getConfirmRegistrationEmail } from '../src/email/getConfirmRegistrationEmail';
+import { EMAIL_TEST_TIMEOUT } from './constants';
 
 jest.setTimeout(EMAIL_TEST_TIMEOUT);
 
-test("getConfirmRegistrationEmail should interpolate strings from the input into the output", () => {
+test('getConfirmRegistrationEmail should interpolate strings from the input into the output', () => {
     const input = {
-        appName: "Test App",
-        buttonColor: "pink",
-        buttonColorOnHover: "red",
-        callbackUrl: "http://test-url.com",
-        fontFamily: "Roboto",
-        fontSize: "13px",
-        fontWeight: "normal",
+        appName: 'Test App',
+        buttonColor: 'pink',
+        buttonColorOnHover: 'red',
+        callbackUrl: 'http://test-url.com',
+        fontFamily: 'Roboto',
+        fontSize: '13px',
+        fontWeight: 'normal',
         linkTags: `
             <link rel="preconnect" href="https://fonts.googleapis.com">
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,15 +20,15 @@ test("getConfirmRegistrationEmail should interpolate strings from the input into
         locale: {
             body: {
                 ctaDescription:
-                    "To confirm your email address, please click the link below.",
-                ignore: "If you did not create an account, you can safely ignore this email.",
-                intro: "Thanks for signing up for an account at Test App",
-                signOff1: "See you soon,",
-                signOff2: "The wonderful peeps at Test App",
+                    'To confirm your email address, please click the link below.',
+                ignore: 'If you did not create an account, you can safely ignore this email.',
+                intro: 'Thanks for signing up for an account at Test App',
+                signOff1: 'See you soon,',
+                signOff2: 'The wonderful peeps at Test App',
             },
-            callToAction: "Confirm",
-            previewHeader: "Confirm your email to set up a Test App account",
-            subject: "Confirm your Test App account",
+            callToAction: 'Confirm',
+            previewHeader: 'Confirm your email to set up a Test App account',
+            subject: 'Confirm your Test App account',
         },
     };
 

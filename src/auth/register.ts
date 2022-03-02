@@ -1,7 +1,7 @@
-import faunadb, { query as q } from "faunadb";
+import faunadb, { query as q } from 'faunadb';
 
-import { ErrorWithKey } from "~/utils";
-import { getEmailContent } from "~/email";
+import { ErrorWithKey } from '~/utils';
+import { getEmailContent } from '~/email';
 import type {
     CollectionQueryResult,
     AuthEmailConfig,
@@ -9,7 +9,7 @@ import type {
     SendEmail,
     Token,
     UserData,
-} from "~/types";
+} from '~/types';
 
 interface RegisterInput<SendEmailResult> {
     /**
@@ -59,7 +59,7 @@ interface RegisterResult<SendEmailResult> {
  * @returns - {@link RegisterResult}
  */
 export async function register<SendEmailResult>(
-    input: RegisterInput<SendEmailResult>
+    input: RegisterInput<SendEmailResult>,
 ): Promise<RegisterResult<SendEmailResult>> {
     const {
         publicFaunaKey,
@@ -73,7 +73,7 @@ export async function register<SendEmailResult>(
     const email = input.userData.email.toLowerCase();
 
     if (!publicFaunaKey) {
-        throw new ErrorWithKey("publicFaunaKeyMissing");
+        throw new ErrorWithKey('publicFaunaKeyMissing');
     }
 
     const client = new faunadb.Client({
@@ -84,13 +84,13 @@ export async function register<SendEmailResult>(
 
     try {
         userResult = await client.query<CollectionQueryResult<UserData>>(
-            q.Call("register", password, {
+            q.Call('register', password, {
                 confirmedEmail: false,
                 details,
                 email,
                 locale,
                 username: input?.userData?.username ?? null,
-            })
+            }),
         );
     } catch (e) {
         // TODO find the Fauna type definition for errors when instance is not unique and use it
@@ -102,15 +102,15 @@ export async function register<SendEmailResult>(
             error?.requestResult?.responseContent?.errors?.[0]?.cause?.[0]
                 ?.code;
 
-        if (code === "instance not unique") {
-            throw new ErrorWithKey("userAlreadyExists");
+        if (code === 'instance not unique') {
+            throw new ErrorWithKey('userAlreadyExists');
         } else {
-            throw new ErrorWithKey("queryError", e as Error);
+            throw new ErrorWithKey('queryError', e as Error);
         }
     }
 
     if (!userResult?.ref) {
-        throw new ErrorWithKey("userRefIsMissing");
+        throw new ErrorWithKey('userRefIsMissing');
     }
 
     let createTokenResult = null;
@@ -119,9 +119,9 @@ export async function register<SendEmailResult>(
         createTokenResult = await client.query<{
             account: CollectionQueryResult<UserData>;
             token: Token<{ type: string; email: string }>;
-        }>(q.Call("createEmailConfirmationToken", email));
+        }>(q.Call('createEmailConfirmationToken', email));
     } catch (e) {
-        throw new ErrorWithKey("failedToCreateToken", e as Error);
+        throw new ErrorWithKey('failedToCreateToken', e as Error);
     }
 
     if (!createTokenResult) {
@@ -139,8 +139,8 @@ export async function register<SendEmailResult>(
         JSON.stringify({
             email,
             token: secret,
-        })
-    ).toString("base64");
+        }),
+    ).toString('base64');
 
     const finalCallbackUrl = `${emailConfig.callbackUrl}?data=${data}`;
 
@@ -162,7 +162,7 @@ export async function register<SendEmailResult>(
     try {
         sendEmailResult = await sendEmail(message);
     } catch (e) {
-        throw new ErrorWithKey("failedToSendEmail", e as Error);
+        throw new ErrorWithKey('failedToSendEmail', e as Error);
     }
 
     return { tokenCreated: true, sendEmailResult };

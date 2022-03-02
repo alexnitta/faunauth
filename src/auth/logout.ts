@@ -1,6 +1,6 @@
-import faunadb, { query as q } from "faunadb";
+import faunadb, { query as q } from 'faunadb';
 
-import { ErrorWithKey } from "~/utils";
+import { ErrorWithKey } from '~/utils';
 
 interface LogoutInput {
     /**
@@ -30,11 +30,11 @@ export async function logout({
     });
 
     try {
-        await client.query(q.Call("logout", logoutAll));
+        await client.query(q.Call('logout', logoutAll));
     } catch (e) {
         const error = e as Error;
 
-        throw new ErrorWithKey("failedToLogout", error);
+        throw new ErrorWithKey('failedToLogout', error);
     }
 
     return true;

@@ -1,8 +1,8 @@
-import getEmailTemplate from "./getEmailTemplate";
-import getCallToAction from "./getCallToAction";
-import getPOpen from "./getPOpen";
-import { getDefaultConfirmRegistrationLocale } from "./defaultLocales";
-import { Maybe, AuthEmailConfig, AuthEmailLocale } from "~/types";
+import getEmailTemplate from './getEmailTemplate';
+import getCallToAction from './getCallToAction';
+import getPOpen from './getPOpen';
+import { getDefaultConfirmRegistrationLocale } from './defaultLocales';
+import { Maybe, AuthEmailConfig, AuthEmailLocale } from '~/types';
 
 /**
  * Returns the HTML template for an authentication email, which will be used to confirm either a
@@ -25,7 +25,7 @@ export const getEmailContent = (input: AuthEmailConfig) => {
 
     let locale: Maybe<AuthEmailLocale> = null;
 
-    if ("locale" in input) {
+    if ('locale' in input) {
         locale = input.locale;
     } else {
         locale = getDefaultConfirmRegistrationLocale(appName);
@@ -58,7 +58,7 @@ export const getEmailContent = (input: AuthEmailConfig) => {
         textLines.push(text);
     });
 
-    const emailBody = bodyLines.join("\n");
+    const emailBody = bodyLines.join('\n');
 
     return {
         html: getEmailTemplate({
@@ -68,7 +68,7 @@ export const getEmailContent = (input: AuthEmailConfig) => {
             body: emailBody,
             linkTags,
         }),
-        text: textLines.join("\n\n"),
+        text: textLines.join('\n\n'),
         subject,
     };
 };
