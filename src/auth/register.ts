@@ -11,7 +11,7 @@ import type {
     UserData,
 } from '~/types';
 
-interface RegisterInput<SendEmailResult> {
+export interface RegisterInput<SendEmailResult> {
     /**
      * Email address to use as the sender
      */
@@ -39,7 +39,7 @@ interface RegisterInput<SendEmailResult> {
     userData: UserData;
 }
 
-interface RegisterResult<SendEmailResult> {
+export interface RegisterResult<SendEmailResult> {
     /**
      * True if a sign up token was created in database
      */

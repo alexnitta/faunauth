@@ -1,3 +1,5 @@
+faunauth / [Exports](modules.md)
+
 # `faunauth`
 
 > Fauna authentication tools for logging in via email (or username) and password
@@ -39,7 +41,7 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
     This public key has limited permissions that are appropriate for un-authenticated users, i.e. user registration, login, and resetting passwords. It is safe to store in the browser in your client-side code and your client will need to provide it to your server when calling the various `faunauth` functions in Step 3 below.
 
 3. Use `faunauth` functions in your server application
-   After completing the schema migration, you can use the `faunauth` functions in your server. Complete documentation is available in [./docs/modules.md#functions](./docs/modules.md#functions).
+   After completing the schema migration, you can use the `faunauth` functions in your server. Complete documentation is available in [./docs/modules.md](./docs/modules.md).
 
     for example in an ExpressJS handler:
 

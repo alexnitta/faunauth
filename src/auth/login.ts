@@ -29,7 +29,7 @@ interface LoginInputWithUsername extends BaseLoginInput {
     username: string;
 }
 
-type LoginInput = LoginInputWithEmail | LoginInputWithUsername;
+export type LoginInput = LoginInputWithEmail | LoginInputWithUsername;
 
 /**
  * Log a user in. The input can include either an `email` or a `username` in order to identify the

@@ -3,7 +3,7 @@ import faunadb, { query as q } from 'faunadb';
 import { ErrorWithKey } from '~/utils';
 import type { FaunaLoginResult, ServerLoginResult } from '~/types/auth';
 
-interface ChangePasswordInput {
+export interface ChangePasswordInput {
     email: string;
     newPassword: string;
     oldPassword: string;

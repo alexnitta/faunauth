@@ -11,7 +11,7 @@ import type {
     UserData,
 } from '~/types';
 
-interface RequestPasswordResetInput<SendEmailResult> {
+export interface RequestPasswordResetInput<SendEmailResult> {
     /**
      * Email address for the user who wants to reset their password
      */
@@ -35,7 +35,7 @@ interface RequestPasswordResetInput<SendEmailResult> {
     sendEmail: SendEmail<SendEmailResult>;
 }
 
-interface RequestPasswordResetResult<SendEmailResult> {
+export interface RequestPasswordResetResult<SendEmailResult> {
     /**
      * True if a password reset token was created in database
      */

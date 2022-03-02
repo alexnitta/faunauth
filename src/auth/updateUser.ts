@@ -5,7 +5,7 @@ import type { UpdateUserResult } from '~/types/auth';
 
 const { Ref, Collection, Update } = q;
 
-interface UpdateUserInput {
+export interface UpdateUserInput {
     /**
      * A Fauna secret that was returned after authenticating the user
      */

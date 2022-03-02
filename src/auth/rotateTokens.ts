@@ -3,7 +3,7 @@ import faunadb, { query as q } from 'faunadb';
 import { ErrorWithKey } from '~/utils';
 import type { FaunaRefreshResult, TokenPair, Maybe } from '~/types';
 
-interface RotateTokensInput {
+export interface RotateTokensInput {
     /**
      * A token that can be used to authenticate further requests against the FaunaDB API. Fauna's
      * docs refer to this as a 'secret'; from the client perspective it's a JWT.

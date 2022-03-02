@@ -2,7 +2,7 @@ import faunadb, { query as q } from 'faunadb';
 
 import { ErrorWithKey } from '~/utils';
 
-interface LogoutInput {
+export interface LogoutInput {
     /**
      * If true, will expire all tokens for the account (which could be on different machines or
      * different browsers). If false, will just expire tokens for the current browser.

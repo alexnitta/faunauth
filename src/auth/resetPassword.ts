@@ -3,7 +3,7 @@ import faunadb, { query as q } from 'faunadb';
 import type { ServerLoginResult, FaunaLoginResult } from '~/types/auth';
 import { ErrorWithKey } from '~/utils';
 
-interface SetPasswordInput {
+export interface ResetPasswordInput {
     /**
      * Email address for the user who wants to reset their password
      */
@@ -36,7 +36,7 @@ interface SetPasswordInput {
  * @returns - {@link ServerLoginResult}
  */
 export async function resetPassword(
-    input: SetPasswordInput,
+    input: ResetPasswordInput,
 ): Promise<ServerLoginResult> {
     const { publicFaunaKey, password, token } = input;
 
