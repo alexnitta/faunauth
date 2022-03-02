@@ -2,7 +2,7 @@
 
 > Fauna authentication tools for logging in via email (or username) and password
 
-## Schema migrations
+## About schema migrations
 
 `faunauth` provides you with a set of FQL resources - collections, functions, indexes and roles - that will enable various authentication tasks. This is accomplished with the [fauna-schema-migrate](https://github.com/fauna-labs/fauna-schema-migrate) package, which will allow you to add these FQL resources to your existing Fauna database. This is what "schema migration" means in this context: your current database schema will be migrated to a new schema that contains the FQL resources provided by `faunauth`. This is not a data migration tool.
 
@@ -11,6 +11,10 @@ Note that `fauna-schema-migrate` is experimental; its README lists this disclaim
 > This repository contains unofficial patterns, sample code, or tools to help developers build more effectively with Fauna. All Fauna Labs repositories are provided “as-is” and without support. By using this repository or its contents, you agree that this repository may never be officially supported and moved to the Fauna organization.
 
 This means `faunauth` is also experimental; use it at your own discretion.
+
+## Documentation
+
+Complete documentation is available in [./docs/modules.md](./docs/modules.md).
 
 ## Getting started
 
@@ -41,10 +45,10 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
 3. Use `faunauth` functions in your server application
    After completing the schema migration, you can use the `faunauth` functions in your server. Complete documentation is available in [./docs/modules.md#functions](./docs/modules.md#functions).
 
-    for example in an ExpressJS handler:
+    Here's an example of how you might use the `login` function from `faunauth` in an [Express](https://expressjs.com/) handler. Note that `faunauth` is framework-agnostic; it will work in any backend JavaScript framework.
 
     ```TypeScript
-    // This handler would be used in an ExpressJS route to handle login requests. You would
+    // This handler would be used in an Express route to handle login requests. You would
     // typically use bodyparser to make sure responses are handled as JSON. Other frameworks will have
     // slight differences in their implementations.
     import { login } from 'faunauth';
@@ -81,13 +85,9 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
 
     ```
 
-## Documentation
-
-Complete documentation is available in [./docs/modules.md](./docs/modules.md).
-
 ## Background
 
-We recommend reading up on a few topics before using `faunauth`:
+It's a good idea to read up on a few topics before using `faunauth`:
 
 -   [The Fauna Query Language (FQL)](https://docs.fauna.com/fauna/current/api/fql/)
 -   [User-defined functions (UDFs)](https://docs.fauna.com/fauna/current/learn/understanding/user_defined_functions)
