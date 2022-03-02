@@ -14,62 +14,68 @@ This means `faunuath` is also experimental; use it at your own discretion.
 
 ## Getting started
 
-There are two kinds of tools provided by `faunauth`: schema migrations and functions. You must complete the schema migration before the functions exposed by `faunauth` will work properly.
+There are two kinds of tools provided by `faunauth`: schema migrations and functions. You must complete the schema migration before the functions exposed by `faunauth` will work properly. The `faunauth` CLI tool will help you accomplish this.
 
-### Step 1: add Fauna resources via schema migration
+1. Add Fauna resources via schema migration
 
-1. `npm i faunauth` to install this package
-2. `npm i -D @fauna-labs/fauna-schema-migrate` to install `fauna-schema-migrate` as a dev dependency
-3. `npx faunauth import` to copy over files that will be used by `fauna-schema-migrate` to complete the schema migration process. These files should be committed to version control. Note that if you are already using `fauna-schema-migrate` and you have a `/fauna` folder in your application, the `npx fauna import` command will not overwrite any existing files.
-4. Using the [Fauna dashboard](https://dashboard.fauna.com/accounts/login), select your database (or create it if it doesn't yet exist). Once you have selected the database, click Security at the left and use the Keys feature to add a new key with the built-in "Admin" role. Save this key somewhere secure (i.e. in a password manager); you won't see it again.
-5. In a terminal window, run `export FAUNA_ADMIN_KEY=<your_fauna_admin_key>`, using the admin key you just created. This sets the environment variable that `fauna-schema-migrate` will use to authenticate you and identify which database to apply your migrations to.
-6. `npx fauna-schema-migrate run` to run `fauna-schema-migrate` interactively. The flow goes like this:
-    1. Use `generate` to analyze the contents of the `/fauna` folder and determine what needs to be added to your database. The results of this analysis are saved in a new folder in `/fauna/migrations`. Review the migration that was created to make sure it looks correct.
-    2. Use `apply` to apply the migration to your database.
-    3. If needed, you can use `rollback` to revert your migrations.
-       These commands are documented more thoroughly in the [`fauna-schema-migrate` readme](https://github.com/fauna-labs/fauna-schema-migrate#available-commands).
+    1. `npm i faunauth` to install this package
+    2. `npm i -D @fauna-labs/fauna-schema-migrate` to install `fauna-schema-migrate` as a dev dependency
+    3. `npx faunauth import` to copy over files that will be used by `fauna-schema-migrate` to complete the schema migration process. These files should be committed to version control. Note that if you are already using `fauna-schema-migrate` and you have a `/fauna` folder in your application, the `npx fauna import` command will not overwrite any existing files.
+    4. Using the [Fauna dashboard](https://dashboard.fauna.com/accounts/login), select your database (or create it if it doesn't yet exist). Once you have selected the database, click Security at the left and use the Keys feature to add a new key with the built-in "Admin" role. Save this key somewhere secure (i.e. in a password manager); you won't see it again.
+    5. In a terminal window, run `export FAUNA_ADMIN_KEY=<your_fauna_admin_key>`, using the admin key you just created. This sets the environment variable that `fauna-schema-migrate` will use to authenticate you and identify which database to apply your migrations to.
+    6. `npx fauna-schema-migrate run` to run `fauna-schema-migrate` interactively. The flow goes like this:
+        1. Use `generate` to analyze the contents of the `/fauna` folder and determine what needs to be added to your database. The results of this analysis are saved in a new folder in `/fauna/migrations`. Review the migration that was created to make sure it looks correct.
+        2. Use `apply` to apply the migration to your database.
+        3. If needed, you can use `rollback` to revert your migrations.
+           These commands are documented more thoroughly in the [`fauna-schema-migrate` readme](https://github.com/fauna-labs/fauna-schema-migrate#available-commands).
 
-Your database is now ready to use with the functions exposed by `faunauth`.
+    Your database is now ready to use with the functions exposed by `faunauth`.
 
-### Step 2: use `faunauth` functions in your application
+2. Create a public Fauna key for your client application
 
-After completing the schema migration, you can use the `faunauth` functions in your application, for example in an ExpressJS handler:
+    1. If your terminal does not yet have the FAUNA_ADMIN_KEY environment variable set, run: `export FAUNA_ADMIN_KEY=<your_fauna_admin_key>` with the admin key you created in step 1 above.
+    2. `npx faunauth create-public-key` to create a key for the role named "public" and print it to the console. This role is created during schema migration, so you will see an error if you have not completed Step 1.
 
-```TypeScript
-// This handler would be used in an ExpressJS route to handle login requests. You would
-// typically use bodyparser to make sure responses are handled as JSON. Other frameworks will have
-// slight differences in their implementations.
-import { auth } from 'faunauth';
+    This public key has limited permissions that are appropriate for un-authenticated users, i.e. user registration, login, and resetting passwords. It is safe to store in the browser in your client-side code and your client will need to provide it to your server when calling the various `faunauth` functions in Step 3 below.
 
-/**
- * Log in a user in with an email and password, thereby getting access to an accessToken,
- * refreshToken and user data.
- */
-export const loginHandler = async (req, res) => {
-    const { email, password } = req.body;
+3. Use `faunauth` functions in your server application
+   After completing the schema migration, you can use the `faunauth` functions in your server, for example in an ExpressJS handler:
 
-    try {
-        // Here is where you would validate the input or throw an error if it is invalid
+    ```TypeScript
+    // This handler would be used in an ExpressJS route to handle login requests. You would
+    // typically use bodyparser to make sure responses are handled as JSON. Other frameworks will have
+    // slight differences in their implementations.
+    import { auth } from 'faunauth';
 
-        const { accessToken, refreshToken, user } = await auth.login({
-            email,
-            publicFaunaKey: process.env.PUBLIC_FAUNA_KEY ?? null,
-            password,
-        });
+    /**
+     * Log in a user in with an email and password, thereby getting access to an accessToken,
+     * refreshToken and user data.
+     */
+    export const loginHandler = async (req, res) => {
+        // The `publicFaunaKey` should be created using the faunauth CLI as described above.
+        const { email, password, publicFaunaKey } = req.body;
 
-        // Now you can save the accessToken, refreshToken and user in a cookie or do anything else
-        // you want with them.
+        try {
+            // Here is where you would validate the input or throw an error if it is invalid
 
-        // Typically you'll send the data back to the client so it can use the accessToken to
-        // authenticate further Fauna requests. The client will need to use the refreshToken to do a
-        // token rotation when the accessToken expires.
-        res.send({ accessToken, refreshToken, user });
-    } catch (error) {
-        res.status(400).send({ error });
-    }
-};
+            const { accessToken, refreshToken, user } = await auth.login({
+                email,
+                password,
+                publicFaunaKey,
+            });
 
-```
+            // Now you can save the accessToken, refreshToken and user in a session cookie.
+
+            // Typically you'll send the data back to the client so it can use the accessToken to
+            // authenticate further Fauna requests. The client will need to use the refreshToken to do a
+            // token rotation when the accessToken expires.
+            res.send({ accessToken, refreshToken, user });
+        } catch (error) {
+            res.status(400).send({ error });
+        }
+    };
+
+    ```
 
 ## Background
 
