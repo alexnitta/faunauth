@@ -29,7 +29,7 @@ interface GetEmailTemplateInput {
 /**
  * Returns an HTML email template as a string.
  * Inspired by: https://github.com/leemunroe/responsive-html-email-template
- * @param input - see {@linkGetEmailTemplateInput }
+ * @param input - see {@link GetEmailTemplateInput }
  */
 export default function getEmailTemplate({
     appName,

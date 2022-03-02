@@ -81,6 +81,10 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
 
     ```
 
+## Documentation
+
+Complete documentation is available in [./docs/modules.md](./docs/modules.md).
+
 ## Background
 
 We recommend reading up on a few topics before using `faunauth`:

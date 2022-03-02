@@ -96,7 +96,7 @@ export interface SendEmailInput {
  * that resolves to the generic <SendEmailResult>.
  * @remarks
  * Typically this will be something like {@link https://www.npmjs.com/package/@sendgrid/mail}.
- * If using @sendgrid/mail as `sgMail`, you will need to set an API key using
+ * If using \@sendgrid/mail as `sgMail`, you will need to set an API key using
  * `sgMail.setApiKey('API_KEY')` before passing in `sgMail` as a `SendMail` function.
  */
 export type SendEmail<SendEmailResult> = (

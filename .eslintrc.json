@@ -1,18 +1,22 @@
 {
     "root": true,
-    "plugins": ["@nrwl/nx"],
+    "plugins": ["@nrwl/nx", "eslint-plugin-tsdoc"],
     "ignorePatterns": ["dist/**/*"],
     "extends": ["plugin:@nrwl/nx/react"],
     "overrides": [
         {
             "files": ["*.ts", "*.tsx"],
             "extends": ["plugin:@nrwl/nx/typescript"],
-            "rules": {}
+            "rules": {
+                "tsdoc/syntax": "error"
+            }
         },
         {
             "files": ["*.js", "*.jsx"],
             "extends": ["plugin:@nrwl/nx/javascript"],
-            "rules": {}
+            "rules": {
+                "tsdoc/syntax": "error"
+            }
         }
     ]
 }

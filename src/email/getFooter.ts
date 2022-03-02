@@ -29,10 +29,10 @@ interface GetFooterInput {
 
 /**
  * Renders a footer section for an email template
- * @param {string} companyAddress an address in one line, like "Company Name, 123 Street Name, City, ST 01234"
- * @param {string} callToAction a call to action, like, "Don't like these emails?"
- * @param {string} unsubscribe a verb to display as the unsubscribe link, like "Unsubscribe"
- * @param {string} unsubscribeUrl a URL for the unsubscribe link
+ * @param companyAddress - an address in one line, like "Company Name, 123 Street Name, City, ST 01234"
+ * @param callToAction - a call to action, like, "Don't like these emails?"
+ * @param unsubscribe - a verb to display as the unsubscribe link, like "Unsubscribe"
+ * @param unsubscribeUrl - a URL for the unsubscribe link
  */
 export default function getFooter({
     companyAddress,

@@ -1,18 +1,21 @@
 import { ErrorKey } from '~/types';
 import { keyedErrors } from './constants';
 
-/**
- * A custom error class that has a `.key` property. This allows us to read `error.key` as a way to
- * translate an error into a locale-specific message.
- * @property key - the unique key for this kind of error. This will be used to look up a message
- * from the `keyedErrors` constant.
- * @property apiError - the error thrown by a third-party API, if any
- */
 export class ErrorWithKey extends Error {
+    /**
+     * The error name - this is always set to "ErrorWithKey"
+     */
     name: string;
 
+    /**
+     * The unique key for this kind of error. In your consuming application, you can use this to
+     * display the error in the user's locale as part of your internationalization logic.
+     */
     key: string;
 
+    /**
+     * If there was an underlying error thrown by a third-party API, it can be included here.
+     */
     apiError?: Error;
 
     // eslint-disable-next-line @typescript-eslint/ban-types
