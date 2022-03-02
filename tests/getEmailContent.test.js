@@ -37,7 +37,12 @@ test('getEmailContent should interpolate strings from the input into the output'
 
     const result = getEmailContent(input);
 
-    expect(result.text.includes(input.locale.body.ctaDescription)).toBeTruthy();
-    expect(result.html.includes(input.locale.body.ctaDescription)).toBeTruthy();
+    expect(
+        result.text.includes(input.locale.body.beforeCallToAction[0]),
+    ).toBeTruthy();
+    expect(result.html.includes(input.locale.body.callToAction)).toBeTruthy();
+    expect(
+        result.text.includes(input.locale.body.afterCallToAction[2]),
+    ).toBeTruthy();
     expect(result.subject).toEqual(input.locale.subject);
 });
