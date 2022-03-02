@@ -27,7 +27,7 @@
         "check-types": "tsc --noEmit",
         "prepack": "npx rimraf dist && tsc",
         "semantic-release": "semantic-release",
-        "generate-docs": "typedoc --plugin typedoc-plugin-markdown --out docs --entryDocument none src/index.ts"
+        "generate-docs": "typedoc --plugin typedoc-plugin-markdown --out docs --readme none --entryDocument index.md src/index.ts"
     },
     "devDependencies": {
         "@commitlint/cli": "^16.2.1",

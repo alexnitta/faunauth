@@ -1,4 +1,4 @@
-[faunauth](../none) / [Exports](../modules.md) / FaunaGraphQLResponse
+[faunauth](../index.md) / FaunaGraphQLResponse
 
 # Interface: FaunaGraphQLResponse<TData\>
 
@@ -23,7 +23,7 @@
 
 #### Defined in
 
-[src/types/auth.ts:149](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L149)
+[src/types/auth.ts:149](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L149)
 
 ___
 
@@ -33,4 +33,4 @@ ___
 
 #### Defined in
 
-[src/types/auth.ts:148](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L148)
+[src/types/auth.ts:148](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L148)

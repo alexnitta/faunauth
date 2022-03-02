@@ -1,4 +1,4 @@
-[faunauth](../none) / [Exports](../modules.md) / RotateTokensInput
+[faunauth](../index.md) / RotateTokensInput
 
 # Interface: RotateTokensInput
 
@@ -19,4 +19,4 @@ docs refer to this as a 'secret'; from the client perspective it's a JWT.
 
 #### Defined in
 
-[src/auth/rotateTokens.ts:11](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/rotateTokens.ts#L11)
+[src/auth/rotateTokens.ts:11](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/rotateTokens.ts#L11)

@@ -1,4 +1,4 @@
-[faunauth](../none) / [Exports](../modules.md) / TokenPair
+[faunauth](../index.md) / TokenPair
 
 # Interface: TokenPair
 
@@ -20,7 +20,7 @@ docs refer to this as a 'secret'; from the client perspective it's a JWT.
 
 #### Defined in
 
-[src/types/auth.ts:93](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L93)
+[src/types/auth.ts:93](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L93)
 
 ___
 
@@ -33,4 +33,4 @@ A token that can be used to refresh the access token. Fauna's docs refer to this
 
 #### Defined in
 
-[src/types/auth.ts:98](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L98)
+[src/types/auth.ts:98](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L98)

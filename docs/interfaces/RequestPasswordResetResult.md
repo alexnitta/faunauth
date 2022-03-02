@@ -1,4 +1,4 @@
-[faunauth](../none) / [Exports](../modules.md) / RequestPasswordResetResult
+[faunauth](../index.md) / RequestPasswordResetResult
 
 # Interface: RequestPasswordResetResult<SendEmailResult\>
 
@@ -25,7 +25,7 @@ Result of sending email
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:46](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/requestPasswordReset.ts#L46)
+[src/auth/requestPasswordReset.ts:46](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/requestPasswordReset.ts#L46)
 
 ___
 
@@ -37,4 +37,4 @@ True if a password reset token was created in database
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:42](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/requestPasswordReset.ts#L42)
+[src/auth/requestPasswordReset.ts:42](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/requestPasswordReset.ts#L42)

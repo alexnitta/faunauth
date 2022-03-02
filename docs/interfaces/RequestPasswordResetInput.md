@@ -1,4 +1,4 @@
-[faunauth](../none) / [Exports](../modules.md) / RequestPasswordResetInput
+[faunauth](../index.md) / RequestPasswordResetInput
 
 # Interface: RequestPasswordResetInput<SendEmailResult\>
 
@@ -28,7 +28,7 @@ Email address for the user who wants to reset their password
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:18](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/requestPasswordReset.ts#L18)
+[src/auth/requestPasswordReset.ts:18](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/requestPasswordReset.ts#L18)
 
 ___
 
@@ -40,7 +40,7 @@ A configuration object for the email template - see [AuthEmailConfig](AuthEmailC
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:26](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/requestPasswordReset.ts#L26)
+[src/auth/requestPasswordReset.ts:26](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/requestPasswordReset.ts#L26)
 
 ___
 
@@ -52,7 +52,7 @@ Email address to use as the email sender
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:22](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/requestPasswordReset.ts#L22)
+[src/auth/requestPasswordReset.ts:22](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/requestPasswordReset.ts#L22)
 
 ___
 
@@ -65,16 +65,16 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:31](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/requestPasswordReset.ts#L31)
+[src/auth/requestPasswordReset.ts:31](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/requestPasswordReset.ts#L31)
 
 ___
 
 ### sendEmail
 
-• **sendEmail**: [`SendEmail`](../modules.md#sendemail)<`SendEmailResult`\>
+• **sendEmail**: [`SendEmail`](../index.md#sendemail)<`SendEmailResult`\>
 
-See [SendEmail](../modules.md#sendemail)
+See [SendEmail](../index.md#sendemail)
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:35](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/requestPasswordReset.ts#L35)
+[src/auth/requestPasswordReset.ts:35](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/requestPasswordReset.ts#L35)

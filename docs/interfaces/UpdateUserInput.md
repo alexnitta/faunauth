@@ -1,4 +1,4 @@
-[faunauth](../none) / [Exports](../modules.md) / UpdateUserInput
+[faunauth](../index.md) / UpdateUserInput
 
 # Interface: UpdateUserInput
 
@@ -20,7 +20,7 @@ A Fauna secret that was returned after authenticating the user
 
 #### Defined in
 
-[src/auth/updateUser.ts:12](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/updateUser.ts#L12)
+[src/auth/updateUser.ts:12](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/updateUser.ts#L12)
 
 ___
 
@@ -32,7 +32,7 @@ Data to update on the user
 
 #### Defined in
 
-[src/auth/updateUser.ts:16](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/updateUser.ts#L16)
+[src/auth/updateUser.ts:16](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/updateUser.ts#L16)
 
 ___
 
@@ -44,4 +44,4 @@ ID of the user to update
 
 #### Defined in
 
-[src/auth/updateUser.ts:20](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/updateUser.ts#L20)
+[src/auth/updateUser.ts:20](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/updateUser.ts#L20)

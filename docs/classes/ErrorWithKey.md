@@ -1,14 +1,6 @@
-[faunauth](../none) / [Exports](../modules.md) / ErrorWithKey
+[faunauth](../index.md) / ErrorWithKey
 
 # Class: ErrorWithKey
-
-A custom error class that has a `.key` property. This allows us to read `error.key` as a way to
-translate an error into a locale-specific message.
-
-**`property`** key - the unique key for this kind of error. This will be used to look up a message
-from the `keyedErrors` constant.
-
-**`property`** apiError - the error thrown by a third-party API, if any
 
 ## Hierarchy
 
@@ -47,7 +39,7 @@ from the `keyedErrors` constant.
 
 | Name | Type |
 | :------ | :------ |
-| `key` | [`ErrorKey`](../modules.md#errorkey) |
+| `key` | [`ErrorKey`](../index.md#errorkey) |
 | `apiError?` | `Error` |
 
 #### Overrides
@@ -56,7 +48,7 @@ Error.constructor
 
 #### Defined in
 
-[src/utils/ErrorWithKey.ts:21](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/utils/ErrorWithKey.ts#L21)
+[src/utils/ErrorWithKey.ts:24](https://github.com/alexnitta/faunauth/blob/aaffd52/src/utils/ErrorWithKey.ts#L24)
 
 ## Properties
 
@@ -66,7 +58,7 @@ Error.constructor
 
 #### Defined in
 
-[src/utils/ErrorWithKey.ts:19](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/utils/ErrorWithKey.ts#L19)
+[src/utils/ErrorWithKey.ts:22](https://github.com/alexnitta/faunauth/blob/aaffd52/src/utils/ErrorWithKey.ts#L22)
 
 ___
 
@@ -74,9 +66,11 @@ ___
 
 • `Optional` **apiError**: `Error`
 
+If there was an underlying error thrown by a third-party API, it can be included here.
+
 #### Defined in
 
-[src/utils/ErrorWithKey.ts:16](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/utils/ErrorWithKey.ts#L16)
+[src/utils/ErrorWithKey.ts:19](https://github.com/alexnitta/faunauth/blob/aaffd52/src/utils/ErrorWithKey.ts#L19)
 
 ___
 
@@ -84,9 +78,12 @@ ___
 
 • **key**: `string`
 
+The unique key for this kind of error. In your consuming application, you can use this to
+display the error in the user's locale as part of your internationalization logic.
+
 #### Defined in
 
-[src/utils/ErrorWithKey.ts:14](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/utils/ErrorWithKey.ts#L14)
+[src/utils/ErrorWithKey.ts:14](https://github.com/alexnitta/faunauth/blob/aaffd52/src/utils/ErrorWithKey.ts#L14)
 
 ___
 
@@ -108,13 +105,15 @@ ___
 
 • **name**: `string`
 
+The error name - this is always set to "ErrorWithKey"
+
 #### Overrides
 
 Error.name
 
 #### Defined in
 
-[src/utils/ErrorWithKey.ts:12](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/utils/ErrorWithKey.ts#L12)
+[src/utils/ErrorWithKey.ts:8](https://github.com/alexnitta/faunauth/blob/aaffd52/src/utils/ErrorWithKey.ts#L8)
 
 ___
 

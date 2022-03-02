@@ -1,4 +1,4 @@
-[faunauth](../none) / [Exports](../modules.md) / ChangePasswordInput
+[faunauth](../index.md) / ChangePasswordInput
 
 # Interface: ChangePasswordInput
 
@@ -19,7 +19,7 @@
 
 #### Defined in
 
-[src/auth/changePassword.ts:7](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/changePassword.ts#L7)
+[src/auth/changePassword.ts:7](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/changePassword.ts#L7)
 
 ___
 
@@ -29,7 +29,7 @@ ___
 
 #### Defined in
 
-[src/auth/changePassword.ts:8](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/changePassword.ts#L8)
+[src/auth/changePassword.ts:8](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/changePassword.ts#L8)
 
 ___
 
@@ -39,7 +39,7 @@ ___
 
 #### Defined in
 
-[src/auth/changePassword.ts:9](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/changePassword.ts#L9)
+[src/auth/changePassword.ts:9](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/changePassword.ts#L9)
 
 ___
 
@@ -49,4 +49,4 @@ ___
 
 #### Defined in
 
-[src/auth/changePassword.ts:10](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/auth/changePassword.ts#L10)
+[src/auth/changePassword.ts:10](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/changePassword.ts#L10)

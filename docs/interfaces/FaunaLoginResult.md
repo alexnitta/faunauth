@@ -1,4 +1,4 @@
-[faunauth](../none) / [Exports](../modules.md) / FaunaLoginResult
+[faunauth](../index.md) / FaunaLoginResult
 
 # Interface: FaunaLoginResult
 
@@ -18,7 +18,7 @@
 
 #### Defined in
 
-[src/types/auth.ts:53](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L53)
+[src/types/auth.ts:53](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L53)
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 #### Defined in
 
-[src/types/auth.ts:54](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L54)
+[src/types/auth.ts:54](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L54)
 
 ___
 
@@ -45,4 +45,4 @@ ___
 
 #### Defined in
 
-[src/types/auth.ts:49](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L49)
+[src/types/auth.ts:49](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L49)

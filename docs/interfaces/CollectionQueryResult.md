@@ -1,4 +1,4 @@
-[faunauth](../none) / [Exports](../modules.md) / CollectionQueryResult
+[faunauth](../index.md) / CollectionQueryResult
 
 # Interface: CollectionQueryResult<Data\>
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[src/types/auth.ts:6](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L6)
+[src/types/auth.ts:6](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L6)
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[src/types/auth.ts:4](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L4)
+[src/types/auth.ts:4](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L4)
 
 ___
 
@@ -44,4 +44,4 @@ ___
 
 #### Defined in
 
-[src/types/auth.ts:5](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L5)
+[src/types/auth.ts:5](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L5)

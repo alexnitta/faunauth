@@ -1,4 +1,4 @@
-[faunauth](../none) / [Exports](../modules.md) / UpdateUserResult
+[faunauth](../index.md) / UpdateUserResult
 
 # Interface: UpdateUserResult
 
@@ -18,7 +18,7 @@
 
 #### Defined in
 
-[src/types/auth.ts:133](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L133)
+[src/types/auth.ts:133](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L133)
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 #### Defined in
 
-[src/types/auth.ts:135](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L135)
+[src/types/auth.ts:135](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L135)
 
 ___
 
@@ -38,4 +38,4 @@ ___
 
 #### Defined in
 
-[src/types/auth.ts:134](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L134)
+[src/types/auth.ts:134](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L134)

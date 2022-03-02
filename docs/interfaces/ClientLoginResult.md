@@ -1,4 +1,4 @@
-[faunauth](../none) / [Exports](../modules.md) / ClientLoginResult
+[faunauth](../index.md) / ClientLoginResult
 
 # Interface: ClientLoginResult
 
@@ -26,7 +26,7 @@ docs refer to this as a 'secret'; from the client perspective it's a JWT.
 
 #### Defined in
 
-[src/types/auth.ts:70](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L70)
+[src/types/auth.ts:70](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L70)
 
 ___
 
@@ -38,4 +38,4 @@ Details for the user that was signed in
 
 #### Defined in
 
-[src/types/auth.ts:74](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L74)
+[src/types/auth.ts:74](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L74)

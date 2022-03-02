@@ -1,4 +1,4 @@
-[faunauth](../none) / [Exports](../modules.md) / ServerLoginResult
+[faunauth](../index.md) / ServerLoginResult
 
 # Interface: ServerLoginResult
 
@@ -33,7 +33,7 @@ docs refer to this as a 'secret'; from the client perspective it's a JWT.
 
 #### Defined in
 
-[src/types/auth.ts:70](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L70)
+[src/types/auth.ts:70](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L70)
 
 ___
 
@@ -46,7 +46,7 @@ A token that can be used to refresh the access token. Fauna's docs refer to this
 
 #### Defined in
 
-[src/types/auth.ts:85](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L85)
+[src/types/auth.ts:85](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L85)
 
 ___
 
@@ -62,4 +62,4 @@ Details for the user that was signed in
 
 #### Defined in
 
-[src/types/auth.ts:74](https://github.com/alexnitta/faunauth/blob/6bb89cc/src/types/auth.ts#L74)
+[src/types/auth.ts:74](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/auth.ts#L74)
