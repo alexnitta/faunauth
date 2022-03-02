@@ -14,7 +14,8 @@ export class ErrorWithKey extends Error {
     key: string;
 
     /**
-     * If there was an underlying error thrown by a third-party API, it can be included here.
+     * If there was an underlying error thrown by a third-party API, it can be included here by
+     * calling `new ErrorWithKey(key, apiError)`.
      */
     apiError?: Error;
 
