@@ -1,9 +1,9 @@
-import { getConfirmResetPasswordEmail } from '../src/email/getConfirmResetPasswordEmail';
+import { getEmailContent } from '../src/email/getEmailContent';
 import { EMAIL_TEST_TIMEOUT } from './constants';
 
 jest.setTimeout(EMAIL_TEST_TIMEOUT);
 
-test('getConfirmResetPasswordEmail should interpolate strings from the input into the output', () => {
+test('getEmailContent should interpolate strings from the input into the output', () => {
     const input = {
         appName: 'Test App',
         buttonColor: 'pink',
@@ -19,19 +19,23 @@ test('getConfirmResetPasswordEmail should interpolate strings from the input int
         `,
         locale: {
             body: {
-                ctaDescription:
+                beforeCallToAction: [
+                    'Hello!',
                     'To confirm your email address and reset your password, please click the link below.',
-                ignore: 'If you did not request to reset your password, you can safely ignore this email.',
-                signOff1: 'See you soon,',
-                signOff2: 'The wonderful peeps at Test App',
+                ],
+                callToAction: 'Confirm',
+                afterCallToAction: [
+                    'If you did not request to reset your password, you can safely ignore this email.',
+                    'See you soon,',
+                    'The wonderful peeps at Test App',
+                ],
             },
-            callToAction: 'Confirm',
             previewHeader: 'Confirm your email to reset your Test App password',
             subject: 'Reset your Test App password',
         },
     };
 
-    const result = getConfirmResetPasswordEmail(input);
+    const result = getEmailContent(input);
 
     expect(result.text.includes(input.locale.body.ctaDescription)).toBeTruthy();
     expect(result.html.includes(input.locale.body.ctaDescription)).toBeTruthy();
