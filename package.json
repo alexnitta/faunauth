@@ -19,8 +19,7 @@
     "scripts": {
         "precommit": "lint-staged",
         "lint": "eslint \"**/*.{ts,tsx,js}\"",
-        "fix-js": "eslint --fix \"**/*.{ts,tsx,js}\"",
-        "format": "prettier --write \"**/*.{ts,tsx,js}\"",
+        "lint-fix": "eslint --fix \"**/*.{ts,tsx,js}\"",
         "test": "dotenv -e .env -- cross-var jest",
         "test-watch": "dotenv -e .env -- cross-var jest --watch",
         "test-ci": "jest",
