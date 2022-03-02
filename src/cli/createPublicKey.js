@@ -9,7 +9,7 @@ const publicRoleName = 'public';
  * console.
  * */
 const createPublicKey = async () => {
-    if (adminKey == undefined) {
+    if (adminKey === undefined) {
         console.log(
             '\nFailed to create key; process.env.FAUNA_ADMIN_KEY is undefined.',
         );
