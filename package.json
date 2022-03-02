@@ -1,8 +1,8 @@
 {
     "name": "faunauth",
     "version": "0.0.0-development",
-    "main": "./dist/index.cjs.js",
-    "typings": "./dist/index.d.ts",
+    "main": "./dist/src/index.js",
+    "typings": "./dist/src/index.d.ts",
     "bin": {
         "faunauth": "./src/cli/index.js"
     },
@@ -25,7 +25,7 @@
         "test-ci": "jest",
         "posttest": "npx rimraf fauna/temp",
         "check-types": "tsc --noEmit",
-        "build": "tsc",
+        "build": "npx rimraf dist && tsc",
         "semantic-release": "semantic-release"
     },
     "devDependencies": {
