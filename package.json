@@ -31,7 +31,7 @@
     },
     "devDependencies": {
         "@commitlint/cli": "^16.2.1",
-        "@commitlint/config-conventional": "^16.2.1",
+        "@commitlint/config-angular": "^16.2.1",
         "@nrwl/eslint-plugin-nx": "13.7.2",
         "@nrwl/jest": "13.7.2",
         "@nrwl/react": "13.7.2",
@@ -40,7 +40,6 @@
         "@typescript-eslint/eslint-plugin": "^5.13.0",
         "@typescript-eslint/parser": "^5.13.0",
         "babel-jest": "27.2.3",
-        "concurrently": "^6.0.0",
         "cross-var": "^1.1.0",
         "dotenv-cli": "^4.0.0",
         "eslint": "^7.32.0",
@@ -53,6 +52,7 @@
         "prettier": "^2.5.1",
         "rimraf": "^3.0.2",
         "semantic-release": "^19.0.2",
+        "shelljs": "^0.8.4",
         "ts-jest": "27.0.5",
         "typedoc": "^0.22.12",
         "typedoc-plugin-markdown": "^3.11.14",
@@ -60,12 +60,8 @@
     },
     "dependencies": {
         "@fauna-labs/fauna-schema-migrate": "^2.2.1",
-        "@sendgrid/mail": "^7.4.2",
-        "ava": "^4.0.1",
         "commander": "^9.0.0",
         "faunadb": "^4.4.1",
-        "graphql": "^15.5.0",
-        "request": "^2.88.2",
-        "shelljs": "^0.8.4"
+        "graphql": "^15.5.0"
     }
 }
