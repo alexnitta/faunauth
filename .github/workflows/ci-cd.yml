@@ -42,8 +42,8 @@ jobs:
                   FAUNA_ADMIN_KEY: ${{ secrets.FAUNA_ADMIN_KEY }}
               run: yarn test-ci
 
-    generate_docs:
-        name: Generate Documentation
+    generate_docs_and_release:
+        name: Generate Documentation and Release
         needs: lint_and_unit_test
         runs-on: ubuntu-latest
         steps:
@@ -70,7 +70,7 @@ jobs:
                       ${{ runner.os }}-yarn-
             - name: Install Dependencies
               run: rm -rf node_modules && yarn install --frozen-lockfile
-            - name: Generate Markdown documentation from TypeScript using typedoc
+            - name: Use typedoc to generate Markdown documentation
               run: yarn generate-docs
             - name: Set up git config
               run: |
@@ -79,38 +79,9 @@ jobs:
             - name: Commit
               run: |
                   git add docs
-                  git commit -m "docs: auto-generate docs in CI"
+                  git commit -m "docs: auto-generate docs during CI/CD"
                   git push origin main
-
-    release:
-        name: Release
-        needs: generate_docs
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout
-              uses: actions/checkout@main
-              with:
-                  fetch-depth: 0
-            - name: Use Node.js
-              uses: actions/setup-node@v2
-              with:
-                  node-version: 16.x
-            - name: Install yarn
-              run: npm install -g yarn
-            - name: Get yarn cache directory path
-              id: yarn-cache-dir-path
-              run: echo "::set-output name=dir::$(yarn cache dir)"
-            - name: Restore yarn cache
-              id: yarn-cache
-              uses: actions/cache@v2
-              with:
-                  path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-                  restore-keys: |
-                      ${{ runner.os }}-yarn-
-            - name: Install Dependencies
-              run: rm -rf node_modules && yarn install --frozen-lockfile
-            - name: Do semantic release
+            - name: Use semantic-release to update version number, generate changelog, and publish to npm
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
