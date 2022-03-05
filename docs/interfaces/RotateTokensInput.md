@@ -19,4 +19,4 @@ docs refer to this as a 'secret'; from the client perspective it's a JWT.
 
 #### Defined in
 
-[src/auth/rotateTokens.ts:11](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/rotateTokens.ts#L11)
+[src/auth/rotateTokens.ts:11](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/rotateTokens.ts#L11)

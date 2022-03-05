@@ -3,7 +3,7 @@ import faunadb, { query as q } from 'faunadb';
 import { ErrorWithKey } from '~/utils';
 import type { ServerLoginResult, FaunaLoginResult, Maybe } from '~/types';
 
-interface BaseLoginInput {
+export interface BaseLoginInput {
     /**
      * A Fauna secret that is limited to permissions needed for public actions when creating users
      * and resetting passwords
@@ -15,14 +15,14 @@ interface BaseLoginInput {
     password: string;
 }
 
-interface LoginInputWithEmail extends BaseLoginInput {
+export interface LoginInputWithEmail extends BaseLoginInput {
     /**
      * Email address for the user who wants to sign in
      */
     email: string;
 }
 
-interface LoginInputWithUsername extends BaseLoginInput {
+export interface LoginInputWithUsername extends BaseLoginInput {
     /**
      * Username for the user who wants to sign in
      */

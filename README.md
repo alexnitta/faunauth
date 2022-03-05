@@ -1,6 +1,14 @@
 # `faunauth`
 
-> Fauna authentication tools for logging in via email (or username) and password
+> Add authentication to your [Fauna](https://fauna.com/) database
+
+## Caveats
+
+Before using this library, you should understand the different options available for authentication in Fauna. You can configure [external authentication](https://docs.fauna.com/fauna/current/security/external/) via an identity provider like [Auth0](https://auth0.com/), and this might be a good choice for your needs. On the other hand, if you wish to use the internal Fauna authentication features, then this library will allow you to add them to your database.
+
+## Documentation
+
+Complete documentation is available in [./docs/index.md](./docs/index.md).
 
 ## About schema migrations
 
@@ -11,10 +19,6 @@ Note that `fauna-schema-migrate` is experimental; its README lists this disclaim
 > This repository contains unofficial patterns, sample code, or tools to help developers build more effectively with Fauna. All Fauna Labs repositories are provided “as-is” and without support. By using this repository or its contents, you agree that this repository may never be officially supported and moved to the Fauna organization.
 
 This means `faunauth` is also experimental; use it at your own discretion.
-
-## Documentation
-
-Complete documentation is available in [./docs/modules.md](./docs/modules.md).
 
 ## Getting started
 
@@ -84,6 +88,8 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
     };
 
     ```
+
+4. Make sure to add a role for the `User` collection with privileges your users need to access your database resources. There's a utility function called `createOrUpdateUserRole` that will help with this; see the docs [here](./docs/index.md#createorupdateuserrole).
 
 ## Background
 

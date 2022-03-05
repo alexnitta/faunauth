@@ -12,13 +12,17 @@ faunauth
 
 - [AuthEmailConfig](interfaces/AuthEmailConfig.md)
 - [AuthEmailLocale](interfaces/AuthEmailLocale.md)
+- [BaseLoginInput](interfaces/BaseLoginInput.md)
 - [ChangePasswordInput](interfaces/ChangePasswordInput.md)
 - [ClientLoginResult](interfaces/ClientLoginResult.md)
 - [CollectionQueryResult](interfaces/CollectionQueryResult.md)
 - [CollectionQueryResultMap](interfaces/CollectionQueryResultMap.md)
+- [CreateOrUpdateUserRoleInput](interfaces/CreateOrUpdateUserRoleInput.md)
 - [FaunaGraphQLResponse](interfaces/FaunaGraphQLResponse.md)
 - [FaunaLoginResult](interfaces/FaunaLoginResult.md)
 - [FaunaRefreshResult](interfaces/FaunaRefreshResult.md)
+- [LoginInputWithEmail](interfaces/LoginInputWithEmail.md)
+- [LoginInputWithUsername](interfaces/LoginInputWithUsername.md)
 - [LogoutInput](interfaces/LogoutInput.md)
 - [RegisterInput](interfaces/RegisterInput.md)
 - [RegisterResult](interfaces/RegisterResult.md)
@@ -47,6 +51,7 @@ faunauth
 ### Functions
 
 - [changePassword](index.md#changepassword)
+- [createOrUpdateUserRole](index.md#createorupdateuserrole)
 - [getEmailContent](index.md#getemailcontent)
 - [login](index.md#login)
 - [logout](index.md#logout)
@@ -64,17 +69,17 @@ faunauth
 
 #### Defined in
 
-[src/types/errors.ts:1](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/errors.ts#L1)
+[src/types/errors.ts:1](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/errors.ts#L1)
 
 ___
 
 ### LoginInput
 
-Ƭ **LoginInput**: `LoginInputWithEmail` \| `LoginInputWithUsername`
+Ƭ **LoginInput**: [`LoginInputWithEmail`](interfaces/LoginInputWithEmail.md) \| [`LoginInputWithUsername`](interfaces/LoginInputWithUsername.md)
 
 #### Defined in
 
-[src/auth/login.ts:32](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/login.ts#L32)
+[src/auth/login.ts:32](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/login.ts#L32)
 
 ___
 
@@ -93,7 +98,7 @@ Maybe generic type. To keep things consistent, we're also going to do that here.
 
 #### Defined in
 
-[src/types/general.ts:5](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/general.ts#L5)
+[src/types/general.ts:5](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/general.ts#L5)
 
 ___
 
@@ -131,7 +136,7 @@ If using \@sendgrid/mail as `sgMail`, you will need to set an API key using
 
 #### Defined in
 
-[src/types/email.ts:102](https://github.com/alexnitta/faunauth/blob/aaffd52/src/types/email.ts#L102)
+[src/types/email.ts:102](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/email.ts#L102)
 
 ## Functions
 
@@ -155,7 +160,98 @@ Change the password for a user who knows their old password
 
 #### Defined in
 
-[src/auth/changePassword.ts:17](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/changePassword.ts#L17)
+[src/auth/changePassword.ts:17](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/changePassword.ts#L17)
+
+___
+
+### createOrUpdateUserRole
+
+▸ **createOrUpdateUserRole**(`__namedParameters`): `Promise`<`void`\>
+
+Create or update a Fauna role that is scoped appropriately for a user. You will need to call
+this function with a `privileges` array that is populated for your particular database structure.
+A good way to do this is by creating a script that calls `createOrUpdateUserRole` and passes in
+the privileges that your app requires. Then you can call your script when you need to set up the
+role, allowing you to save your permissions in a reproducible form.
+
+Here is an example of a script that calls `createOrUpdateUserRole`:
+
+```JavaScript
+// scripts/setUpUserRole.js
+
+const path = require('path');
+
+// Assuming your .env file is located in the parent folder, this will allow you to reference the
+// values declared in it.
+require('dotenv').config({
+path: path.resolve(__dirname, '../.env'),
+});
+
+const { exit } = require('process');
+const { Collection, Index } = require('faunadb');
+const { createOrUpdateUserRole } = require('faunauth');
+
+const faunaAdminKey = process.env.FAUNA_ADMIN_KEY;
+
+// Create a FaunaDB role that is scoped appropriately for a user.
+const main = async () => {
+if (!faunaAdminKey) {
+console.error('process.env.FAUNA_ADMIN_KEY is missing, closing');
+
+exit(1);
+}
+
+try {
+await createOrUpdateUserRole({
+faunaAdminKey,
+roleName: 'user',
+privileges: [
+{
+resource: Collection('Person'),
+actions: {
+create: true,
+read: true,
+delete: true,
+write: true,
+},
+},
+// ... more privileges go here
+],
+});
+} catch(err) {
+console.error('createOrUpdateUserRole threw error:\n', err);
+
+exit(1);
+}
+
+exit(0);
+};
+
+main();
+```
+
+You could then set up a package.json script that calls this function, ie:
+```JSON
+ {
+     scripts: {
+         set-up-user-role: "node scripts/setUpUserRole";
+     }
+ }
+```
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `__namedParameters` | [`CreateOrUpdateUserRoleInput`](interfaces/CreateOrUpdateUserRoleInput.md) |
+
+#### Returns
+
+`Promise`<`void`\>
+
+#### Defined in
+
+src/utils/createOrUpdateUserRole.ts:93
 
 ___
 
@@ -184,7 +280,7 @@ user registration or a password reset.
 
 #### Defined in
 
-[src/email/getEmailContent.ts:12](https://github.com/alexnitta/faunauth/blob/aaffd52/src/email/getEmailContent.ts#L12)
+[src/email/getEmailContent.ts:12](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/email/getEmailContent.ts#L12)
 
 ___
 
@@ -210,7 +306,7 @@ the user's `id` as well as any other data on the User document.
 
 #### Defined in
 
-[src/auth/login.ts:41](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/login.ts#L41)
+[src/auth/login.ts:41](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/login.ts#L41)
 
 ___
 
@@ -234,7 +330,7 @@ true if user was signed out
 
 #### Defined in
 
-[src/auth/logout.ts:22](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/logout.ts#L22)
+[src/auth/logout.ts:22](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/logout.ts#L22)
 
 ___
 
@@ -268,7 +364,7 @@ call the `login` function with the username rather than the email.
 
 #### Defined in
 
-[src/auth/register.ts:61](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/register.ts#L61)
+[src/auth/register.ts:61](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/register.ts#L61)
 
 ___
 
@@ -301,7 +397,7 @@ and allow the user to log in with their new password.
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:56](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/requestPasswordReset.ts#L56)
+[src/auth/requestPasswordReset.ts:56](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/requestPasswordReset.ts#L56)
 
 ___
 
@@ -333,7 +429,7 @@ If these conditions are met, the given password is used to reset the user's pass
 
 #### Defined in
 
-[src/auth/resetPassword.ts:38](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/resetPassword.ts#L38)
+[src/auth/resetPassword.ts:38](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/resetPassword.ts#L38)
 
 ___
 
@@ -357,7 +453,7 @@ the new access and refresh tokens if successful
 
 #### Defined in
 
-[src/auth/rotateTokens.ts:19](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/rotateTokens.ts#L19)
+[src/auth/rotateTokens.ts:19](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/rotateTokens.ts#L19)
 
 ___
 
@@ -381,4 +477,4 @@ a Promise that resolves to the [UpdateUserResult](interfaces/UpdateUserResult.md
 
 #### Defined in
 
-[src/auth/updateUser.ts:27](https://github.com/alexnitta/faunauth/blob/aaffd52/src/auth/updateUser.ts#L27)
+[src/auth/updateUser.ts:27](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/updateUser.ts#L27)
