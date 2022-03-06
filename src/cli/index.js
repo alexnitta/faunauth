@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 const { program } = require('commander');
 
-const { importAction } = require('./importAction');
+const { init } = require('./init');
 const { createPublicKey } = require('./createPublicKey');
 
 const createPublicKeyDescription = `Create a Fauna key that has the "public" role. This key should
@@ -14,16 +14,21 @@ const createPublicKeyDescription = `Create a Fauna key that has the "public" rol
     For more details, see the faunauth README.md file`;
 
 program
-    .command('import')
+    .command('init')
     .description(
         'Import files into your project to use with fauna-schema-migrate,\n' +
             'including the /fauna folder and a .fauna-migrate.js config file.',
     )
-    .action(importAction);
+    .action(init);
 
 program
     .command('create-public-key')
     .description(createPublicKeyDescription)
+    .option(
+        '-r, --region-group <regionGroup>',
+        'Fauna region group. Options include "classic", "us", "eu", and "preview".',
+        'classic',
+    )
     .action(createPublicKey);
 
 program.parse();

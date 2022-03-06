@@ -8,7 +8,7 @@ will work properly.\n`;
 /**
  * Copy files from /fauna and .fauna-migrate.js into the consuming application directory.
  */
-const importAction = () => {
+const init = () => {
     exec(
         'rsync -r -vv --ignore-existing node_modules/faunauth/fauna/ ./fauna/',
         (error, stdout, stderr) => {
@@ -50,4 +50,4 @@ const importAction = () => {
     );
 };
 
-module.exports = { importAction };
+module.exports = { init };
