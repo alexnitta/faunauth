@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 
-import { ErrorWithKey } from '~/utils';
-import type { FaunaRefreshResult, TokenPair, Maybe } from '~/types';
+import { ErrorWithKey } from '../utils';
+import type { FaunaRefreshResult, TokenPair, Maybe } from '../types';
 
 export interface RotateTokensInput {
     /**

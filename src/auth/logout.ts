@@ -1,6 +1,6 @@
 import faunadb, { query as q } from 'faunadb';
 
-import { ErrorWithKey } from '~/utils';
+import { ErrorWithKey } from '../utils';
 
 export interface LogoutInput {
     /**

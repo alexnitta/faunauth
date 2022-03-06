@@ -1,4 +1,4 @@
-import { ErrorKey } from '~/types';
+import { ErrorKey } from '../types';
 import { keyedErrors } from './constants';
 
 export class ErrorWithKey extends Error {

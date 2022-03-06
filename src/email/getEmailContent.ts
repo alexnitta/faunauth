@@ -2,7 +2,7 @@ import getEmailTemplate from './getEmailTemplate';
 import getCallToAction from './getCallToAction';
 import getPOpen from './getPOpen';
 import { getDefaultConfirmRegistrationLocale } from './defaultLocales';
-import { Maybe, AuthEmailConfig, AuthEmailLocale } from '~/types';
+import { Maybe, AuthEmailConfig, AuthEmailLocale } from '../types';
 
 /**
  * Returns the HTML template for an authentication email, which will be used to confirm either a

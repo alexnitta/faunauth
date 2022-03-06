@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 
-import { ErrorWithKey } from '~/utils';
-import { getEmailContent } from '~/email';
+import { ErrorWithKey } from '../utils';
+import { getEmailContent } from '../email';
 import type {
     CollectionQueryResult,
     AuthEmailConfig,
@@ -9,7 +9,7 @@ import type {
     SendEmail,
     Token,
     UserData,
-} from '~/types';
+} from '../types';
 
 export interface RequestPasswordResetInput<SendEmailResult> {
     /**

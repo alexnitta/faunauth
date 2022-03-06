@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 
-import type { ServerLoginResult, FaunaLoginResult } from '~/types/auth';
-import { ErrorWithKey } from '~/utils';
+import type { ServerLoginResult, FaunaLoginResult } from '../types/auth';
+import { ErrorWithKey } from '../utils';
 
 export interface ResetPasswordInput {
     /**

@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 
-import { ErrorWithKey } from '~/utils';
-import type { ServerLoginResult, FaunaLoginResult, Maybe } from '~/types';
+import { ErrorWithKey } from '../utils';
+import type { ServerLoginResult, FaunaLoginResult, Maybe } from '../types';
 
 export interface BaseLoginInput {
     /**
