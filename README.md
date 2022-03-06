@@ -6,19 +6,21 @@
 
 Before using this library, you should understand the different options available for authentication in Fauna. You can configure [external authentication](https://docs.fauna.com/fauna/current/security/external/) via an identity provider like [Auth0](https://auth0.com/), and this might be a good choice for your needs. On the other hand, if you wish to use the internal Fauna authentication features, then this library will allow you to add them to your database.
 
+This library is built on top of [fauna-schema-migrate](https://github.com/fauna-labs/fauna-schema-migrate). Note that `fauna-schema-migrate` is experimental; its README lists this disclaimer:
+
+> This repository contains unofficial patterns, sample code, or tools to help developers build more effectively with Fauna. All Fauna Labs repositories are provided “as-is” and without support. By using this repository or its contents, you agree that this repository may never be officially supported and moved to the Fauna organization.
+
+This means `faunauth` is also experimental; use it at your own discretion.
+
+You are likely using Fauna because you want to take advantage of its [GraphQL API](https://docs.fauna.com/fauna/current/api/graphql/). At this point, `fauna-schema-migrate` does not provide integration with resources defined in a GraphQL schema (this [might be added at some point](https://github.com/fauna-labs/fauna-schema-migrate#potential-extensions)). This means you cannot use `fauna-schema-migrate` to refer to indexes or collections created via GraphQL schemas. The one place this really matters is when provisioning a user role in order to grant access to your resources from your GraphQL schema. To help with this, you can create a script that calls the [createOrUpdateUserRole](./docs/index.md#createorupdateuserrole) utility function - more on this below.
+
 ## Documentation
 
 Complete documentation is available in [./docs/index.md](./docs/index.md).
 
 ## About schema migrations
 
-`faunauth` provides you with a set of FQL resources - collections, functions, indexes and roles - that will enable various authentication tasks. This is accomplished with the [fauna-schema-migrate](https://github.com/fauna-labs/fauna-schema-migrate) package, which will allow you to add these FQL resources to your existing Fauna database. This is what "schema migration" means in this context: your current database schema will be migrated to a new schema that contains the FQL resources provided by `faunauth`. This is not a data migration tool.
-
-Note that `fauna-schema-migrate` is experimental; its README lists this disclaimer:
-
-> This repository contains unofficial patterns, sample code, or tools to help developers build more effectively with Fauna. All Fauna Labs repositories are provided “as-is” and without support. By using this repository or its contents, you agree that this repository may never be officially supported and moved to the Fauna organization.
-
-This means `faunauth` is also experimental; use it at your own discretion.
+`faunauth` provides you with a set of FQL resources - collections, functions, indexes and roles - that will enable various authentication tasks. In this context, "schema migration" means that your current database schema will be migrated to a new schema that contains the FQL resources provided by `faunauth`. As noted in the `fauna-schema-migrate` readme, this is not a data migration tool.
 
 ## Getting started
 
@@ -37,7 +39,7 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
         3. If needed, you can use `rollback` to revert your migrations.
            These commands are documented more thoroughly in the [`fauna-schema-migrate` readme](https://github.com/fauna-labs/fauna-schema-migrate#available-commands).
 
-    Your database is now ready to use with the functions exposed by `faunauth`.
+    Your database now includes the resources exposed by `faunauth`.
 
 2. Create a public Fauna key for your client application
 
@@ -46,7 +48,15 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
 
     This public key has limited permissions that are appropriate for un-authenticated users, i.e. user registration, login, and resetting passwords. It is safe to store in the browser in your client-side code and your client will need to provide it to your server when calling the various `faunauth` functions in Step 3 below.
 
-3. Use `faunauth` functions in your server application
+3. Add a role so that users can access your resources
+   Fauna does not allow access to a resource unless it is specifically granted. You have two options for this:
+
+    - If you are not declaring your non-user resources with a GraphQL schema, you can add your own files to the `/fauna` folder in order to use `fauna-schema-migrate` with them. You must do the following:
+        - add FQL or JS files to `/fauna` for all of your database resources (collections, indexes, roles)
+        - add an FQL or JS file to `/fauna` to define a role that grants privileges to the `User` document for accessing your non-user resources
+    - If you are declaring your resources with a GraphQL schema, or don't want to manage your non-user resources with `fauna-schema-migrate` there's a utility function called `createOrUpdateUserRole` that will help with this; see the docs [here](./docs/index.md#createorupdateuserrole).
+
+4. Use `faunauth` functions in your server application
    After completing the schema migration, you can use the `faunauth` functions in your server. Complete documentation is available in [./docs/modules.md#functions](./docs/modules.md#functions).
 
     Here's an example of how you might use the `login` function from `faunauth` in an [Express](https://expressjs.com/) handler. Note that `faunauth` is framework-agnostic; it will work in any backend JavaScript framework.
@@ -89,7 +99,9 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
 
     ```
 
-4. Make sure to add a role for the `User` collection with privileges your users need to access your database resources. There's a utility function called `createOrUpdateUserRole` that will help with this; see the docs [here](./docs/index.md#createorupdateuserrole).
+## Error handling
+
+To help your consuming application make use of errors, we use a class called `ErrorWithKey` that extends from the usual JavaScript `Error`. This class has a `.key` property that functions as a unique key for the particular reason the error ocurred. This allows you to set up internationalization logic that uses the error's `.key` property to look up a user-facing message based on the current locale. Each of these errors also has the normal `.message` property that displays an error message in the English (United States) locale, which you can display if you so choose as a default option. The type definition for these keys is exposed in the types as `ErrorKey`.
 
 ## Background
 
@@ -104,7 +116,3 @@ The `fauna` and `tests` folders are based on examples from two Fauna blog posts:
 2. [Detecting leaked authentication tokens in FQL](https://fauna.com/blog/detecting-leaked-authentication-tokens-in-fql) - source code in [advanced refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-advanced)
 
 The `fauna` folder contains the building blocks for reusable FQL statements that can be added to an existing Fauna database. For example, the `login` function at [./fauna/src/login.js](./fauna/src/login.js) is added to a database by running the `CreateFunction` statement in [./fauna/resources/functions/login.js](./fauna/resources/functions/login.js). This creates a UDF or user-defined function that can later be called with a Fauna client, which is done within [./src/auth/login](./src/auth/login.ts).
-
-## Error handling
-
-To help your consuming application make use of errors, we use a class called `ErrorWithKey` that extends from the usual JavaScript `Error`. This class has a `.key` property that functions as a unique key for the particular reason the error ocurred. This allows you to set up internationalization logic that uses the error's `.key` property to look up a user-facing message based on the current locale. Each of these errors also has the normal `.message` property that displays an error message in the English (United States) locale, which you can display if you so choose as a default option. The type definition for these keys is exposed in the types as `ErrorKey`.
