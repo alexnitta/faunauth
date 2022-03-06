@@ -16,7 +16,7 @@ You are likely using Fauna because you want to take advantage of its [GraphQL AP
 
 ## Documentation
 
-Complete documentation is available in [./docs/index.md](./docs/index.md).
+Auto-generated documentation is available in [./docs/index.md](./docs/index.md).
 
 ## About schema migrations
 
@@ -30,21 +30,21 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
 
     1. `npm i faunauth` to install this package
     2. `npm i -D @fauna-labs/fauna-schema-migrate` to install `fauna-schema-migrate` as a dev dependency
-    3. `npx faunauth import` to copy over files that will be used by `fauna-schema-migrate` to complete the schema migration process. These files should be committed to version control. Note that if you are already using `fauna-schema-migrate` and you have a `/fauna` folder in your application, the `npx fauna import` command will not overwrite any existing files.
+    3. `npx faunauth init` to copy over files that will be used by `fauna-schema-migrate` to complete the schema migration process. These files should be committed to version control. Note that if you are already using `fauna-schema-migrate` and you have a `/fauna` folder in your application, the `npx faunauth init` command will not overwrite any existing files - you will need to rename your existing files and run `npx faunauth init` again.
     4. Using the [Fauna dashboard](https://dashboard.fauna.com/accounts/login), select your database (or create it if it doesn't yet exist). Once you have selected the database, click Security at the left and use the Keys feature to add a new key with the built-in "Admin" role. Save this key somewhere secure (i.e. in a password manager); you won't see it again.
-    5. In a terminal window, run `export FAUNA_ADMIN_KEY=<your_fauna_admin_key>`, using the admin key you just created. This sets the environment variable that `fauna-schema-migrate` will use to authenticate you and identify which database to apply your migrations to.
-    6. `npx fauna-schema-migrate run` to run `fauna-schema-migrate` interactively. The flow goes like this:
-        1. Use `generate` to analyze the contents of the `/fauna` folder and determine what needs to be added to your database. The results of this analysis are saved in a new folder in `/fauna/migrations`. Review the migration that was created to make sure it looks correct.
-        2. Use `apply` to apply the migration to your database.
-        3. If needed, you can use `rollback` to revert your migrations.
-           These commands are documented more thoroughly in the [`fauna-schema-migrate` readme](https://github.com/fauna-labs/fauna-schema-migrate#available-commands).
+    5. In a terminal window, run `export FAUNA_ADMIN_KEY=<your_fauna_admin_key>`, using the admin key you just created. This sets the environment variable that `fauna-schema-migrate` will use to authenticate you and identify which database to apply your migrations to. If you are using something other than the "Classic" region group, you will need to also run `export FAUNADB_DOMAIN=<domain>` using the domain for your region group. As an example, the command for the US region group is: `export FAUNADB_DOMAIN="db.us.fauna.com"`. Other `domain` values are listed [here](https://docs.fauna.com/fauna/current/learn/understanding/region_groups).
+    6. Run `npx fauna-schema-migrate generate` to analyze the contents of the `/fauna` folder and determine what needs to be added to your database. The results of this analysis are saved in a new folder in `/fauna/migrations`. Review the migration that was created to make sure it looks correct.
+    7. Use `npx fauna-schema-migrate apply` to apply the migration to your database.
+    8. If needed, you can use `npx fauna-schema-migrate rollback` to revert your migrations.
+
+    The `fauna-schema-migrate` commands are documented more thoroughly in the [`fauna-schema-migrate` readme](https://github.com/fauna-labs/fauna-schema-migrate#available-commands).
 
     Your database now includes the resources exposed by `faunauth`.
 
 2. Create a public Fauna key for your client application
 
     1. If your terminal does not yet have the FAUNA_ADMIN_KEY environment variable set, run: `export FAUNA_ADMIN_KEY=<your_fauna_admin_key>` with the admin key you created in step 1 above.
-    2. `npx faunauth create-public-key` to create a key for the role named "public" and print it to the console. This role is created during schema migration, so you will see an error if you have not completed Step 1.
+    2. `npx faunauth create-public-key` to create a key for the role named "public" and print it to the console. This role is created during schema migration, so you will see an error if you have not completed Step 1. If you are using a region group other than "Classic", you need to provide it after the `-r` flag, like this: `npx faunauth create-public-key -r us`. Run `npx faunauth create-public-key --help` to see other options.
 
     This public key has limited permissions that are appropriate for un-authenticated users, i.e. user registration, login, and resetting passwords. It is safe to store in the browser in your client-side code and your client will need to provide it to your server when calling the various `faunauth` functions in Step 3 below.
 
@@ -63,8 +63,8 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
 
     ```TypeScript
     // This handler would be used in an Express route to handle login requests. You would
-    // typically use bodyparser to make sure responses are handled as JSON. Other frameworks will have
-    // slight differences in their implementations.
+    // typically use bodyparser to make sure responses are handled as JSON.
+    // Other frameworks will have slight differences in their implementations.
     import { login } from 'faunauth';
 
     /**
