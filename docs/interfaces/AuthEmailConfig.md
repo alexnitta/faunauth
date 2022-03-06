@@ -26,7 +26,7 @@ User-facing application name
 
 #### Defined in
 
-[src/types/email.ts:32](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/email.ts#L32)
+[src/types/email.ts:32](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/email.ts#L32)
 
 ___
 
@@ -38,7 +38,7 @@ HTML color value for the call to action button
 
 #### Defined in
 
-[src/types/email.ts:44](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/email.ts#L44)
+[src/types/email.ts:44](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/email.ts#L44)
 
 ___
 
@@ -50,7 +50,7 @@ HTML color to apply on buttons on hover
 
 #### Defined in
 
-[src/types/email.ts:36](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/email.ts#L36)
+[src/types/email.ts:36](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/email.ts#L36)
 
 ___
 
@@ -62,7 +62,7 @@ Target URL for the call to action button
 
 #### Defined in
 
-[src/types/email.ts:40](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/email.ts#L40)
+[src/types/email.ts:40](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/email.ts#L40)
 
 ___
 
@@ -76,7 +76,7 @@ Font family for the email
 
 #### Defined in
 
-[src/types/email.ts:49](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/email.ts#L49)
+[src/types/email.ts:49](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/email.ts#L49)
 
 ___
 
@@ -90,7 +90,7 @@ Font size for the email
 
 #### Defined in
 
-[src/types/email.ts:54](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/email.ts#L54)
+[src/types/email.ts:54](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/email.ts#L54)
 
 ___
 
@@ -104,7 +104,7 @@ Font weight for the email
 
 #### Defined in
 
-[src/types/email.ts:59](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/email.ts#L59)
+[src/types/email.ts:59](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/email.ts#L59)
 
 ___
 
@@ -117,7 +117,7 @@ if you are using a font from Google Fonts as your `fontFamily`.
 
 #### Defined in
 
-[src/types/email.ts:64](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/email.ts#L64)
+[src/types/email.ts:64](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/email.ts#L64)
 
 ___
 
@@ -129,4 +129,4 @@ If provided, this object will be used to populate the text in the email.
 
 #### Defined in
 
-[src/types/email.ts:68](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/email.ts#L68)
+[src/types/email.ts:68](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/email.ts#L68)

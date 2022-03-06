@@ -4,14 +4,27 @@ import { ErrorWithKey } from '~/utils';
 import type { FaunaLoginResult, ServerLoginResult } from '~/types/auth';
 
 export interface ChangePasswordInput {
+    /**
+     * The user's email address
+     */
     email: string;
+    /**
+     * The desired password
+     */
     newPassword: string;
+    /**
+     * The current password
+     */
     oldPassword: string;
+    /**
+     * A Fauna secret that is limited to permissions needed for public actions when creating users
+     * and resetting passwords
+     */
     publicFaunaKey: string | null;
 }
 
 /**
- * Change the password for a user who knows their old password
+ * Change the password for a user who knows their old password.
  * @returns - {@link ServerLoginResult}
  */
 export async function changePassword(

@@ -10,7 +10,7 @@ export interface BaseLoginInput {
      */
     publicFaunaKey: string | null;
     /**
-     * New password to use
+     * The user's password
      */
     password: string;
 }

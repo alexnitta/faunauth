@@ -17,9 +17,11 @@
 
 • **email**: `string`
 
+The user's email address
+
 #### Defined in
 
-[src/auth/changePassword.ts:7](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/changePassword.ts#L7)
+[src/auth/changePassword.ts:10](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/changePassword.ts#L10)
 
 ___
 
@@ -27,9 +29,11 @@ ___
 
 • **newPassword**: `string`
 
+The desired password
+
 #### Defined in
 
-[src/auth/changePassword.ts:8](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/changePassword.ts#L8)
+[src/auth/changePassword.ts:14](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/changePassword.ts#L14)
 
 ___
 
@@ -37,9 +41,11 @@ ___
 
 • **oldPassword**: `string`
 
+The current password
+
 #### Defined in
 
-[src/auth/changePassword.ts:9](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/changePassword.ts#L9)
+[src/auth/changePassword.ts:18](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/changePassword.ts#L18)
 
 ___
 
@@ -47,6 +53,9 @@ ___
 
 • **publicFaunaKey**: `string`
 
+A Fauna secret that is limited to permissions needed for public actions when creating users
+and resetting passwords
+
 #### Defined in
 
-[src/auth/changePassword.ts:10](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/changePassword.ts#L10)
+[src/auth/changePassword.ts:23](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/changePassword.ts#L23)

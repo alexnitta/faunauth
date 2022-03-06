@@ -26,7 +26,7 @@
 
 #### Defined in
 
-[src/types/email.ts:2](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/email.ts#L2)
+[src/types/email.ts:2](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/email.ts#L2)
 
 ___
 
@@ -38,7 +38,7 @@ Text shown as preview in email clients, i.e. "Confirm your email to set up [App 
 
 #### Defined in
 
-[src/types/email.ts:21](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/email.ts#L21)
+[src/types/email.ts:21](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/email.ts#L21)
 
 ___
 
@@ -50,4 +50,4 @@ Email subject, i.e.: "Confirm your [App Name] account"
 
 #### Defined in
 
-[src/types/email.ts:25](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/types/email.ts#L25)
+[src/types/email.ts:25](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/email.ts#L25)

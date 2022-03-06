@@ -20,7 +20,7 @@ A Fauna key that has the built-in role of "Admin"
 
 #### Defined in
 
-src/utils/createOrUpdateUserRole.ts:10
+[src/utils/createOrUpdateUserRole.ts:10](https://github.com/alexnitta/faunauth/blob/f5a1862/src/utils/createOrUpdateUserRole.ts#L10)
 
 ___
 
@@ -32,7 +32,7 @@ Array of privileges to grant to every user.
 
 #### Defined in
 
-src/utils/createOrUpdateUserRole.ts:14
+[src/utils/createOrUpdateUserRole.ts:14](https://github.com/alexnitta/faunauth/blob/f5a1862/src/utils/createOrUpdateUserRole.ts#L14)
 
 ___
 
@@ -44,4 +44,4 @@ A name for this role; defaults to "user".
 
 #### Defined in
 
-src/utils/createOrUpdateUserRole.ts:18
+[src/utils/createOrUpdateUserRole.ts:18](https://github.com/alexnitta/faunauth/blob/f5a1862/src/utils/createOrUpdateUserRole.ts#L18)

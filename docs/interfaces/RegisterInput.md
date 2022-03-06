@@ -29,7 +29,7 @@ A configuration object for the email template - see [AuthEmailConfig](AuthEmailC
 
 #### Defined in
 
-[src/auth/register.ts:22](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/register.ts#L22)
+[src/auth/register.ts:22](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/register.ts#L22)
 
 ___
 
@@ -41,7 +41,7 @@ Email address to use as the sender
 
 #### Defined in
 
-[src/auth/register.ts:18](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/register.ts#L18)
+[src/auth/register.ts:18](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/register.ts#L18)
 
 ___
 
@@ -53,7 +53,7 @@ Password for the new user
 
 #### Defined in
 
-[src/auth/register.ts:31](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/register.ts#L31)
+[src/auth/register.ts:31](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/register.ts#L31)
 
 ___
 
@@ -66,7 +66,7 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/register.ts:27](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/register.ts#L27)
+[src/auth/register.ts:27](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/register.ts#L27)
 
 ___
 
@@ -78,7 +78,7 @@ See [SendEmail](../index.md#sendemail)
 
 #### Defined in
 
-[src/auth/register.ts:35](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/register.ts#L35)
+[src/auth/register.ts:35](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/register.ts#L35)
 
 ___
 
@@ -90,4 +90,4 @@ Details for the new user - see [UserData](UserData.md)
 
 #### Defined in
 
-[src/auth/register.ts:39](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/register.ts#L39)
+[src/auth/register.ts:39](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/register.ts#L39)

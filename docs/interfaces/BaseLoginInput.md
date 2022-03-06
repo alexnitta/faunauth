@@ -23,11 +23,11 @@
 
 • **password**: `string`
 
-New password to use
+The user's password
 
 #### Defined in
 
-[src/auth/login.ts:15](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/login.ts#L15)
+[src/auth/login.ts:15](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/login.ts#L15)
 
 ___
 
@@ -40,4 +40,4 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/login.ts:11](https://github.com/alexnitta/faunauth/blob/40cc7e0/src/auth/login.ts#L11)
+[src/auth/login.ts:11](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/login.ts#L11)

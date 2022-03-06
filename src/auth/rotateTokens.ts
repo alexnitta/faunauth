@@ -5,8 +5,8 @@ import type { FaunaRefreshResult, TokenPair, Maybe } from '~/types';
 
 export interface RotateTokensInput {
     /**
-     * A token that can be used to authenticate further requests against the FaunaDB API. Fauna's
-     * docs refer to this as a 'secret'; from the client perspective it's a JWT.
+     * A token that can be used to authenticate further Fauna requests. Fauna's docs refer to this
+     * as a 'secret'; from the client perspective it's a JWT.
      */
     refreshToken: string;
 }
