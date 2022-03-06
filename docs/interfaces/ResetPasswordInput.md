@@ -21,7 +21,7 @@ Email address for the user who wants to reset their password
 
 #### Defined in
 
-[src/auth/resetPassword.ts:10](https://github.com/alexnitta/faunauth/blob/62fa1d8/src/auth/resetPassword.ts#L10)
+[src/auth/resetPassword.ts:10](https://github.com/alexnitta/faunauth/blob/70b5ca8/src/auth/resetPassword.ts#L10)
 
 ___
 
@@ -33,7 +33,7 @@ New password to use
 
 #### Defined in
 
-[src/auth/resetPassword.ts:19](https://github.com/alexnitta/faunauth/blob/62fa1d8/src/auth/resetPassword.ts#L19)
+[src/auth/resetPassword.ts:19](https://github.com/alexnitta/faunauth/blob/70b5ca8/src/auth/resetPassword.ts#L19)
 
 ___
 
@@ -46,7 +46,7 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/resetPassword.ts:15](https://github.com/alexnitta/faunauth/blob/62fa1d8/src/auth/resetPassword.ts#L15)
+[src/auth/resetPassword.ts:15](https://github.com/alexnitta/faunauth/blob/70b5ca8/src/auth/resetPassword.ts#L15)
 
 ___
 
@@ -58,4 +58,4 @@ Token that was previously created in the database
 
 #### Defined in
 
-[src/auth/resetPassword.ts:23](https://github.com/alexnitta/faunauth/blob/62fa1d8/src/auth/resetPassword.ts#L23)
+[src/auth/resetPassword.ts:23](https://github.com/alexnitta/faunauth/blob/70b5ca8/src/auth/resetPassword.ts#L23)

@@ -22,7 +22,7 @@ Sender email address
 
 #### Defined in
 
-[src/types/email.ts:79](https://github.com/alexnitta/faunauth/blob/62fa1d8/src/types/email.ts#L79)
+[src/types/email.ts:79](https://github.com/alexnitta/faunauth/blob/70b5ca8/src/types/email.ts#L79)
 
 ___
 
@@ -34,7 +34,7 @@ HTML content for email
 
 #### Defined in
 
-[src/types/email.ts:87](https://github.com/alexnitta/faunauth/blob/62fa1d8/src/types/email.ts#L87)
+[src/types/email.ts:87](https://github.com/alexnitta/faunauth/blob/70b5ca8/src/types/email.ts#L87)
 
 ___
 
@@ -46,7 +46,7 @@ Email subject line
 
 #### Defined in
 
-[src/types/email.ts:83](https://github.com/alexnitta/faunauth/blob/62fa1d8/src/types/email.ts#L83)
+[src/types/email.ts:83](https://github.com/alexnitta/faunauth/blob/70b5ca8/src/types/email.ts#L83)
 
 ___
 
@@ -58,7 +58,7 @@ Plain text content for email
 
 #### Defined in
 
-[src/types/email.ts:91](https://github.com/alexnitta/faunauth/blob/62fa1d8/src/types/email.ts#L91)
+[src/types/email.ts:91](https://github.com/alexnitta/faunauth/blob/70b5ca8/src/types/email.ts#L91)
 
 ___
 
@@ -70,4 +70,4 @@ Recipient email address
 
 #### Defined in
 
-[src/types/email.ts:75](https://github.com/alexnitta/faunauth/blob/62fa1d8/src/types/email.ts#L75)
+[src/types/email.ts:75](https://github.com/alexnitta/faunauth/blob/70b5ca8/src/types/email.ts#L75)
