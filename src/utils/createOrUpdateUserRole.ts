@@ -30,13 +30,8 @@ export interface CreateOrUpdateUserRoleInput {
  * ```JavaScript
     // scripts/setUpUserRole.js
 
-    const path = require('path');
-
-    // Assuming your .env file is located in the parent folder, this will allow you to reference the
-    // values declared in it.
-    require('dotenv').config({
-        path: path.resolve(__dirname, '../.env'),
-    });
+    // Read more on how dotenv works here: https://github.com/motdotla/dotenv
+    require('dotenv').config();
 
     const { exit } = require('process');
     const { Collection, Index } = require('faunadb');
@@ -97,13 +92,12 @@ export const createOrUpdateUserRole = async ({
 }: CreateOrUpdateUserRoleInput) => {
     const client = new faunadb.Client({ secret: faunaAdminKey });
 
-    const role = await client.query(q.Get(q.Role(roleName)));
+    const roleExists = await client.query(q.Exists(q.Role(roleName)));
 
-    if (role) {
-        console.log(`Updating role "${roleName}"`);
+    if (roleExists) {
         try {
             await client.query(
-                q.Update(role, {
+                q.Update(q.Role(roleName), {
                     name: roleName,
                     membership: [
                         {

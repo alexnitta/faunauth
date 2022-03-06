@@ -25,6 +25,7 @@
         "test-ci": "jest",
         "posttest": "npx rimraf fauna/temp",
         "check-types": "tsc --noEmit",
+        "dev": "tsc --watch",
         "prepack": "npx rimraf dist && tsc",
         "semantic-release": "semantic-release",
         "generate-docs": "typedoc --plugin typedoc-plugin-markdown --out docs --readme none --entryDocument index.md src/index.ts"
