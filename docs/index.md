@@ -69,7 +69,7 @@ faunauth
 
 #### Defined in
 
-[src/types/errors.ts:1](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/errors.ts#L1)
+[src/types/errors.ts:1](https://github.com/alexnitta/faunauth/blob/b9d71a1/src/types/errors.ts#L1)
 
 ___
 
@@ -79,7 +79,7 @@ ___
 
 #### Defined in
 
-[src/auth/login.ts:32](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/login.ts#L32)
+[src/auth/login.ts:32](https://github.com/alexnitta/faunauth/blob/b9d71a1/src/auth/login.ts#L32)
 
 ___
 
@@ -98,7 +98,7 @@ Maybe generic type. To keep things consistent, we're also going to do that here.
 
 #### Defined in
 
-[src/types/general.ts:5](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/general.ts#L5)
+[src/types/general.ts:5](https://github.com/alexnitta/faunauth/blob/b9d71a1/src/types/general.ts#L5)
 
 ___
 
@@ -136,7 +136,7 @@ If using \@sendgrid/mail as `sgMail`, you will need to set an API key using
 
 #### Defined in
 
-[src/types/email.ts:102](https://github.com/alexnitta/faunauth/blob/f5a1862/src/types/email.ts#L102)
+[src/types/email.ts:102](https://github.com/alexnitta/faunauth/blob/b9d71a1/src/types/email.ts#L102)
 
 ## Functions
 
@@ -160,7 +160,7 @@ Change the password for a user who knows their old password.
 
 #### Defined in
 
-[src/auth/changePassword.ts:30](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/changePassword.ts#L30)
+[src/auth/changePassword.ts:30](https://github.com/alexnitta/faunauth/blob/b9d71a1/src/auth/changePassword.ts#L30)
 
 ___
 
@@ -251,7 +251,7 @@ You could then set up a package.json script that calls this function, ie:
 
 #### Defined in
 
-[src/utils/createOrUpdateUserRole.ts:93](https://github.com/alexnitta/faunauth/blob/f5a1862/src/utils/createOrUpdateUserRole.ts#L93)
+[src/utils/createOrUpdateUserRole.ts:93](https://github.com/alexnitta/faunauth/blob/b9d71a1/src/utils/createOrUpdateUserRole.ts#L93)
 
 ___
 
@@ -280,7 +280,7 @@ user registration or a password reset.
 
 #### Defined in
 
-[src/email/getEmailContent.ts:12](https://github.com/alexnitta/faunauth/blob/f5a1862/src/email/getEmailContent.ts#L12)
+[src/email/getEmailContent.ts:12](https://github.com/alexnitta/faunauth/blob/b9d71a1/src/email/getEmailContent.ts#L12)
 
 ___
 
@@ -306,7 +306,7 @@ the user's `id` as well as any other data on the User document.
 
 #### Defined in
 
-[src/auth/login.ts:41](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/login.ts#L41)
+[src/auth/login.ts:41](https://github.com/alexnitta/faunauth/blob/b9d71a1/src/auth/login.ts#L41)
 
 ___
 
@@ -330,7 +330,7 @@ true if user was signed out
 
 #### Defined in
 
-[src/auth/logout.ts:22](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/logout.ts#L22)
+[src/auth/logout.ts:22](https://github.com/alexnitta/faunauth/blob/b9d71a1/src/auth/logout.ts#L22)
 
 ___
 
@@ -364,7 +364,7 @@ call the `login` function with the username rather than the email.
 
 #### Defined in
 
-[src/auth/register.ts:61](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/register.ts#L61)
+[src/auth/register.ts:61](https://github.com/alexnitta/faunauth/blob/b9d71a1/src/auth/register.ts#L61)
 
 ___
 
@@ -397,7 +397,7 @@ and allow the user to log in with their new password.
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:56](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/requestPasswordReset.ts#L56)
+[src/auth/requestPasswordReset.ts:56](https://github.com/alexnitta/faunauth/blob/b9d71a1/src/auth/requestPasswordReset.ts#L56)
 
 ___
 
@@ -429,7 +429,7 @@ If these conditions are met, the given password is used to reset the user's pass
 
 #### Defined in
 
-[src/auth/resetPassword.ts:38](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/resetPassword.ts#L38)
+[src/auth/resetPassword.ts:38](https://github.com/alexnitta/faunauth/blob/b9d71a1/src/auth/resetPassword.ts#L38)
 
 ___
 
@@ -453,7 +453,7 @@ the new access and refresh tokens if successful
 
 #### Defined in
 
-[src/auth/rotateTokens.ts:19](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/rotateTokens.ts#L19)
+[src/auth/rotateTokens.ts:19](https://github.com/alexnitta/faunauth/blob/b9d71a1/src/auth/rotateTokens.ts#L19)
 
 ___
 
@@ -477,4 +477,4 @@ a Promise that resolves to the [UpdateUserResult](interfaces/UpdateUserResult.md
 
 #### Defined in
 
-[src/auth/updateUser.ts:27](https://github.com/alexnitta/faunauth/blob/f5a1862/src/auth/updateUser.ts#L27)
+[src/auth/updateUser.ts:27](https://github.com/alexnitta/faunauth/blob/b9d71a1/src/auth/updateUser.ts#L27)
