@@ -1,4 +1,4 @@
-import { AuthEmailLocale } from '~/types';
+import { AuthEmailLocale } from '../types';
 
 /**
  * @param appName - name of the user-facing application

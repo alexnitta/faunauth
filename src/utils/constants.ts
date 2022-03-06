@@ -1,4 +1,4 @@
-import { ErrorKey } from '~/types';
+import { ErrorKey } from '../types';
 
 export const keyedErrors: Record<ErrorKey, string> = {
     accessTokenMissing: 'Access token is missing',
