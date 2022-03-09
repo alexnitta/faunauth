@@ -20,7 +20,7 @@ different browsers). If false, will just expire tokens for the current browser.
 
 #### Defined in
 
-[src/auth/logout.ts:10](https://github.com/alexnitta/faunauth/blob/6a0971c/src/auth/logout.ts#L10)
+[src/auth/logout.ts:10](https://github.com/alexnitta/faunauth/blob/380e952/src/auth/logout.ts#L10)
 
 ___
 
@@ -32,4 +32,4 @@ The user's refresh token secret
 
 #### Defined in
 
-[src/auth/logout.ts:14](https://github.com/alexnitta/faunauth/blob/6a0971c/src/auth/logout.ts#L14)
+[src/auth/logout.ts:14](https://github.com/alexnitta/faunauth/blob/380e952/src/auth/logout.ts#L14)

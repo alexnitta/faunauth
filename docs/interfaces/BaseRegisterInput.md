@@ -24,7 +24,7 @@ email and token from it, and pass them to the `resetPassword` function.
 
 #### Defined in
 
-[src/auth/register.ts:21](https://github.com/alexnitta/faunauth/blob/6a0971c/src/auth/register.ts#L21)
+[src/auth/register.ts:21](https://github.com/alexnitta/faunauth/blob/380e952/src/auth/register.ts#L21)
 
 ___
 
@@ -36,7 +36,7 @@ Password for the new user
 
 #### Defined in
 
-[src/auth/register.ts:30](https://github.com/alexnitta/faunauth/blob/6a0971c/src/auth/register.ts#L30)
+[src/auth/register.ts:30](https://github.com/alexnitta/faunauth/blob/380e952/src/auth/register.ts#L30)
 
 ___
 
@@ -49,7 +49,7 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/register.ts:26](https://github.com/alexnitta/faunauth/blob/6a0971c/src/auth/register.ts#L26)
+[src/auth/register.ts:26](https://github.com/alexnitta/faunauth/blob/380e952/src/auth/register.ts#L26)
 
 ___
 
@@ -61,4 +61,4 @@ Details for the new user - see [UserData](UserData.md)
 
 #### Defined in
 
-[src/auth/register.ts:34](https://github.com/alexnitta/faunauth/blob/6a0971c/src/auth/register.ts#L34)
+[src/auth/register.ts:34](https://github.com/alexnitta/faunauth/blob/380e952/src/auth/register.ts#L34)
