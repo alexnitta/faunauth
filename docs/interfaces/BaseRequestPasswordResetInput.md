@@ -19,11 +19,11 @@
 Target URL for the call to action button. A URL parameter called `data` will be appended to
 the callback URL which will include a Base64-encoded string containing the email and token.
 Your app needs to expose a page at this route that will read the `data` param, decode the
-email and token from it, and pass them to the `resetPassword` function.
+email and token from it, and pass them to the `setPassword` function.
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:21](https://github.com/alexnitta/faunauth/blob/380e952/src/auth/requestPasswordReset.ts#L21)
+[src/auth/requestPasswordReset.ts:21](https://github.com/alexnitta/faunauth/blob/2cd7813/src/auth/requestPasswordReset.ts#L21)
 
 ___
 
@@ -35,7 +35,7 @@ Email address for the user who wants to reset their password
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:25](https://github.com/alexnitta/faunauth/blob/380e952/src/auth/requestPasswordReset.ts#L25)
+[src/auth/requestPasswordReset.ts:25](https://github.com/alexnitta/faunauth/blob/2cd7813/src/auth/requestPasswordReset.ts#L25)
 
 ___
 
@@ -48,4 +48,4 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:30](https://github.com/alexnitta/faunauth/blob/380e952/src/auth/requestPasswordReset.ts#L30)
+[src/auth/requestPasswordReset.ts:30](https://github.com/alexnitta/faunauth/blob/2cd7813/src/auth/requestPasswordReset.ts#L30)

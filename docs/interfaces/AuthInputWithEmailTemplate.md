@@ -26,7 +26,7 @@ A configuration object for the email template - see [EmailTemplateConfig](EmailT
 
 #### Defined in
 
-[src/types/email.ts:133](https://github.com/alexnitta/faunauth/blob/380e952/src/types/email.ts#L133)
+[src/types/email.ts:133](https://github.com/alexnitta/faunauth/blob/2cd7813/src/types/email.ts#L133)
 
 ___
 
@@ -38,7 +38,7 @@ Email address to use as the sender
 
 #### Defined in
 
-[src/types/email.ts:129](https://github.com/alexnitta/faunauth/blob/380e952/src/types/email.ts#L129)
+[src/types/email.ts:129](https://github.com/alexnitta/faunauth/blob/2cd7813/src/types/email.ts#L129)
 
 ___
 
@@ -50,4 +50,4 @@ See [SendEmailFromTemplate](../index.md#sendemailfromtemplate)
 
 #### Defined in
 
-[src/types/email.ts:137](https://github.com/alexnitta/faunauth/blob/380e952/src/types/email.ts#L137)
+[src/types/email.ts:137](https://github.com/alexnitta/faunauth/blob/2cd7813/src/types/email.ts#L137)

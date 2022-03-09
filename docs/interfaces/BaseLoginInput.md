@@ -27,7 +27,7 @@ The user's password
 
 #### Defined in
 
-[src/auth/login.ts:15](https://github.com/alexnitta/faunauth/blob/380e952/src/auth/login.ts#L15)
+[src/auth/login.ts:15](https://github.com/alexnitta/faunauth/blob/2cd7813/src/auth/login.ts#L15)
 
 ___
 
@@ -40,4 +40,4 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/login.ts:11](https://github.com/alexnitta/faunauth/blob/380e952/src/auth/login.ts#L11)
+[src/auth/login.ts:11](https://github.com/alexnitta/faunauth/blob/2cd7813/src/auth/login.ts#L11)

@@ -3,9 +3,9 @@ import faunadb, { query as q } from 'faunadb';
 import type { ServerLoginResult, FaunaLoginResult } from '../types/auth';
 import { ErrorWithKey } from '../utils';
 
-export interface SetPasswordInput {
+export interface LoginWithMagicLinkInput {
     /**
-     * Email address for the user who wants to reset their password
+     * Email address for the user who wants to log in
      */
     email: string;
     /**
@@ -14,31 +14,24 @@ export interface SetPasswordInput {
      */
     publicFaunaKey: string | null;
     /**
-     * New password to use
-     */
-    password: string;
-    /**
      * Token that was previously created in the database
      */
     token: string;
 }
 
 /**
- * Set a user's password in order to finish either the "register" or "forgot password" flow. By now,
- * the user has already triggered either `register` or `requestPasswordReset` to request a token.
- * The token has been created in the database, and an email has been sent to the user with a link
- * which includes an encoded copy of the token. The user has clicked the link, opening a page in the
- * frontend app that calls an API endpoint which calls this function. This function checks
- * the token to see an exact match for the token exists in the database which:
+ * Log in a user via a link sent in an email. The link contains an encoded token which must be
+ * passed to this function as the `token` argument. This function checks  the token to see an exact
+ * match for the token exists in the database which:
  * - has not expired
  * - belongs to the user associated with the given email
- * If these conditions are met, the given password is set as the user's current password.
+ * If these conditions are met, the user is logged in.
  * @returns - {@link ServerLoginResult}
  */
-export async function setPassword(
-    input: SetPasswordInput,
+export async function loginWithMagicLink(
+    input: LoginWithMagicLinkInput,
 ): Promise<ServerLoginResult> {
-    const { publicFaunaKey, password, token } = input;
+    const { publicFaunaKey, token } = input;
 
     const email = input.email.toLowerCase();
 
@@ -54,7 +47,7 @@ export async function setPassword(
 
     try {
         setPasswordResult = await client.query(
-            q.Call('setPassword', email, password, token),
+            q.Call('loginWithMagicLink', email, token),
         );
     } catch (error) {
         throw new ErrorWithKey('failedToSetPassword', error as Error);

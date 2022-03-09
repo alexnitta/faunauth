@@ -1,6 +1,12 @@
 # `faunauth`
 
-This library helps you add email-based authentication to your [Fauna](https://fauna.com/) database - in other words, the user's email address will be used to confirm their identity. If you want your users to be able to log in with a username, they must register with both an email account and username.
+This library helps you add email-based authentication to your [Fauna](https://fauna.com/) database - in other words, the user's email address will be used to confirm their identity. This means you can support three login patterns:
+
+1. Log in with email and password
+2. Log in with username and password. In this case, the username is used to look up the user and their email address.
+3. Log in via a "magic link" sent to the user's email address
+
+Note that if you want your users to be able to log in with a username, they must register with both an email address and username.
 
 ## Caveats
 
