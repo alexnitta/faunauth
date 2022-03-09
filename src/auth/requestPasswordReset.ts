@@ -3,60 +3,58 @@ import faunadb, { query as q } from 'faunadb';
 import { ErrorWithKey } from '../utils';
 import { getEmailContent } from '../email';
 import type {
+    AuthEmailResult,
+    AuthInputWithEmailTemplate,
+    AuthInputWithCustomEmail,
     CollectionQueryResult,
-    AuthEmailConfig,
-    Maybe,
-    SendEmail,
     Token,
     UserData,
 } from '../types';
 
-export interface RequestPasswordResetInput<SendEmailResult> {
+export interface BaseRequestPasswordResetInput {
+    /**
+     * Target URL for the call to action button. A URL parameter called `data` will be appended to
+     * the callback URL which will include a Base64-encoded string containing the email and token.
+     * Your app needs to expose a page at this route that will read the `data` param, decode the
+     * email and token from it, and pass them to the `resetPassword` function.
+     */
+    callbackUrl: string;
     /**
      * Email address for the user who wants to reset their password
      */
     email: string;
     /**
-     * Email address to use as the email sender
-     */
-    fromEmail: string;
-    /**
-     * A configuration object for the email template - see {@link AuthEmailConfig}
-     */
-    emailConfig: AuthEmailConfig;
-    /**
      * A Fauna secret that is limited to permissions needed for public actions when creating users
      * and resetting passwords
      */
     publicFaunaKey: string | null;
-    /**
-     * See {@link SendEmail}
-     */
-    sendEmail: SendEmail<SendEmailResult>;
 }
 
-export interface RequestPasswordResetResult<SendEmailResult> {
-    /**
-     * True if a password reset token was created in database
-     */
-    tokenCreated: boolean;
-    /**
-     * Result of sending email
-     */
-    sendEmailResult: Maybe<SendEmailResult>;
-}
+export type RequestPasswordResetInput<SendEmailResult> =
+    BaseRequestPasswordResetInput &
+        (
+            | AuthInputWithEmailTemplate<SendEmailResult>
+            | AuthInputWithCustomEmail<SendEmailResult>
+        );
 
 /**
  * Initiate the "forgot password" process for a user who doesn't know their old password by setting
  * a token in the database, then sending an email with a link that includes the token. Upon clicking
  * the link, `completePasswordReset` will need to be invoked with the token to completed the process
  * and allow the user to log in with their new password.
+ *
+ * @remarks
+ * You can either use the built-in email template system by passing in an input that conforms to
+ * {@link AuthInputWithEmailTemplate}, or create your own email template by passing in an input that
+ * conforms to {@link AuthInputWithCustomEmail}.
  * @returns - {@link RequestPasswordResetResult}
  */
 export async function requestPasswordReset<SendEmailResult>(
     input: RequestPasswordResetInput<SendEmailResult>,
-): Promise<RequestPasswordResetResult<SendEmailResult>> {
-    const { email, fromEmail, publicFaunaKey, emailConfig, sendEmail } = input;
+): Promise<AuthEmailResult<SendEmailResult>> {
+    const { callbackUrl, publicFaunaKey } = input;
+
+    const email = input.email.toLowerCase();
 
     if (!publicFaunaKey) {
         throw new ErrorWithKey('publicFaunaKeyMissing');
@@ -95,27 +93,39 @@ export async function requestPasswordReset<SendEmailResult>(
         }),
     ).toString('base64');
 
-    const finalCallbackUrl = `${emailConfig.callbackUrl}?data=${data}`;
-
-    const { html, text, subject } = getEmailContent({
-        ...emailConfig,
-        callbackUrl: finalCallbackUrl,
-    });
-
-    const message = {
-        to: email,
-        from: fromEmail,
-        subject,
-        html,
-        text,
-    };
+    const finalCallbackUrl = `${callbackUrl}?data=${data}`;
 
     let sendEmailResult = null;
 
-    try {
-        sendEmailResult = await sendEmail(message);
-    } catch (e) {
-        throw new ErrorWithKey('failedToSendEmail', e as Error);
+    if ('sendEmailFromTemplate' in input) {
+        const { emailConfig, fromEmail, sendEmailFromTemplate } = input;
+
+        const { html, text, subject } = getEmailContent({
+            ...emailConfig,
+            callbackUrl: finalCallbackUrl,
+        });
+
+        const message = {
+            to: email,
+            from: fromEmail,
+            subject,
+            html,
+            text,
+        };
+
+        try {
+            sendEmailResult = await sendEmailFromTemplate(message);
+        } catch (e) {
+            throw new ErrorWithKey('failedToSendEmail', e as Error);
+        }
+    } else if ('sendCustomEmail' in input) {
+        const { sendCustomEmail } = input;
+
+        try {
+            sendEmailResult = await sendCustomEmail(finalCallbackUrl);
+        } catch (e) {
+            throw new ErrorWithKey('failedToSendEmail', e as Error);
+        }
     }
 
     return { tokenCreated: true, sendEmailResult };

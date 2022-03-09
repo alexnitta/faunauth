@@ -99,6 +99,40 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
 
     ```
 
+## Email options
+
+When calling either the `register` or `requestPasswordReset` functions, you have two options for sending the user an email that will confirm their identity:
+
+1. Pass an input that conforms to [AuthInputWithEmailTemplate](./docs/interfaces/AuthInputWithEmailTemplate.md) in order to use the built-in faunauth email template. When using this method, you provide a config object that includes details about the styles and locale (text content) for the email, as well as an async function that will be called to send the email. Typically this function will be a wrapper around something like [@sendgrid/mail](https://www.npmjs.com/package/@sendgrid/mail).
+2. Pass an input that confirms to [AuthInputWithCustomEmail](./docs/interfaces//AuthInputWithCustomEmail.md) in order to provide your own email template logic. When using this method, you also need to provide an async function that sends the email, similarly to the function passed when using the faunauth email template. However, the only input to this email sending function is the final callback URL; you are responsible for actually building the rest of the email including all styling and locale (text content).
+
+In both the `register` and `requestPasswordReset` user flows, you will need to expose a page within your app at the callback URL that you pass in. A URL parameter called `data` will be appended to the callback URL which will include a Base64-encoded string containing the email and token. Your app needs to read the `data` param, decode the email and token from it, and pass them to the `resetPassword` function to complete the user flow that was started by calling `register` or `requestPasswordReset`.
+
+Here's how you would parse the encoded `data` parameter in a React component:
+
+```TypeScript
+    // This is how you can access URL params with react-router-dom; you will need to use a different
+    // method if you're not using react-router-dom
+    const { data } = useParams();
+    const [decodedData, setDecodedData] = useState<DecodedData | null>(null);
+
+    useEffect(() => {
+        if (data) {
+            const { email, token } = JSON.parse(atob(data));
+
+            if (email && token) {
+                setDecodedData({
+                    email,
+                    token,
+                });
+
+                // Now you have access to the decoded data and can use it to hit your API endpoint
+                // which invokes the `resetPassword` function exposed by faunauth.
+            }
+        }
+    }, [data]);
+```
+
 ## Error handling
 
 To help your consuming application make use of errors, we use a class called `ErrorWithKey` that extends from the usual JavaScript `Error`. This class has a `.key` property that functions as a unique key for the particular reason the error ocurred. This allows you to set up internationalization logic that uses the error's `.key` property to look up a user-facing message based on the current locale. Each of these errors also has the normal `.message` property that displays an error message in the English (United States) locale, which you can display if you so choose as a default option. The type definition for these keys is exposed in the types as `ErrorKey`.

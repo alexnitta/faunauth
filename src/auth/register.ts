@@ -4,22 +4,21 @@ import { ErrorWithKey } from '../utils';
 import { getEmailContent } from '../email';
 import type {
     CollectionQueryResult,
-    AuthEmailConfig,
-    Maybe,
-    SendEmail,
+    AuthInputWithEmailTemplate,
+    AuthInputWithCustomEmail,
+    AuthEmailResult,
     Token,
     UserData,
 } from '../types';
 
-export interface RegisterInput<SendEmailResult> {
+export interface BaseRegisterInput {
     /**
-     * Email address to use as the sender
+     * Target URL for the call to action button. A URL parameter called `data` will be appended to
+     * the callback URL which will include a Base64-encoded string containing the email and token.
+     * Your app needs to expose a page at this route that will read the `data` param, decode the
+     * email and token from it, and pass them to the `resetPassword` function.
      */
-    fromEmail: string;
-    /**
-     * A configuration object for the email template - see {@link AuthEmailConfig}
-     */
-    emailConfig: AuthEmailConfig;
+    callbackUrl: string;
     /**
      * A Fauna secret that is limited to permissions needed for public actions when creating users
      * and resetting passwords
@@ -30,25 +29,16 @@ export interface RegisterInput<SendEmailResult> {
      */
     password: string;
     /**
-     * See {@link SendEmail}
-     */
-    sendEmail: SendEmail<SendEmailResult>;
-    /**
      * Details for the new user - see {@link UserData}
      */
     userData: UserData;
 }
 
-export interface RegisterResult<SendEmailResult> {
-    /**
-     * True if a sign up token was created in database
-     */
-    tokenCreated: boolean;
-    /**
-     * Result of sending email
-     */
-    sendEmailResult: Maybe<SendEmailResult>;
-}
+export type RegisterInput<SendEmailResult> = BaseRegisterInput &
+    (
+        | AuthInputWithEmailTemplate<SendEmailResult>
+        | AuthInputWithCustomEmail<SendEmailResult>
+    );
 
 /**
  * Register a user by creating a user in the User collection and sending the user an email with a
@@ -56,18 +46,21 @@ export interface RegisterResult<SendEmailResult> {
  * is required. If desired, you can provide a unique username on `input.userData.username`. If you
  * do this (or if you later modify the user by adding a username to its `data` property), you can
  * call the `login` function with the username rather than the email.
+ *
+ * @remarks
+ * You can either use the built-in email template system by passing in an input that conforms to
+ * {@link AuthInputWithEmailTemplate}, or create your own email template by passing in an input that
+ * conforms to {@link AuthInputWithCustomEmail}.
  * @returns - {@link RegisterResult}
  */
 export async function register<SendEmailResult>(
     input: RegisterInput<SendEmailResult>,
-): Promise<RegisterResult<SendEmailResult>> {
+): Promise<AuthEmailResult<SendEmailResult>> {
     const {
+        callbackUrl,
         publicFaunaKey,
         password,
-        sendEmail,
         userData: { locale, details },
-        emailConfig,
-        fromEmail,
     } = input;
 
     const email = input.userData.email.toLowerCase();
@@ -142,27 +135,39 @@ export async function register<SendEmailResult>(
         }),
     ).toString('base64');
 
-    const finalCallbackUrl = `${emailConfig.callbackUrl}?data=${data}`;
-
-    const { html, text, subject } = getEmailContent({
-        ...emailConfig,
-        callbackUrl: finalCallbackUrl,
-    });
-
-    const message = {
-        to: email,
-        from: fromEmail,
-        subject,
-        html,
-        text,
-    };
+    const finalCallbackUrl = `${callbackUrl}?data=${data}`;
 
     let sendEmailResult = null;
 
-    try {
-        sendEmailResult = await sendEmail(message);
-    } catch (e) {
-        throw new ErrorWithKey('failedToSendEmail', e as Error);
+    if ('sendEmailFromTemplate' in input) {
+        const { emailConfig, fromEmail, sendEmailFromTemplate } = input;
+
+        const { html, text, subject } = getEmailContent({
+            ...emailConfig,
+            callbackUrl: finalCallbackUrl,
+        });
+
+        const message = {
+            to: email,
+            from: fromEmail,
+            subject,
+            html,
+            text,
+        };
+
+        try {
+            sendEmailResult = await sendEmailFromTemplate(message);
+        } catch (e) {
+            throw new ErrorWithKey('failedToSendEmail', e as Error);
+        }
+    } else if ('sendCustomEmail' in input) {
+        const { sendCustomEmail } = input;
+
+        try {
+            sendEmailResult = await sendCustomEmail(finalCallbackUrl);
+        } catch (e) {
+            throw new ErrorWithKey('failedToSendEmail', e as Error);
+        }
     }
 
     return { tokenCreated: true, sendEmailResult };
