@@ -10,7 +10,7 @@ const q = faunadb.query;
 const { And, Update, If, Do, Select } = q;
 
 /**
- * Reset a user's password when they don't know their old password.
+ * Set a user's password.
  * @param email - the user's email address
  * @param newPassword - the new password
  * @param checkSecret - the email verification token secret that was sent to the user's email
@@ -22,7 +22,7 @@ const { And, Update, If, Do, Select } = q;
  * @returns a Fauna expression with the tokens bound to it, or false if either the account does not
  * exist or the old password is invalid
  */
-export function ResetPasswordForAccount(
+export function SetPasswordForAccount(
     email,
     newPassword,
     checkSecret,

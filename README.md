@@ -102,7 +102,7 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
 
 As with any other email-based authentication system, there is are a few steps involved when confirming a user's identity.
 
-In both the `register` and `requestPasswordReset` user flows, you will need to expose a page within your app at the callback URL that you pass in. A URL parameter called `data` will be appended to the callback URL which will include a Base64-encoded string containing the email and token. Your app needs to read the `data` param, decode the email and token from it, and pass them to the `resetPassword` function to complete the user flow that was started by calling `register` or `requestPasswordReset`.
+In both the `register` and `requestPasswordReset` user flows, you will need to expose a page within your app at the callback URL that you pass in. A URL parameter called `data` will be appended to the callback URL which will include a Base64-encoded string containing the email and token. Your app needs to read the `data` param, decode the email and token from it, and pass them to the `setPassword` function to complete the user flow that was started by calling `register` or `requestPasswordReset`.
 
 Here's how you would parse the encoded `data` parameter in a React component:
 
@@ -123,7 +123,7 @@ Here's how you would parse the encoded `data` parameter in a React component:
                 });
 
                 // Now you have access to the decoded data and can use it to hit your API endpoint
-                // which invokes the `resetPassword` function exposed by faunauth.
+                // which invokes the `setPassword` function exposed by faunauth.
             }
         }
     }, [data]);
@@ -132,7 +132,7 @@ Here's how you would parse the encoded `data` parameter in a React component:
 To register a new user, the steps are as follows.
 
 1. The new user visits your sign up page and enters an email and password into a form. You may include an optional username field to allow your users to log in with a username and password. Your frontend app hits an API endpoint that calls the [`register`](./docs/index.md#register) function, which creates an entity in the User collection, creates a email confirmation token for that entity, and sends the user an email containing a confirmation link with an encoded `data` URL parameter containing the `email` and `token`.
-2. The new user opens the confirmation email and clicks the link, which opens the callback URL including the `data` URL parameter. Your frontend app must decode the `email` and `token` from this `data` parameter, as shown above, then hit an API endpoint that calls the [`resetPassword`](./docs/index.md#resetpassword) function. This function returns an object containing the `accessToken`, `refreshToken` and `user` object. The endpoint should set the `refreshToken` on a session cookie and return the `accessToken` and `user` data back to the frontend.
+2. The new user opens the confirmation email and clicks the link, which opens the callback URL including the `data` URL parameter. Your frontend app must decode the `email` and `token` from this `data` parameter, as shown above, then hit an API endpoint that calls the [`setPassword`](./docs/index.md#resetpassword) function. This function returns an object containing the `accessToken`, `refreshToken` and `user` object. The endpoint should set the `refreshToken` on a session cookie and return the `accessToken` and `user` data back to the frontend.
 3. You frontend should store a reference to the `accessToken` and `user` data, then redirect the user as appropriate, usually to the main dashboard of the app. The `accessToken` should be included in an Authorization header as the `Bearer ${accessToken}` when making requests at the Fauna GraphQL endpoint.
 
 The flow for resetting a password is similar; the only difference is in the first step.

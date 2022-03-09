@@ -42,17 +42,17 @@ export async function changePassword(
         secret: publicFaunaKey,
     });
 
-    let resetPasswordResult: FaunaLoginResult | null = null;
+    let setPasswordResult: FaunaLoginResult | null = null;
 
     try {
-        resetPasswordResult = await client.query(
-            q.Call('resetPassword', email, oldPassword, newPassword),
+        setPasswordResult = await client.query(
+            q.Call('setPassword', email, oldPassword, newPassword),
         );
     } catch (e) {
         throw new ErrorWithKey('failedToSetPassword', e as Error);
     }
 
-    if (resetPasswordResult === null) {
+    if (setPasswordResult === null) {
         throw new ErrorWithKey('failedToSetPassword');
     }
 
@@ -60,7 +60,7 @@ export async function changePassword(
         tokens: { access, refresh },
         account,
         id,
-    } = resetPasswordResult;
+    } = setPasswordResult;
 
     return {
         accessToken: access.secret,

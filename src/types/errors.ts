@@ -4,7 +4,6 @@ export type ErrorKey =
     | 'emailOrPasswordMissing'
     | 'errorWhenInvalidatingTokens'
     | 'failedToAuthenticateWithNewPassword'
-    | 'failedToResetPassword'
     | 'failedToSetPassword'
     | 'failedToCreateToken'
     | 'failedToCreateTokenAndSendEmail'

@@ -1,5 +1,5 @@
 export * from './changePassword';
-export * from './resetPassword';
+export * from './setPassword';
 export * from './requestPasswordReset';
 export * from './login';
 export * from './logout';

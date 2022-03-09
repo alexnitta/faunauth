@@ -11,7 +11,6 @@ export const keyedErrors: Record<ErrorKey, string> = {
     failedToCreateTokenAndSendEmail:
         'Failed to create token and failed to send email',
     failedToRefreshToken: 'Failed to refresh token',
-    failedToResetPassword: 'Failed to reset password',
     failedToSendEmail: 'Failed to send email',
     failedToSetPassword: 'Failed to set password',
     failedToLogout: 'Failed to log out',

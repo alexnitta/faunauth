@@ -3,7 +3,7 @@ import faunadb, { query as q } from 'faunadb';
 import type { ServerLoginResult, FaunaLoginResult } from '../types/auth';
 import { ErrorWithKey } from '../utils';
 
-export interface ResetPasswordInput {
+export interface SetPasswordInput {
     /**
      * Email address for the user who wants to reset their password
      */
@@ -24,7 +24,7 @@ export interface ResetPasswordInput {
 }
 
 /**
- * Finish either the "register" or "forgot password" flow for a user. At this point,
+ * Set a user's password in order to finish either the "register" or "forgot password" flow. By now,
  * the user has already triggered either `register` or `requestPasswordReset` to request a token.
  * The token has been created in the database, and an email has been sent to the user with a link
  * which includes the token. The user has clicked the link, which opens a page containing a form
@@ -32,11 +32,11 @@ export interface ResetPasswordInput {
  * token exists in the database which:
  * - has not expired
  * - belongs to the user associated with the given email
- * If these conditions are met, the given password is used to reset the user's password.
+ * If these conditions are met, the given password is set as the user's current password.
  * @returns - {@link ServerLoginResult}
  */
-export async function resetPassword(
-    input: ResetPasswordInput,
+export async function setPassword(
+    input: SetPasswordInput,
 ): Promise<ServerLoginResult> {
     const { publicFaunaKey, password, token } = input;
 
@@ -50,25 +50,25 @@ export async function resetPassword(
         secret: publicFaunaKey,
     });
 
-    let resetPasswordResult: FaunaLoginResult | null = null;
+    let setPasswordResult: FaunaLoginResult | null = null;
 
     try {
-        resetPasswordResult = await client.query(
-            q.Call('resetPassword', email, password, token),
+        setPasswordResult = await client.query(
+            q.Call('setPassword', email, password, token),
         );
     } catch (error) {
-        throw new ErrorWithKey('failedToResetPassword', error as Error);
+        throw new ErrorWithKey('failedToSetPassword', error as Error);
     }
 
-    if (!resetPasswordResult) {
-        throw new ErrorWithKey('failedToResetPassword');
+    if (!setPasswordResult) {
+        throw new ErrorWithKey('failedToSetPassword');
     }
 
     const {
         tokens: { access, refresh },
         account,
         id,
-    } = resetPasswordResult;
+    } = setPasswordResult;
 
     return {
         accessToken: access.secret,

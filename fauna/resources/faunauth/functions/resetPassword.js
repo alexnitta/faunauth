@@ -1,11 +1,11 @@
 import faunadb from 'faunadb';
-import { ResetPasswordForAccount } from '../../src/resetPassword';
+import { ResetPasswordForAccount } from '../../../src/faunauth/setPassword';
 
 const q = faunadb.query;
 const { Query, Lambda, CreateFunction, Var } = q;
 
 export default CreateFunction({
-    name: 'resetPassword',
+    name: 'setPassword',
     body: Query(
         Lambda(
             ['email', 'newPassword', 'checkSecret'],

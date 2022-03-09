@@ -26,7 +26,7 @@ const setUp = async testName => {
         'fauna/resources/functions/createEmailConfirmationToken.js',
         'fauna/resources/functions/register.fql',
         'fauna/resources/functions/changePassword.js',
-        'fauna/resources/functions/resetPassword.js',
+        'fauna/resources/functions/setPassword.js',
         'fauna/resources/indexes/users-by-email.fql',
         'fauna/resources/indexes/users-by-username.fql',
         'fauna/resources/roles/loggedin.js',
