@@ -24,4 +24,4 @@ See [SendCustomEmail](../index.md#sendcustomemail)
 
 #### Defined in
 
-[src/types/email.ts:144](https://github.com/alexnitta/faunauth/blob/2cd7813/src/types/email.ts#L144)
+[src/types/email.ts:144](https://github.com/alexnitta/faunauth/blob/5f9823a/src/types/email.ts#L144)

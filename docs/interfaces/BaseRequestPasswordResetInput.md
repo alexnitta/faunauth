@@ -23,7 +23,7 @@ email and token from it, and pass them to the `setPassword` function.
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:21](https://github.com/alexnitta/faunauth/blob/2cd7813/src/auth/requestPasswordReset.ts#L21)
+[src/auth/requestPasswordReset.ts:21](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/requestPasswordReset.ts#L21)
 
 ___
 
@@ -35,7 +35,7 @@ Email address for the user who wants to reset their password
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:25](https://github.com/alexnitta/faunauth/blob/2cd7813/src/auth/requestPasswordReset.ts#L25)
+[src/auth/requestPasswordReset.ts:25](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/requestPasswordReset.ts#L25)
 
 ___
 
@@ -48,4 +48,4 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:30](https://github.com/alexnitta/faunauth/blob/2cd7813/src/auth/requestPasswordReset.ts#L30)
+[src/auth/requestPasswordReset.ts:30](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/requestPasswordReset.ts#L30)

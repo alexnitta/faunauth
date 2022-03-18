@@ -1,9 +1,14 @@
 import faunadb, { query as q } from 'faunadb';
+import type { ClientConfig } from 'faunadb';
 
 import { ErrorWithKey } from '../utils';
 import type { ServerLoginResult, FaunaLoginResult, Maybe } from '../types';
 
 export interface BaseLoginInput {
+    /**
+     * Fauna client config object
+     */
+    clientConfig?: Omit<ClientConfig, 'secret'>;
     /**
      * A Fauna secret that is limited to permissions needed for public actions when creating users
      * and resetting passwords
@@ -39,13 +44,14 @@ export type LoginInput = LoginInputWithEmail | LoginInputWithUsername;
  * @returns - {@link LoginResult}
  */
 export async function login(input: LoginInput): Promise<ServerLoginResult> {
-    const { publicFaunaKey, password } = input;
+    const { clientConfig, publicFaunaKey, password } = input;
 
     if (!publicFaunaKey) {
         throw new ErrorWithKey('publicFaunaKeyMissing');
     }
 
     const client = new faunadb.Client({
+        ...clientConfig,
         secret: publicFaunaKey,
     });
 

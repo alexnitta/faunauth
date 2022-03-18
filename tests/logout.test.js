@@ -39,7 +39,7 @@ const setUp = async testName => {
         'fauna/resources/functions/refresh.js',
         'fauna/resources/functions/register.fql',
         'fauna/resources/functions/changePassword.js',
-        'fauna/resources/functions/resetPassword.js',
+        'fauna/resources/functions/setPassword.js',
         'fauna/resources/indexes/access-token-by-refresh-token.fql',
         'fauna/resources/indexes/users-by-email.fql',
         'fauna/resources/indexes/tokens-by-instance-sessionid-type-and-loggedout.fql',

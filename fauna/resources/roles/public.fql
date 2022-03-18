@@ -8,7 +8,7 @@ CreateRole({
       }
     },
     {
-      resource: Function('resetPassword'),
+      resource: Function('setPassword'),
       actions: {
         call: true
       }

@@ -139,6 +139,11 @@ export interface AuthInputWithEmailTemplate<SendEmailFromTemplateResult> {
 
 export interface AuthInputWithCustomEmail<SendCustomEmailResult> {
     /**
+     * Target URL for the call to action button, including a URL parameter called `data` which
+     * includes a Base64-encoded string containing the email and token.
+     */
+    callbackUrl: string;
+    /**
      * See {@link SendCustomEmail}
      */
     sendCustomEmail: SendCustomEmail<SendCustomEmailResult>;

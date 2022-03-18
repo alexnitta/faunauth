@@ -1,9 +1,14 @@
 import faunadb, { query as q } from 'faunadb';
+import type { ClientConfig } from 'faunadb';
 
 import { ErrorWithKey } from '../utils';
 import type { FaunaRefreshResult, TokenPair, Maybe } from '../types';
 
 export interface RotateTokensInput {
+    /**
+     * Fauna client config object
+     */
+    clientConfig?: Omit<ClientConfig, 'secret'>;
     /**
      * A token that can be used to authenticate further Fauna requests. Fauna's docs refer to this
      * as a 'secret'; from the client perspective it's a JWT.
@@ -17,9 +22,11 @@ export interface RotateTokensInput {
  * @returns the new access and refresh tokens if successful
  */
 export async function rotateTokens({
+    clientConfig,
     refreshToken,
 }: RotateTokensInput): Promise<TokenPair> {
     const client = new faunadb.Client({
+        ...clientConfig,
         secret: refreshToken,
     });
 

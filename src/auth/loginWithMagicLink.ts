@@ -1,9 +1,14 @@
 import faunadb, { query as q } from 'faunadb';
+import type { ClientConfig } from 'faunadb';
 
 import type { ServerLoginResult, FaunaLoginResult } from '../types/auth';
 import { ErrorWithKey } from '../utils';
 
 export interface LoginWithMagicLinkInput {
+    /**
+     * Fauna client config object
+     */
+    clientConfig?: Omit<ClientConfig, 'secret'>;
     /**
      * Email address for the user who wants to log in
      */
@@ -31,7 +36,7 @@ export interface LoginWithMagicLinkInput {
 export async function loginWithMagicLink(
     input: LoginWithMagicLinkInput,
 ): Promise<ServerLoginResult> {
-    const { publicFaunaKey, token } = input;
+    const { clientConfig, publicFaunaKey, token } = input;
 
     const email = input.email.toLowerCase();
 
@@ -40,6 +45,7 @@ export async function loginWithMagicLink(
     }
 
     const client = new faunadb.Client({
+        ...clientConfig,
         secret: publicFaunaKey,
     });
 

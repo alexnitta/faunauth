@@ -1,4 +1,5 @@
 import faunadb, { query as q } from 'faunadb';
+import type { ClientConfig } from 'faunadb';
 
 import { ErrorWithKey } from '../utils';
 import type { UpdateUserResult } from '../types/auth';
@@ -10,6 +11,10 @@ export interface UpdateUserInput {
      * A Fauna secret that was returned after authenticating the user
      */
     accessToken: string | null;
+    /**
+     * Fauna client config object
+     */
+    clientConfig?: Omit<ClientConfig, 'secret'>;
     /**
      * Data to update on the user
      */
@@ -27,13 +32,14 @@ export interface UpdateUserInput {
 export async function updateUser(
     input: UpdateUserInput,
 ): Promise<UpdateUserResult> {
-    const { accessToken, data, userID } = input;
+    const { accessToken, clientConfig, data, userID } = input;
 
     if (!accessToken) {
         throw new ErrorWithKey('accessTokenMissing');
     }
 
     const client = new faunadb.Client({
+        ...clientConfig,
         secret: accessToken,
     });
 

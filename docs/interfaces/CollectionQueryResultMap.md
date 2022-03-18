@@ -22,4 +22,4 @@
 
 #### Defined in
 
-[src/types/auth.ts:10](https://github.com/alexnitta/faunauth/blob/2cd7813/src/types/auth.ts#L10)
+[src/types/auth.ts:10](https://github.com/alexnitta/faunauth/blob/5f9823a/src/types/auth.ts#L10)

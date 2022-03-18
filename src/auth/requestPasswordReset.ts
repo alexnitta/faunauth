@@ -1,4 +1,5 @@
 import faunadb, { query as q } from 'faunadb';
+import type { ClientConfig } from 'faunadb';
 
 import { ErrorWithKey } from '../utils';
 import { getEmailContent } from '../email';
@@ -13,12 +14,9 @@ import type {
 
 export interface BaseRequestPasswordResetInput {
     /**
-     * Target URL for the call to action button. A URL parameter called `data` will be appended to
-     * the callback URL which will include a Base64-encoded string containing the email and token.
-     * Your app needs to expose a page at this route that will read the `data` param, decode the
-     * email and token from it, and pass them to the `setPassword` function.
+     * Fauna client config object
      */
-    callbackUrl: string;
+    clientConfig?: Omit<ClientConfig, 'secret'>;
     /**
      * Email address for the user who wants to reset their password
      */
@@ -52,7 +50,7 @@ export type RequestPasswordResetInput<SendEmailResult> =
 export async function requestPasswordReset<SendEmailResult>(
     input: RequestPasswordResetInput<SendEmailResult>,
 ): Promise<AuthEmailResult<SendEmailResult>> {
-    const { callbackUrl, publicFaunaKey } = input;
+    const { clientConfig, publicFaunaKey } = input;
 
     const email = input.email.toLowerCase();
 
@@ -61,6 +59,7 @@ export async function requestPasswordReset<SendEmailResult>(
     }
 
     const client = new faunadb.Client({
+        ...clientConfig,
         secret: publicFaunaKey,
     });
 
@@ -93,12 +92,11 @@ export async function requestPasswordReset<SendEmailResult>(
         }),
     ).toString('base64');
 
-    const finalCallbackUrl = `${callbackUrl}?data=${data}`;
-
     let sendEmailResult = null;
 
     if ('sendEmailFromTemplate' in input) {
         const { emailConfig, fromEmail, sendEmailFromTemplate } = input;
+        const finalCallbackUrl = `${emailConfig.callbackUrl}?data=${data}`;
 
         const { html, text, subject } = getEmailContent({
             ...emailConfig,
@@ -120,6 +118,7 @@ export async function requestPasswordReset<SendEmailResult>(
         }
     } else if ('sendCustomEmail' in input) {
         const { sendCustomEmail } = input;
+        const finalCallbackUrl = `${input.callbackUrl}?data=${data}`;
 
         try {
             sendEmailResult = await sendCustomEmail(finalCallbackUrl);

@@ -26,7 +26,7 @@ Email address for the user who wants to sign in
 
 #### Defined in
 
-[src/auth/login.ts:22](https://github.com/alexnitta/faunauth/blob/2cd7813/src/auth/login.ts#L22)
+[src/auth/login.ts:22](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/login.ts#L22)
 
 ___
 
@@ -42,7 +42,7 @@ The user's password
 
 #### Defined in
 
-[src/auth/login.ts:15](https://github.com/alexnitta/faunauth/blob/2cd7813/src/auth/login.ts#L15)
+[src/auth/login.ts:15](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/login.ts#L15)
 
 ___
 
@@ -59,4 +59,4 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/login.ts:11](https://github.com/alexnitta/faunauth/blob/2cd7813/src/auth/login.ts#L11)
+[src/auth/login.ts:11](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/login.ts#L11)

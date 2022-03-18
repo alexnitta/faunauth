@@ -1,9 +1,14 @@
 import faunadb, { query as q } from 'faunadb';
+import type { ClientConfig } from 'faunadb';
 
 import type { ServerLoginResult, FaunaLoginResult } from '../types/auth';
 import { ErrorWithKey } from '../utils';
 
 export interface SetPasswordInput {
+    /**
+     * Fauna client config object
+     */
+    clientConfig?: Omit<ClientConfig, 'secret'>;
     /**
      * Email address for the user who wants to reset their password
      */
@@ -38,7 +43,7 @@ export interface SetPasswordInput {
 export async function setPassword(
     input: SetPasswordInput,
 ): Promise<ServerLoginResult> {
-    const { publicFaunaKey, password, token } = input;
+    const { clientConfig, publicFaunaKey, password, token } = input;
 
     const email = input.email.toLowerCase();
 
@@ -47,6 +52,7 @@ export async function setPassword(
     }
 
     const client = new faunadb.Client({
+        ...clientConfig,
         secret: publicFaunaKey,
     });
 
