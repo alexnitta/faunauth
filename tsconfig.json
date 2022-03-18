@@ -22,5 +22,5 @@
         "types": ["node"]
     },
     "include": ["fauna/**/*.js", "fauna/**/*.ts", "src/**/*.js", "src/**/*.ts"],
-    "exclude": ["node_modules", "tmp"]
+    "exclude": ["node_modules", "tmp", "fauna/temp/**/*"]
 }
