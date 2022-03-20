@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import { ErrorWithKey } from '../utils';
+import { addParamsToPath, ErrorWithKey } from '../utils';
 import { getEmailContent } from '../email';
 import type {
     AuthEmailResult,
@@ -96,7 +96,10 @@ export async function requestPasswordReset<SendEmailResult>(
 
     if ('sendEmailFromTemplate' in input) {
         const { emailConfig, fromEmail, sendEmailFromTemplate } = input;
-        const finalCallbackUrl = `${emailConfig.callbackUrl}?data=${data}`;
+        const finalCallbackUrl = addParamsToPath({
+            path: emailConfig.callbackUrl,
+            params: [['data', data]],
+        });
 
         const { html, text, subject } = getEmailContent({
             ...emailConfig,
@@ -118,7 +121,11 @@ export async function requestPasswordReset<SendEmailResult>(
         }
     } else if ('sendCustomEmail' in input) {
         const { sendCustomEmail } = input;
-        const finalCallbackUrl = `${input.callbackUrl}?data=${data}`;
+
+        const finalCallbackUrl = addParamsToPath({
+            path: input.callbackUrl,
+            params: [['data', data]],
+        });
 
         try {
             sendEmailResult = await sendCustomEmail(finalCallbackUrl);
