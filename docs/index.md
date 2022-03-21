@@ -85,17 +85,17 @@ faunauth
 
 #### Defined in
 
-[src/types/email.ts:172](https://github.com/alexnitta/faunauth/blob/44c1409/src/types/email.ts#L172)
+[src/types/email.ts:172](https://github.com/alexnitta/faunauth/blob/57157b8/src/types/email.ts#L172)
 
 ___
 
 ### ErrorKey
 
-Ƭ **ErrorKey**: ``"accessTokenMissing"`` \| ``"emailNotConfirmed"`` \| ``"emailOrPasswordMissing"`` \| ``"errorWhenInvalidatingTokens"`` \| ``"failedToAuthenticateWithNewPassword"`` \| ``"failedToSetPassword"`` \| ``"failedToCreateToken"`` \| ``"failedToCreateTokenAndSendEmail"`` \| ``"failedToRefreshToken"`` \| ``"failedToSendEmail"`` \| ``"failedToLogout"`` \| ``"failedToUpdateUser"`` \| ``"publicFaunaKeyMissing"`` \| ``"invalidToken"`` \| ``"invalidUserOrPassword"`` \| ``"notAuthenticated"`` \| ``"refreshTokenLockout"`` \| ``"refreshTokenMissing"`` \| ``"tokensNotFound"`` \| ``"userAlreadyExists"`` \| ``"userDoesNotExist"`` \| ``"userRefIsMissing"`` \| ``"queryError"``
+Ƭ **ErrorKey**: ``"accessTokenMissing"`` \| ``"emailNotConfirmed"`` \| ``"emailOrPasswordMissing"`` \| ``"errorWhenInvalidatingTokens"`` \| ``"failedToAuthenticateWithNewPassword"`` \| ``"failedToSetPassword"`` \| ``"failedToCreateToken"`` \| ``"failedToCreateTokenAndSendEmail"`` \| ``"failedToRefreshToken"`` \| ``"failedToSendEmail"`` \| ``"failedToSendEmailAndDeleteUser"`` \| ``"failedToLogout"`` \| ``"failedToUpdateUser"`` \| ``"publicFaunaKeyMissing"`` \| ``"invalidToken"`` \| ``"invalidUserOrPassword"`` \| ``"notAuthenticated"`` \| ``"refreshTokenLockout"`` \| ``"refreshTokenMissing"`` \| ``"tokensNotFound"`` \| ``"userAlreadyExists"`` \| ``"userDoesNotExist"`` \| ``"userRefIsMissing"`` \| ``"queryError"``
 
 #### Defined in
 
-[src/types/errors.ts:1](https://github.com/alexnitta/faunauth/blob/44c1409/src/types/errors.ts#L1)
+[src/types/errors.ts:1](https://github.com/alexnitta/faunauth/blob/57157b8/src/types/errors.ts#L1)
 
 ___
 
@@ -105,7 +105,7 @@ ___
 
 #### Defined in
 
-[src/auth/login.ts:37](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/login.ts#L37)
+[src/auth/login.ts:37](https://github.com/alexnitta/faunauth/blob/57157b8/src/auth/login.ts#L37)
 
 ___
 
@@ -124,7 +124,7 @@ Maybe generic type. To keep things consistent, we're also going to do that here.
 
 #### Defined in
 
-[src/types/general.ts:5](https://github.com/alexnitta/faunauth/blob/44c1409/src/types/general.ts#L5)
+[src/types/general.ts:5](https://github.com/alexnitta/faunauth/blob/57157b8/src/types/general.ts#L5)
 
 ___
 
@@ -140,7 +140,7 @@ ___
 
 #### Defined in
 
-[src/auth/register.ts:35](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/register.ts#L35)
+[src/auth/register.ts:36](https://github.com/alexnitta/faunauth/blob/57157b8/src/auth/register.ts#L36)
 
 ___
 
@@ -156,7 +156,7 @@ ___
 
 #### Defined in
 
-src/auth/sendConfirmationEmail.ts:31
+[src/auth/sendConfirmationEmail.ts:31](https://github.com/alexnitta/faunauth/blob/57157b8/src/auth/sendConfirmationEmail.ts#L31)
 
 ___
 
@@ -196,7 +196,7 @@ will need to set an API key using `sgMail.setApiKey('API_KEY')` before passing i
 
 #### Defined in
 
-[src/types/email.ts:121](https://github.com/alexnitta/faunauth/blob/44c1409/src/types/email.ts#L121)
+[src/types/email.ts:121](https://github.com/alexnitta/faunauth/blob/57157b8/src/types/email.ts#L121)
 
 ___
 
@@ -236,7 +236,7 @@ will need to set an API key using `sgMail.setApiKey('API_KEY')` before passing i
 
 #### Defined in
 
-[src/types/email.ts:107](https://github.com/alexnitta/faunauth/blob/44c1409/src/types/email.ts#L107)
+[src/types/email.ts:107](https://github.com/alexnitta/faunauth/blob/57157b8/src/types/email.ts#L107)
 
 ## Functions
 
@@ -265,7 +265,7 @@ the input.path with the input.params added as search params
 
 #### Defined in
 
-[src/utils/addParamsToPath.ts:18](https://github.com/alexnitta/faunauth/blob/44c1409/src/utils/addParamsToPath.ts#L18)
+[src/utils/addParamsToPath.ts:18](https://github.com/alexnitta/faunauth/blob/57157b8/src/utils/addParamsToPath.ts#L18)
 
 ___
 
@@ -274,6 +274,8 @@ ___
 ▸ **changePassword**(`input`): `Promise`<[`ServerLoginResult`](interfaces/ServerLoginResult.md)\>
 
 Change the password for a user who knows their old password.
+
+The `input.email` is converted to lowercase, so it is case-insensitive.
 
 #### Parameters
 
@@ -289,7 +291,7 @@ Change the password for a user who knows their old password.
 
 #### Defined in
 
-[src/auth/changePassword.ts:35](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/changePassword.ts#L35)
+[src/auth/changePassword.ts:37](https://github.com/alexnitta/faunauth/blob/57157b8/src/auth/changePassword.ts#L37)
 
 ___
 
@@ -375,7 +377,7 @@ You could then set up a package.json script that calls this function, ie:
 
 #### Defined in
 
-[src/utils/createOrUpdateUserRole.ts:88](https://github.com/alexnitta/faunauth/blob/44c1409/src/utils/createOrUpdateUserRole.ts#L88)
+[src/utils/createOrUpdateUserRole.ts:88](https://github.com/alexnitta/faunauth/blob/57157b8/src/utils/createOrUpdateUserRole.ts#L88)
 
 ___
 
@@ -404,7 +406,7 @@ user registration or a password reset.
 
 #### Defined in
 
-[src/email/getEmailContent.ts:12](https://github.com/alexnitta/faunauth/blob/44c1409/src/email/getEmailContent.ts#L12)
+[src/email/getEmailContent.ts:12](https://github.com/alexnitta/faunauth/blob/57157b8/src/email/getEmailContent.ts#L12)
 
 ___
 
@@ -415,6 +417,8 @@ ___
 Log a user in. The input can include either an `email` or a `username` in order to identify the
 user. The returned data will include an `accessToken`, `refreshToken` and `user` object including
 the user's `id` as well as any other data on the User document.
+
+The `input.email` or `input.username` is converted to lowercase, so it is case-insensitive.
 
 #### Parameters
 
@@ -430,7 +434,7 @@ the user's `id` as well as any other data on the User document.
 
 #### Defined in
 
-[src/auth/login.ts:46](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/login.ts#L46)
+[src/auth/login.ts:48](https://github.com/alexnitta/faunauth/blob/57157b8/src/auth/login.ts#L48)
 
 ___
 
@@ -443,7 +447,11 @@ passed to this function as the `token` argument. This function checks the token 
 match for the token exists in the database which:
 - has not expired
 - belongs to the user associated with the given email
-If these conditions are met, the user is logged in.
+If these conditions are met, the user is logged in. The returned data will include an
+`accessToken`, `refreshToken` and `user` object including the user's `id` as well as any other
+data on the User document.
+
+The `input.email` is converted to lowercase, so it is case-insensitive.
 
 #### Parameters
 
@@ -459,7 +467,7 @@ If these conditions are met, the user is logged in.
 
 #### Defined in
 
-[src/auth/loginWithMagicLink.ts:36](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/loginWithMagicLink.ts#L36)
+[src/auth/loginWithMagicLink.ts:40](https://github.com/alexnitta/faunauth/blob/57157b8/src/auth/loginWithMagicLink.ts#L40)
 
 ___
 
@@ -483,7 +491,7 @@ true if user was signed out
 
 #### Defined in
 
-[src/auth/logout.ts:27](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/logout.ts#L27)
+[src/auth/logout.ts:27](https://github.com/alexnitta/faunauth/blob/57157b8/src/auth/logout.ts#L27)
 
 ___
 
@@ -492,13 +500,16 @@ ___
 ▸ **register**<`SendEmailResult`\>(`input`): `Promise`<[`AuthEmailResult`](index.md#authemailresult)<`SendEmailResult`\>\>
 
 Register a user by creating a user in the User collection and sending the user an email with a
-confirmation link to the specified callbackUrl that includes the encoded token and email address. The link should,
-`setPassword` or will need to be invoked with the decoded token to complete the process.
+confirmation link to the specified callbackUrl that includes the encoded token and email address.
+`setPassword` will need to be invoked with the decoded token to complete the process.
 
 A unique `input.userData.email` is required. If desired, you can provide a unique username on
 `input.userData.username`. If you do this (or if you later modify the user by adding a username
 to its `data` property), you can call the `login` function with the username rather than the
 email.
+
+Both `input.userData.email` and `input.userData.username` are converted to lowercase, so they
+are case-insensitive.
 
 **`remarks`**
 The token and email are wrapped into an object, then Base64-encoded and appended as a single
@@ -531,7 +542,7 @@ conforms to [AuthInputWithCustomEmail](interfaces/AuthInputWithCustomEmail.md).
 
 #### Defined in
 
-[src/auth/register.ts:63](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/register.ts#L63)
+[src/auth/register.ts:67](https://github.com/alexnitta/faunauth/blob/57157b8/src/auth/register.ts#L67)
 
 ___
 
@@ -555,7 +566,7 @@ the new access and refresh tokens if successful
 
 #### Defined in
 
-[src/auth/rotateTokens.ts:24](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/rotateTokens.ts#L24)
+[src/auth/rotateTokens.ts:24](https://github.com/alexnitta/faunauth/blob/57157b8/src/auth/rotateTokens.ts#L24)
 
 ___
 
@@ -566,6 +577,8 @@ ___
 Create an email confirmation token in the database, then send an email with a confirmation link
 that includes the token and email address. Upon clicking the link, either `setPassword` or
 `loginWithMagicLink` will need to be invoked with the decoded token to complete the process.
+
+The `input.email` is converted to lowercase, so it is case-insensitive.
 
 **`remarks`**
 The token and email are wrapped into an object, then Base64-encoded and appended as a single
@@ -606,7 +619,7 @@ conforms to [AuthInputWithCustomEmail](interfaces/AuthInputWithCustomEmail.md).
 
 #### Defined in
 
-src/auth/sendConfirmationEmail.ts:63
+[src/auth/sendConfirmationEmail.ts:64](https://github.com/alexnitta/faunauth/blob/57157b8/src/auth/sendConfirmationEmail.ts#L64)
 
 ___
 
@@ -624,6 +637,8 @@ the token to see if an exact match for the token exists in the database which:
 - belongs to the user associated with the given email
 If these conditions are met, the given password is set as the user's current password.
 
+The `input.email` is converted to lowercase, so it is case-insensitive.
+
 #### Parameters
 
 | Name | Type |
@@ -638,7 +653,7 @@ If these conditions are met, the given password is set as the user's current pas
 
 #### Defined in
 
-[src/auth/setPassword.ts:43](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/setPassword.ts#L43)
+[src/auth/setPassword.ts:45](https://github.com/alexnitta/faunauth/blob/57157b8/src/auth/setPassword.ts#L45)
 
 ___
 
@@ -662,4 +677,4 @@ a Promise that resolves to the [UpdateUserResult](interfaces/UpdateUserResult.md
 
 #### Defined in
 
-[src/auth/updateUser.ts:32](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/updateUser.ts#L32)
+[src/auth/updateUser.ts:32](https://github.com/alexnitta/faunauth/blob/57157b8/src/auth/updateUser.ts#L32)

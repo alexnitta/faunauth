@@ -38,6 +38,8 @@ export interface SetPasswordInput {
  * - has not expired
  * - belongs to the user associated with the given email
  * If these conditions are met, the given password is set as the user's current password.
+ *
+ * The `input.email` is converted to lowercase, so it is case-insensitive.
  * @returns - {@link ServerLoginResult}
  */
 export async function setPassword(

@@ -20,7 +20,7 @@ docs refer to this as a 'secret'; from the client perspective it's a JWT.
 
 #### Defined in
 
-[src/types/auth.ts:93](https://github.com/alexnitta/faunauth/blob/44c1409/src/types/auth.ts#L93)
+[src/types/auth.ts:93](https://github.com/alexnitta/faunauth/blob/57157b8/src/types/auth.ts#L93)
 
 ___
 
@@ -33,4 +33,4 @@ A token that can be used to refresh the access token. Fauna's docs refer to this
 
 #### Defined in
 
-[src/types/auth.ts:98](https://github.com/alexnitta/faunauth/blob/44c1409/src/types/auth.ts#L98)
+[src/types/auth.ts:98](https://github.com/alexnitta/faunauth/blob/57157b8/src/types/auth.ts#L98)

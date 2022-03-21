@@ -40,6 +40,7 @@ export type RequestPasswordResetInput<SendEmailResult> =
  * that includes the token and email address. Upon clicking the link, either `setPassword` or
  * `loginWithMagicLink` will need to be invoked with the decoded token to complete the process.
  *
+ * The `input.email` is converted to lowercase, so it is case-insensitive.
  * @remarks
  * The token and email are wrapped into an object, then Base64-encoded and appended as a single
  * URL search parameter called `data`. Your client-side code can read these values by doing:

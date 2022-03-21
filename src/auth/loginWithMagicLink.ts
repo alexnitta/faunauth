@@ -33,6 +33,8 @@ export interface LoginWithMagicLinkInput {
  * If these conditions are met, the user is logged in. The returned data will include an
  * `accessToken`, `refreshToken` and `user` object including the user's `id` as well as any other
  * data on the User document.
+ *
+ * The `input.email` is converted to lowercase, so it is case-insensitive.
  * @returns - {@link ServerLoginResult}
  */
 export async function loginWithMagicLink(

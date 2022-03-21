@@ -40,6 +40,8 @@ export type LoginInput = LoginInputWithEmail | LoginInputWithUsername;
  * Log a user in. The input can include either an `email` or a `username` in order to identify the
  * user. The returned data will include an `accessToken`, `refreshToken` and `user` object including
  * the user's `id` as well as any other data on the User document.
+ *
+ * The `input.email` or `input.username` is converted to lowercase, so it is case-insensitive.
  * @param input - {@link LoginInput}
  * @returns - {@link LoginResult}
  */
@@ -65,8 +67,10 @@ export async function login(input: LoginInput): Promise<ServerLoginResult> {
                 q.Call('login', email, password),
             );
         } else {
+            const username = input.username.toLowerCase();
+
             loginResult = await client.query<Maybe<FaunaLoginResult>>(
-                q.Call('loginWithUsername', input.username, password),
+                q.Call('loginWithUsername', username, password),
             );
         }
     } catch (e) {

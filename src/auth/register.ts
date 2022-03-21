@@ -41,13 +41,16 @@ export type RegisterInput<SendEmailResult> = BaseRegisterInput &
 
 /**
  * Register a user by creating a user in the User collection and sending the user an email with a
- * confirmation link to the specified callbackUrl that includes the encoded token and email address. The link should,
- * `setPassword` or will need to be invoked with the decoded token to complete the process.
+ * confirmation link to the specified callbackUrl that includes the encoded token and email address.
+ * `setPassword` will need to be invoked with the decoded token to complete the process.
  *
  * A unique `input.userData.email` is required. If desired, you can provide a unique username on
  * `input.userData.username`. If you do this (or if you later modify the user by adding a username
  * to its `data` property), you can call the `login` function with the username rather than the
  * email.
+ *
+ * Both `input.userData.email` and `input.userData.username` are converted to lowercase, so they
+ * are case-insensitive.
  *
  * @remarks
  * The token and email are wrapped into an object, then Base64-encoded and appended as a single
@@ -72,6 +75,8 @@ export async function register<SendEmailResult>(
     } = input;
 
     const email = input.userData.email.toLowerCase();
+    const inputUsername = input.userData?.username ?? null;
+    const username = inputUsername ? inputUsername.toLowerCase() : null;
 
     if (!publicFaunaKey) {
         throw new ErrorWithKey('publicFaunaKeyMissing');
@@ -91,7 +96,7 @@ export async function register<SendEmailResult>(
                 details,
                 email,
                 locale,
-                username: input?.userData?.username ?? null,
+                username,
             }),
         );
     } catch (e) {

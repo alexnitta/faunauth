@@ -30,6 +30,8 @@ export interface ChangePasswordInput {
 
 /**
  * Change the password for a user who knows their old password.
+ *
+ * The `input.email` is converted to lowercase, so it is case-insensitive.
  * @returns - {@link ServerLoginResult}
  */
 export async function changePassword(
