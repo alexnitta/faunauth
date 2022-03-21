@@ -6,9 +6,22 @@
 
 ### Properties
 
+- [clientConfig](RotateTokensInput.md#clientconfig)
 - [refreshToken](RotateTokensInput.md#refreshtoken)
 
 ## Properties
+
+### clientConfig
+
+• `Optional` **clientConfig**: `Omit`<`ClientConfig`, ``"secret"``\>
+
+Fauna client config object
+
+#### Defined in
+
+[src/auth/rotateTokens.ts:11](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/rotateTokens.ts#L11)
+
+___
 
 ### refreshToken
 
@@ -19,4 +32,4 @@ as a 'secret'; from the client perspective it's a JWT.
 
 #### Defined in
 
-[src/auth/rotateTokens.ts:11](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/rotateTokens.ts#L11)
+[src/auth/rotateTokens.ts:16](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/rotateTokens.ts#L16)

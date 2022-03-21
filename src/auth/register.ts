@@ -40,12 +40,21 @@ export type RegisterInput<SendEmailResult> = BaseRegisterInput &
 
 /**
  * Register a user by creating a user in the User collection and sending the user an email with a
- * confirmation link that will can be used to confirm their account. A unique `input.userData.email`
- * is required. If desired, you can provide a unique username on `input.userData.username`. If you
- * do this (or if you later modify the user by adding a username to its `data` property), you can
- * call the `login` function with the username rather than the email.
+ * confirmation link to the specified callbackUrl that includes the encoded token and email address. The link should,
+ * `setPassword` or will need to be invoked with the decoded token to complete the process.
+ *
+ * A unique `input.userData.email` is required. If desired, you can provide a unique username on
+ * `input.userData.username`. If you do this (or if you later modify the user by adding a username
+ * to its `data` property), you can call the `login` function with the username rather than the
+ * email.
  *
  * @remarks
+ * The token and email are wrapped into an object, then Base64-encoded and appended as a single
+ * URL search parameter called `data`. Your client-side code can read these values by doing:
+ * ```JavaScript
+ * const { email, token } = JSON.parse(atob(data));
+ * ```
+ *
  * You can either use the built-in email template system by passing in an input that conforms to
  * {@link AuthInputWithEmailTemplate}, or create your own email template by passing in an input that
  * conforms to {@link AuthInputWithCustomEmail}.

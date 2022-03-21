@@ -24,6 +24,20 @@ You are likely using Fauna because you want to take advantage of its [GraphQL AP
 
 Auto-generated documentation is available in [./docs/index.md](./docs/index.md).
 
+## Resources
+
+It's a good idea to read up on a few topics before using `faunauth`:
+
+-   [The Fauna Query Language (FQL)](https://docs.fauna.com/fauna/current/api/fql/)
+-   [User-defined functions (UDFs)](https://docs.fauna.com/fauna/current/learn/understanding/user_defined_functions)
+
+The `fauna` and `tests` folders are based on examples from two Fauna blog posts:
+
+1. [Refreshing authentication tokens in FQL](https://fauna.com/blog/refreshing-authentication-tokens-in-fql) - source code in [simple refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-simple)
+2. [Detecting leaked authentication tokens in FQL](https://fauna.com/blog/detecting-leaked-authentication-tokens-in-fql) - source code in [advanced refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-advanced)
+
+The `fauna` folder contains the building blocks for reusable FQL statements that can be added to an existing Fauna database. For example, the `login` function at [./fauna/src/login.js](./fauna/src/login.js) is added to a database by running the `CreateFunction` statement in [./fauna/resources/functions/login.js](./fauna/resources/functions/login.js). This creates a UDF or user-defined function that can later be called with a Fauna client, which is done within [./src/auth/login](./src/auth/login.ts).
+
 ## About schema migrations
 
 `faunauth` provides you with a set of FQL resources - collections, functions, indexes and roles - that will enable various authentication tasks. In this context, "schema migration" means that your current database schema will be migrated to a new schema that contains the FQL resources provided by `faunauth`. As noted in the `fauna-schema-migrate` readme, this is not a data migration tool.
@@ -106,46 +120,48 @@ There are two kinds of tools provided by `faunauth`: schema migrations and funct
 
 ## Confirming a user's identity
 
-As with any other email-based authentication system, there is are a few steps involved when confirming a user's identity.
+As with any other email-based authentication system, there is are a few steps involved when confirming a user's identity. Generally, these steps are as follows:
 
-In both the `register` and `requestPasswordReset` user flows, you will need to expose a page within your app at the callback URL that you pass in. A URL parameter called `data` will be appended to the callback URL which will include a Base64-encoded string containing the email and token. Your app needs to read the `data` param, decode the email and token from it, and pass them to the `setPassword` function to complete the user flow that was started by calling `register` or `requestPasswordReset`.
+1. User states a wish to authenticate by attempting to sign up for a new account, reset the password for an existing account, or login via a "magic link" for an existing account.
+2. A confirmation email is sent to the provided email address that contains a link. The link leads to a page on your site. You pass this in as the `callbackUrl` and faunauth appends a URL search parameter to it called `data` that contains both the email address and a unique token created in order to confirm the user's identity.
+3. Your code calls a faunauth function that checks if the token is valid, i.e. the token exists, is associated with the given email address, and has not already been used. If the token is valid, the rest of the authentication flow is allowed to proceed.
 
-Here's how you would parse the encoded `data` parameter in a React component:
+As part of these user flows, you will need to expose a page within your app at the `callbackUrl` that you pass in. A URL search parameter called `data` will be appended to the callback URL which will include a Base64-encoded string containing an object with the email and token. Your app needs to read the `data` param, decode the email and token from it, and pass them to the appropriate `faunauth` function to complete the user flow.
+
+Here's how you would parse the encoded `data` URL search parameter:
 
 ```TypeScript
-    // This is how you can access URL params with react-router-dom; you will need to use a different
-    // method if you're not using react-router-dom
-    const { data } = useParams();
-    const [decodedData, setDecodedData] = useState<DecodedData | null>(null);
+const search = window.location.search // if you're using react-router, you can do useLocation().search
+const urlQuery = new URLSearchParams(search);
+const data = urlQuery.get('data');
 
-    useEffect(() => {
-        if (data) {
-            const { email, token } = JSON.parse(atob(data));
-
-            if (email && token) {
-                setDecodedData({
-                    email,
-                    token,
-                });
-
-                // Now you have access to the decoded data and can use it to hit your API endpoint
-                // which invokes the `setPassword` function exposed by faunauth.
-            }
-        }
-    }, [data]);
+try {
+    const { email, token } = JSON.parse(atob(data));
+} catch {
+    // could not read data from URL
+}
 ```
 
-To register a new user, the steps are as follows.
+Here are the three user flows that implement this pattern:
 
-1. The new user visits your sign up page and enters an email and password into a form. You may include an optional username field to allow your users to log in with a username and password. Your frontend app hits an API endpoint that calls the [`register`](./docs/index.md#register) function, which creates an entity in the User collection, creates a email confirmation token for that entity, and sends the user an email containing a confirmation link with an encoded `data` URL parameter containing the `email` and `token`.
-2. The new user opens the confirmation email and clicks the link, which opens the callback URL including the `data` URL parameter. Your frontend app must decode the `email` and `token` from this `data` parameter, as shown above, then hit an API endpoint that calls the [`setPassword`](./docs/index.md#resetpassword) function. This function returns an object containing the `accessToken`, `refreshToken` and `user` object. The endpoint should set the `refreshToken` on a session cookie and return the `accessToken` and `user` data back to the frontend.
+### Sign up a new user
+
+1. The new user visits your sign up page and enters an email and password into a form. You may include an optional username field to allow your users to log in with a username and password. Your frontend app hits an API endpoint that calls the [`register`](./docs/index.md#register) function, which creates an entity in the User collection, creates a email confirmation token for that entity, and sends the confirmation email as described above.
+2. The new user opens the confirmation email and clicks the link, which opens the callback URL with the added `data` URL parameter. Your frontend app must decode the `email` and `token` from this `data` parameter, as shown above, then hit an API endpoint that calls the [`setPassword`](./docs/index.md#resetpassword) function. This function returns an object containing the `accessToken`, `refreshToken` and `user` object. The endpoint should set the `refreshToken` on a session cookie and return the `accessToken` and `user` data back to the frontend.
 3. You frontend should store a reference to the `accessToken` and `user` data, then redirect the user as appropriate, usually to the main dashboard of the app. The `accessToken` should be included in an Authorization header as the `Bearer ${accessToken}` when making requests at the Fauna GraphQL endpoint.
 
-The flow for resetting a password is similar; the only difference is in the first step.
+### Reset a password
 
-1. The existing user visits your password reset page and enters the email address they registered previously with. Your frontend app hits an API endpoint that calls the [`requestPasswordReset`](./docs/index.md#requestpasswordreset) function, which creates an email confirmation token for the User entity that matches the given email address, and sends the user an email containing a confirmation link with an encoded `data` URL parameter containing the `email` and `token`.
+1. An existing user visits your password reset page and enters the email address they registered previously with. Your frontend app hits an API endpoint that calls the [`sendConfirmationEmail`](./docs/index.md#sendconfirmationemail) function, which creates an email confirmation token for the User entity that matches the given email address and sends the confirmation email as described above.
 
-The rest of the flow is the same as when registering a new user.
+Step 2 and 3 are the same as when signing up a new user.
+
+### Sign in with magic link
+
+1. An existing user visits your sign in page and enters the email address they registered previously with. Your frontend app hits an API endpoint that calls the [`sendConfirmationEmail`](./docs/index.md#sendconfirmationemail) function, which creates an email confirmation token for the User entity that matches the given email address and sends the confirmation email as described above.
+2. The new user opens the confirmation email and clicks the link, which opens the callback URL with the added `data` URL parameter. Your frontend app must decode the `email` and `token` from this `data` parameter, as shown above, then hit an API endpoint that calls the [`loginWithMagicLink`](./docs/index.md#loginwithmagiclink) function. This function returns an object containing the `accessToken`, `refreshToken` and `user` object. The endpoint should set the `refreshToken` on a session cookie and return the `accessToken` and `user` data back to the frontend.
+
+Step 3 is the same as when signing up a new user.
 
 ## Token rotation
 
@@ -153,7 +169,7 @@ Access tokens expire in 10 minutes. When a request to the Fauna GraphQL endpoint
 
 ## Sending emails
 
-When calling either the `register` or `requestPasswordReset` functions, you have two options for sending the user an email that will confirm their identity:
+When calling either the `register` or `requestTokenEmail` functions, you have two options for sending the user an email that will confirm their identity:
 
 1. Pass an input that conforms to [AuthInputWithEmailTemplate](./docs/interfaces/AuthInputWithEmailTemplate.md) in order to use the built-in faunauth email template. When using this method, you provide a config object that includes details about the styles and locale (text content) for the email, as well as an async function that will be called to send the email. Typically this function will be a wrapper around something like [@sendgrid/mail](https://www.npmjs.com/package/@sendgrid/mail).
 2. Pass an input that confirms to [AuthInputWithCustomEmail](./docs/interfaces//AuthInputWithCustomEmail.md) in order to provide your own email template logic. When using this method, you also need to provide an async function that sends the email, similarly to the function passed when using the faunauth email template. However, the only input to this email sending function is the final callback URL; you are responsible for actually building the rest of the email including all styling and locale (text content).
@@ -161,17 +177,3 @@ When calling either the `register` or `requestPasswordReset` functions, you have
 ## Error handling
 
 To help your consuming application make use of errors, we use a class called `ErrorWithKey` that extends from the usual JavaScript `Error`. This class has a `.key` property that functions as a unique key for the particular reason the error ocurred. This allows you to set up internationalization logic that uses the error's `.key` property to look up a user-facing message based on the current locale. Each of these errors also has the normal `.message` property that displays an error message in the English (United States) locale, which you can display if you so choose as a default option. The type definition for these keys is exposed in the types as `ErrorKey`.
-
-## More reading
-
-It's a good idea to read up on a few topics before using `faunauth`:
-
--   [The Fauna Query Language (FQL)](https://docs.fauna.com/fauna/current/api/fql/)
--   [User-defined functions (UDFs)](https://docs.fauna.com/fauna/current/learn/understanding/user_defined_functions)
-
-The `fauna` and `tests` folders are based on examples from two Fauna blog posts:
-
-1. [Refreshing authentication tokens in FQL](https://fauna.com/blog/refreshing-authentication-tokens-in-fql) - source code in [simple refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-simple)
-2. [Detecting leaked authentication tokens in FQL](https://fauna.com/blog/detecting-leaked-authentication-tokens-in-fql) - source code in [advanced refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-advanced)
-
-The `fauna` folder contains the building blocks for reusable FQL statements that can be added to an existing Fauna database. For example, the `login` function at [./fauna/src/login.js](./fauna/src/login.js) is added to a database by running the `CreateFunction` statement in [./fauna/resources/functions/login.js](./fauna/resources/functions/login.js). This creates a UDF or user-defined function that can later be called with a Fauna client, which is done within [./src/auth/login](./src/auth/login.ts).

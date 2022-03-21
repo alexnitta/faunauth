@@ -12,11 +12,28 @@
 
 ### Properties
 
+- [clientConfig](LoginInputWithEmail.md#clientconfig)
 - [email](LoginInputWithEmail.md#email)
 - [password](LoginInputWithEmail.md#password)
 - [publicFaunaKey](LoginInputWithEmail.md#publicfaunakey)
 
 ## Properties
+
+### clientConfig
+
+• `Optional` **clientConfig**: `Omit`<`ClientConfig`, ``"secret"``\>
+
+Fauna client config object
+
+#### Inherited from
+
+[BaseLoginInput](BaseLoginInput.md).[clientConfig](BaseLoginInput.md#clientconfig)
+
+#### Defined in
+
+[src/auth/login.ts:11](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/login.ts#L11)
+
+___
 
 ### email
 
@@ -26,7 +43,7 @@ Email address for the user who wants to sign in
 
 #### Defined in
 
-[src/auth/login.ts:22](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/login.ts#L22)
+[src/auth/login.ts:27](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/login.ts#L27)
 
 ___
 
@@ -42,7 +59,7 @@ The user's password
 
 #### Defined in
 
-[src/auth/login.ts:15](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/login.ts#L15)
+[src/auth/login.ts:20](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/login.ts#L20)
 
 ___
 
@@ -59,4 +76,4 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/login.ts:11](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/login.ts#L11)
+[src/auth/login.ts:16](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/login.ts#L16)

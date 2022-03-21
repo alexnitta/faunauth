@@ -26,11 +26,13 @@ export interface LoginWithMagicLinkInput {
 
 /**
  * Log in a user via a link sent in an email. The link contains an encoded token which must be
- * passed to this function as the `token` argument. This function checks  the token to see an exact
+ * passed to this function as the `token` argument. This function checks the token to see if an exact
  * match for the token exists in the database which:
  * - has not expired
  * - belongs to the user associated with the given email
- * If these conditions are met, the user is logged in.
+ * If these conditions are met, the user is logged in. The returned data will include an
+ * `accessToken`, `refreshToken` and `user` object including the user's `id` as well as any other
+ * data on the User document.
  * @returns - {@link ServerLoginResult}
  */
 export async function loginWithMagicLink(
@@ -49,17 +51,17 @@ export async function loginWithMagicLink(
         secret: publicFaunaKey,
     });
 
-    let setPasswordResult: FaunaLoginResult | null = null;
+    let loginResult: FaunaLoginResult | null = null;
 
     try {
-        setPasswordResult = await client.query(
+        loginResult = await client.query(
             q.Call('loginWithMagicLink', email, token),
         );
     } catch (error) {
         throw new ErrorWithKey('failedToSetPassword', error as Error);
     }
 
-    if (!setPasswordResult) {
+    if (!loginResult) {
         throw new ErrorWithKey('failedToSetPassword');
     }
 
@@ -67,7 +69,7 @@ export async function loginWithMagicLink(
         tokens: { access, refresh },
         account,
         id,
-    } = setPasswordResult;
+    } = loginResult;
 
     return {
         accessToken: access.secret,

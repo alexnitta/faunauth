@@ -24,4 +24,4 @@ Result of sending email
 
 #### Defined in
 
-[src/types/email.ts:157](https://github.com/alexnitta/faunauth/blob/5f9823a/src/types/email.ts#L157)
+[src/types/email.ts:162](https://github.com/alexnitta/faunauth/blob/44c1409/src/types/email.ts#L162)

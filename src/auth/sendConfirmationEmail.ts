@@ -36,18 +36,31 @@ export type RequestPasswordResetInput<SendEmailResult> =
         );
 
 /**
- * Initiate the "forgot password" process for a user who doesn't know their old password by setting
- * a token in the database, then sending an email with a link that includes the token. Upon clicking
- * the link, `completePasswordReset` will need to be invoked with the token to completed the process
- * and allow the user to log in with their new password.
+ * Create an email confirmation token in the database, then send an email with a confirmation link
+ * that includes the token and email address. Upon clicking the link, either `setPassword` or
+ * `loginWithMagicLink` will need to be invoked with the decoded token to complete the process.
  *
  * @remarks
+ * The token and email are wrapped into an object, then Base64-encoded and appended as a single
+ * URL search parameter called `data`. Your client-side code can read these values by doing:
+ * ```TypeScript
+ *  const search = window.location.search // if you're using react-router, you can do useLocation().search
+ *  const urlQuery = new URLSearchParams(search);
+ *  const data = urlQuery.get('data');
+ *
+ *  try {
+ *      const { email, token } = JSON.parse(atob(data));
+ *  } catch {
+ *      // could not read data from URL search parameter
+ *  }
+ * ```
+ *
  * You can either use the built-in email template system by passing in an input that conforms to
  * {@link AuthInputWithEmailTemplate}, or create your own email template by passing in an input that
  * conforms to {@link AuthInputWithCustomEmail}.
  * @returns - {@link RequestPasswordResetResult}
  */
-export async function requestPasswordReset<SendEmailResult>(
+export async function sendConfirmationEmail<SendEmailResult>(
     input: RequestPasswordResetInput<SendEmailResult>,
 ): Promise<AuthEmailResult<SendEmailResult>> {
     const { clientConfig, publicFaunaKey } = input;

@@ -14,10 +14,23 @@
 
 ### Properties
 
+- [clientConfig](BaseLoginInput.md#clientconfig)
 - [password](BaseLoginInput.md#password)
 - [publicFaunaKey](BaseLoginInput.md#publicfaunakey)
 
 ## Properties
+
+### clientConfig
+
+• `Optional` **clientConfig**: `Omit`<`ClientConfig`, ``"secret"``\>
+
+Fauna client config object
+
+#### Defined in
+
+[src/auth/login.ts:11](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/login.ts#L11)
+
+___
 
 ### password
 
@@ -27,7 +40,7 @@ The user's password
 
 #### Defined in
 
-[src/auth/login.ts:15](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/login.ts#L15)
+[src/auth/login.ts:20](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/login.ts#L20)
 
 ___
 
@@ -40,4 +53,4 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/login.ts:11](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/login.ts#L11)
+[src/auth/login.ts:16](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/login.ts#L16)

@@ -31,6 +31,7 @@ faunauth
 - [FaunaRefreshResult](interfaces/FaunaRefreshResult.md)
 - [LoginInputWithEmail](interfaces/LoginInputWithEmail.md)
 - [LoginInputWithUsername](interfaces/LoginInputWithUsername.md)
+- [LoginWithMagicLinkInput](interfaces/LoginWithMagicLinkInput.md)
 - [LogoutInput](interfaces/LogoutInput.md)
 - [RotateTokensInput](interfaces/RotateTokensInput.md)
 - [ServerLoginResult](interfaces/ServerLoginResult.md)
@@ -57,14 +58,16 @@ faunauth
 
 ### Functions
 
+- [addParamsToPath](index.md#addparamstopath)
 - [changePassword](index.md#changepassword)
 - [createOrUpdateUserRole](index.md#createorupdateuserrole)
 - [getEmailContent](index.md#getemailcontent)
 - [login](index.md#login)
+- [loginWithMagicLink](index.md#loginwithmagiclink)
 - [logout](index.md#logout)
 - [register](index.md#register)
-- [requestPasswordReset](index.md#requestpasswordreset)
 - [rotateTokens](index.md#rotatetokens)
+- [sendConfirmationEmail](index.md#sendconfirmationemail)
 - [setPassword](index.md#setpassword)
 - [updateUser](index.md#updateuser)
 
@@ -82,7 +85,7 @@ faunauth
 
 #### Defined in
 
-[src/types/email.ts:167](https://github.com/alexnitta/faunauth/blob/5f9823a/src/types/email.ts#L167)
+[src/types/email.ts:172](https://github.com/alexnitta/faunauth/blob/44c1409/src/types/email.ts#L172)
 
 ___
 
@@ -92,7 +95,7 @@ ___
 
 #### Defined in
 
-[src/types/errors.ts:1](https://github.com/alexnitta/faunauth/blob/5f9823a/src/types/errors.ts#L1)
+[src/types/errors.ts:1](https://github.com/alexnitta/faunauth/blob/44c1409/src/types/errors.ts#L1)
 
 ___
 
@@ -102,7 +105,7 @@ ___
 
 #### Defined in
 
-[src/auth/login.ts:32](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/login.ts#L32)
+[src/auth/login.ts:37](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/login.ts#L37)
 
 ___
 
@@ -121,7 +124,7 @@ Maybe generic type. To keep things consistent, we're also going to do that here.
 
 #### Defined in
 
-[src/types/general.ts:5](https://github.com/alexnitta/faunauth/blob/5f9823a/src/types/general.ts#L5)
+[src/types/general.ts:5](https://github.com/alexnitta/faunauth/blob/44c1409/src/types/general.ts#L5)
 
 ___
 
@@ -137,7 +140,7 @@ ___
 
 #### Defined in
 
-[src/auth/register.ts:37](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/register.ts#L37)
+[src/auth/register.ts:35](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/register.ts#L35)
 
 ___
 
@@ -153,7 +156,7 @@ ___
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:33](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/requestPasswordReset.ts#L33)
+src/auth/sendConfirmationEmail.ts:31
 
 ___
 
@@ -193,7 +196,7 @@ will need to set an API key using `sgMail.setApiKey('API_KEY')` before passing i
 
 #### Defined in
 
-[src/types/email.ts:121](https://github.com/alexnitta/faunauth/blob/5f9823a/src/types/email.ts#L121)
+[src/types/email.ts:121](https://github.com/alexnitta/faunauth/blob/44c1409/src/types/email.ts#L121)
 
 ___
 
@@ -233,9 +236,38 @@ will need to set an API key using `sgMail.setApiKey('API_KEY')` before passing i
 
 #### Defined in
 
-[src/types/email.ts:107](https://github.com/alexnitta/faunauth/blob/5f9823a/src/types/email.ts#L107)
+[src/types/email.ts:107](https://github.com/alexnitta/faunauth/blob/44c1409/src/types/email.ts#L107)
 
 ## Functions
+
+### addParamsToPath
+
+▸ **addParamsToPath**(`input`): `string`
+
+Add URL search params to a path. The path does not need to be a complete URL; it can be a path
+starting in `/`. If the path contains existing search parameters, they will be preserved. If the
+path contains a hash, it will also be preserved.
+
+Search params are encoded to their UTF-8 equivalent by the `new URLSearchParams` constructor, similar to how
+[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) works.
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `input` | `AddParamsToPathInput` | see {@link AddParamsToPathInput} |
+
+#### Returns
+
+`string`
+
+the input.path with the input.params added as search params
+
+#### Defined in
+
+[src/utils/addParamsToPath.ts:18](https://github.com/alexnitta/faunauth/blob/44c1409/src/utils/addParamsToPath.ts#L18)
+
+___
 
 ### changePassword
 
@@ -257,7 +289,7 @@ Change the password for a user who knows their old password.
 
 #### Defined in
 
-[src/auth/changePassword.ts:30](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/changePassword.ts#L30)
+[src/auth/changePassword.ts:35](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/changePassword.ts#L35)
 
 ___
 
@@ -343,7 +375,7 @@ You could then set up a package.json script that calls this function, ie:
 
 #### Defined in
 
-[src/utils/createOrUpdateUserRole.ts:88](https://github.com/alexnitta/faunauth/blob/5f9823a/src/utils/createOrUpdateUserRole.ts#L88)
+[src/utils/createOrUpdateUserRole.ts:88](https://github.com/alexnitta/faunauth/blob/44c1409/src/utils/createOrUpdateUserRole.ts#L88)
 
 ___
 
@@ -372,7 +404,7 @@ user registration or a password reset.
 
 #### Defined in
 
-[src/email/getEmailContent.ts:12](https://github.com/alexnitta/faunauth/blob/5f9823a/src/email/getEmailContent.ts#L12)
+[src/email/getEmailContent.ts:12](https://github.com/alexnitta/faunauth/blob/44c1409/src/email/getEmailContent.ts#L12)
 
 ___
 
@@ -398,7 +430,36 @@ the user's `id` as well as any other data on the User document.
 
 #### Defined in
 
-[src/auth/login.ts:41](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/login.ts#L41)
+[src/auth/login.ts:46](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/login.ts#L46)
+
+___
+
+### loginWithMagicLink
+
+▸ **loginWithMagicLink**(`input`): `Promise`<[`ServerLoginResult`](interfaces/ServerLoginResult.md)\>
+
+Log in a user via a link sent in an email. The link contains an encoded token which must be
+passed to this function as the `token` argument. This function checks the token to see if an exact
+match for the token exists in the database which:
+- has not expired
+- belongs to the user associated with the given email
+If these conditions are met, the user is logged in.
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `input` | [`LoginWithMagicLinkInput`](interfaces/LoginWithMagicLinkInput.md) |
+
+#### Returns
+
+`Promise`<[`ServerLoginResult`](interfaces/ServerLoginResult.md)\>
+
+- [ServerLoginResult](interfaces/ServerLoginResult.md)
+
+#### Defined in
+
+[src/auth/loginWithMagicLink.ts:36](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/loginWithMagicLink.ts#L36)
 
 ___
 
@@ -422,7 +483,7 @@ true if user was signed out
 
 #### Defined in
 
-[src/auth/logout.ts:22](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/logout.ts#L22)
+[src/auth/logout.ts:27](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/logout.ts#L27)
 
 ___
 
@@ -431,12 +492,21 @@ ___
 ▸ **register**<`SendEmailResult`\>(`input`): `Promise`<[`AuthEmailResult`](index.md#authemailresult)<`SendEmailResult`\>\>
 
 Register a user by creating a user in the User collection and sending the user an email with a
-confirmation link that will can be used to confirm their account. A unique `input.userData.email`
-is required. If desired, you can provide a unique username on `input.userData.username`. If you
-do this (or if you later modify the user by adding a username to its `data` property), you can
-call the `login` function with the username rather than the email.
+confirmation link to the specified callbackUrl that includes the encoded token and email address. The link should,
+`setPassword` or will need to be invoked with the decoded token to complete the process.
+
+A unique `input.userData.email` is required. If desired, you can provide a unique username on
+`input.userData.username`. If you do this (or if you later modify the user by adding a username
+to its `data` property), you can call the `login` function with the username rather than the
+email.
 
 **`remarks`**
+The token and email are wrapped into an object, then Base64-encoded and appended as a single
+URL search parameter called `data`. Your client-side code can read these values by doing:
+```JavaScript
+const { email, token } = JSON.parse(atob(data));
+```
+
 You can either use the built-in email template system by passing in an input that conforms to
 [AuthInputWithEmailTemplate](interfaces/AuthInputWithEmailTemplate.md), or create your own email template by passing in an input that
 conforms to [AuthInputWithCustomEmail](interfaces/AuthInputWithCustomEmail.md).
@@ -461,20 +531,57 @@ conforms to [AuthInputWithCustomEmail](interfaces/AuthInputWithCustomEmail.md).
 
 #### Defined in
 
-[src/auth/register.ts:56](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/register.ts#L56)
+[src/auth/register.ts:63](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/register.ts#L63)
 
 ___
 
-### requestPasswordReset
+### rotateTokens
 
-▸ **requestPasswordReset**<`SendEmailResult`\>(`input`): `Promise`<[`AuthEmailResult`](index.md#authemailresult)<`SendEmailResult`\>\>
+▸ **rotateTokens**(`input`): `Promise`<[`TokenPair`](interfaces/TokenPair.md)\>
 
-Initiate the "forgot password" process for a user who doesn't know their old password by setting
-a token in the database, then sending an email with a link that includes the token. Upon clicking
-the link, `completePasswordReset` will need to be invoked with the token to completed the process
-and allow the user to log in with their new password.
+Using the user's current refresh token, get a new pair of access & refresh tokens.
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `input` | [`RotateTokensInput`](interfaces/RotateTokensInput.md) | [RotateTokensInput](interfaces/RotateTokensInput.md) |
+
+#### Returns
+
+`Promise`<[`TokenPair`](interfaces/TokenPair.md)\>
+
+the new access and refresh tokens if successful
+
+#### Defined in
+
+[src/auth/rotateTokens.ts:24](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/rotateTokens.ts#L24)
+
+___
+
+### sendConfirmationEmail
+
+▸ **sendConfirmationEmail**<`SendEmailResult`\>(`input`): `Promise`<[`AuthEmailResult`](index.md#authemailresult)<`SendEmailResult`\>\>
+
+Create an email confirmation token in the database, then send an email with a confirmation link
+that includes the token and email address. Upon clicking the link, either `setPassword` or
+`loginWithMagicLink` will need to be invoked with the decoded token to complete the process.
 
 **`remarks`**
+The token and email are wrapped into an object, then Base64-encoded and appended as a single
+URL search parameter called `data`. Your client-side code can read these values by doing:
+```TypeScript
+ const search = window.location.search // if you're using react-router, you can do useLocation().search
+ const urlQuery = new URLSearchParams(search);
+ const data = urlQuery.get('data');
+
+ try {
+     const { email, token } = JSON.parse(atob(data));
+ } catch {
+     // could not read data from URL search parameter
+ }
+```
+
 You can either use the built-in email template system by passing in an input that conforms to
 [AuthInputWithEmailTemplate](interfaces/AuthInputWithEmailTemplate.md), or create your own email template by passing in an input that
 conforms to [AuthInputWithCustomEmail](interfaces/AuthInputWithCustomEmail.md).
@@ -499,31 +606,7 @@ conforms to [AuthInputWithCustomEmail](interfaces/AuthInputWithCustomEmail.md).
 
 #### Defined in
 
-[src/auth/requestPasswordReset.ts:52](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/requestPasswordReset.ts#L52)
-
-___
-
-### rotateTokens
-
-▸ **rotateTokens**(`input`): `Promise`<[`TokenPair`](interfaces/TokenPair.md)\>
-
-Using the user's current refresh token, get a new pair of access & refresh tokens.
-
-#### Parameters
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `input` | [`RotateTokensInput`](interfaces/RotateTokensInput.md) | [RotateTokensInput](interfaces/RotateTokensInput.md) |
-
-#### Returns
-
-`Promise`<[`TokenPair`](interfaces/TokenPair.md)\>
-
-the new access and refresh tokens if successful
-
-#### Defined in
-
-[src/auth/rotateTokens.ts:19](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/rotateTokens.ts#L19)
+src/auth/sendConfirmationEmail.ts:63
 
 ___
 
@@ -532,11 +615,11 @@ ___
 ▸ **setPassword**(`input`): `Promise`<[`ServerLoginResult`](interfaces/ServerLoginResult.md)\>
 
 Set a user's password in order to finish either the "register" or "forgot password" flow. By now,
-the user has already triggered either `register` or `requestPasswordReset` to request a token.
+the user has already triggered either `register` or `requestTokenEmail` to request a token.
 The token has been created in the database, and an email has been sent to the user with a link
 which includes an encoded copy of the token. The user has clicked the link, opening a page in the
 frontend app that calls an API endpoint which calls this function. This function checks
-the token to see an exact match for the token exists in the database which:
+the token to see if an exact match for the token exists in the database which:
 - has not expired
 - belongs to the user associated with the given email
 If these conditions are met, the given password is set as the user's current password.
@@ -555,7 +638,7 @@ If these conditions are met, the given password is set as the user's current pas
 
 #### Defined in
 
-[src/auth/setPassword.ts:38](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/setPassword.ts#L38)
+[src/auth/setPassword.ts:43](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/setPassword.ts#L43)
 
 ___
 
@@ -579,4 +662,4 @@ a Promise that resolves to the [UpdateUserResult](interfaces/UpdateUserResult.md
 
 #### Defined in
 
-[src/auth/updateUser.ts:27](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/updateUser.ts#L27)
+[src/auth/updateUser.ts:32](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/updateUser.ts#L32)

@@ -6,12 +6,25 @@
 
 ### Properties
 
+- [clientConfig](ChangePasswordInput.md#clientconfig)
 - [email](ChangePasswordInput.md#email)
 - [newPassword](ChangePasswordInput.md#newpassword)
 - [oldPassword](ChangePasswordInput.md#oldpassword)
 - [publicFaunaKey](ChangePasswordInput.md#publicfaunakey)
 
 ## Properties
+
+### clientConfig
+
+• `Optional` **clientConfig**: `Omit`<`ClientConfig`, ``"secret"``\>
+
+Fauna client config object
+
+#### Defined in
+
+[src/auth/changePassword.ts:11](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/changePassword.ts#L11)
+
+___
 
 ### email
 
@@ -21,7 +34,7 @@ The user's email address
 
 #### Defined in
 
-[src/auth/changePassword.ts:10](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/changePassword.ts#L10)
+[src/auth/changePassword.ts:15](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/changePassword.ts#L15)
 
 ___
 
@@ -33,7 +46,7 @@ The desired password
 
 #### Defined in
 
-[src/auth/changePassword.ts:14](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/changePassword.ts#L14)
+[src/auth/changePassword.ts:19](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/changePassword.ts#L19)
 
 ___
 
@@ -45,7 +58,7 @@ The current password
 
 #### Defined in
 
-[src/auth/changePassword.ts:18](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/changePassword.ts#L18)
+[src/auth/changePassword.ts:23](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/changePassword.ts#L23)
 
 ___
 
@@ -58,4 +71,4 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/changePassword.ts:23](https://github.com/alexnitta/faunauth/blob/5f9823a/src/auth/changePassword.ts#L23)
+[src/auth/changePassword.ts:28](https://github.com/alexnitta/faunauth/blob/44c1409/src/auth/changePassword.ts#L28)
