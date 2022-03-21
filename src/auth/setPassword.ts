@@ -62,8 +62,8 @@ export async function setPassword(
         setPasswordResult = await client.query(
             q.Call('setPassword', email, password, token),
         );
-    } catch (error) {
-        throw new ErrorWithKey('failedToSetPassword', error as Error);
+    } catch (e) {
+        throw new ErrorWithKey('failedToSetPassword', [e as Error]);
     }
 
     if (!setPasswordResult) {

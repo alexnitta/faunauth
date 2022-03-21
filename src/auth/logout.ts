@@ -41,7 +41,7 @@ export async function logout({
     } catch (e) {
         const error = e as Error;
 
-        throw new ErrorWithKey('failedToLogout', error);
+        throw new ErrorWithKey('failedToLogout', [error]);
     }
 
     return true;

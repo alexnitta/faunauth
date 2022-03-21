@@ -1,5 +1,5 @@
 import faunadb from 'faunadb';
-import { IsCalledWithRefreshToken } from '../../src/tokens';
+import { IsCalledWithRefreshToken } from '../../../src/tokens';
 
 const q = faunadb.query;
 const { Query, Lambda, Collection, CreateRole } = q;

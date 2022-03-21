@@ -14,19 +14,19 @@ export class ErrorWithKey extends Error {
     key: string;
 
     /**
-     * If there was an underlying error thrown by a third-party API, it can be included here by
-     * calling `new ErrorWithKey(key, apiError)`.
+     * If there were any underlying errors thrown by third-party APIs, they can be included here by
+     * calling `new ErrorWithKey(key, apiErrors)`.
      */
-    apiError?: Error;
+    apiErrors?: Error[];
 
     // eslint-disable-next-line @typescript-eslint/ban-types
     __proto__: Error | undefined;
 
-    constructor(key: ErrorKey, apiError?: Error) {
+    constructor(key: ErrorKey, apiErrors?: Error[]) {
         super(keyedErrors[key]); // sets the `message` property on the Error parent class
         this.name = 'ErrorWithKey';
         this.key = key;
-        this.apiError = apiError;
+        this.apiErrors = apiErrors;
         // restore prototype chain
         const actualProto = new.target.prototype;
 

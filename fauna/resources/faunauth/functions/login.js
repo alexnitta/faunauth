@@ -1,5 +1,5 @@
 import faunadb from 'faunadb';
-import { Login } from '../../src/login';
+import { Login } from '../../../src/login';
 
 const q = faunadb.query;
 const { Query, Lambda, CreateFunction, Var } = q;

@@ -72,7 +72,7 @@ export async function login(input: LoginInput): Promise<ServerLoginResult> {
     } catch (e) {
         const error = e as Error;
 
-        throw new ErrorWithKey('invalidUserOrPassword', error);
+        throw new ErrorWithKey('invalidUserOrPassword', [error]);
     }
 
     if (loginResult === null) {

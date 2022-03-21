@@ -1,15 +1,15 @@
 import faunadb from 'faunadb';
-import { LoginWithUsername } from '../../src/loginWithUsername';
+import { LoginWithMagicLink } from '../../../src/loginWithMagicLink';
 
 const q = faunadb.query;
 const { Query, Lambda, CreateFunction, Var } = q;
 
 export default CreateFunction({
-    name: 'loginWithUsername',
+    name: 'loginWithMagicLink',
     body: Query(
         Lambda(
-            ['username', 'password'],
-            LoginWithUsername(Var('username'), Var('password')),
+            ['email', 'token'],
+            LoginWithMagicLink(Var('email'), Var('token')),
         ),
     ),
     role: 'admin',

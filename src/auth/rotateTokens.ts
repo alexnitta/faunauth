@@ -35,7 +35,7 @@ export async function rotateTokens({
     try {
         result = await client.query(q.Call('refresh'));
     } catch (e) {
-        throw new ErrorWithKey('failedToRefreshToken', e as Error);
+        throw new ErrorWithKey('failedToRefreshToken', [e as Error]);
     }
 
     if (result === null) {

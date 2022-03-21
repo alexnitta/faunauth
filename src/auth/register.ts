@@ -10,6 +10,7 @@ import type {
     AuthEmailResult,
     Token,
     UserData,
+    Maybe,
 } from '../types';
 
 export interface BaseRegisterInput {
@@ -106,7 +107,7 @@ export async function register<SendEmailResult>(
         if (code === 'instance not unique') {
             throw new ErrorWithKey('userAlreadyExists');
         } else {
-            throw new ErrorWithKey('queryError', e as Error);
+            throw new ErrorWithKey('queryError', [e as Error]);
         }
     }
 
@@ -122,7 +123,7 @@ export async function register<SendEmailResult>(
             token: Token<{ type: string; email: string }>;
         }>(q.Call('createEmailConfirmationToken', email));
     } catch (e) {
-        throw new ErrorWithKey('failedToCreateToken', e as Error);
+        throw new ErrorWithKey('failedToCreateToken', [e as Error]);
     }
 
     if (!createTokenResult) {
@@ -143,7 +144,7 @@ export async function register<SendEmailResult>(
         }),
     ).toString('base64');
 
-    let sendEmailResult = null;
+    let sendEmailResult: Maybe<ErrorWithKey | SendEmailResult> = null;
 
     if ('sendEmailFromTemplate' in input) {
         const { emailConfig, fromEmail, sendEmailFromTemplate } = input;
@@ -169,7 +170,9 @@ export async function register<SendEmailResult>(
         try {
             sendEmailResult = await sendEmailFromTemplate(message);
         } catch (e) {
-            throw new ErrorWithKey('failedToSendEmail', e as Error);
+            sendEmailResult = new ErrorWithKey('failedToSendEmail', [
+                e as Error,
+            ]);
         }
     } else if ('sendCustomEmail' in input) {
         const { sendCustomEmail } = input;
@@ -182,9 +185,23 @@ export async function register<SendEmailResult>(
         try {
             sendEmailResult = await sendCustomEmail(finalCallbackUrl);
         } catch (e) {
-            throw new ErrorWithKey('failedToSendEmail', e as Error);
+            sendEmailResult = new ErrorWithKey('failedToSendEmail', [
+                e as Error,
+            ]);
         }
     }
 
-    return { tokenCreated: true, sendEmailResult };
+    if (sendEmailResult instanceof ErrorWithKey) {
+        try {
+            // Delete user if email is not sent so that they can be re-created at a later time
+            await client.query(q.Delete(userResult.ref));
+        } catch (e) {
+            throw new ErrorWithKey('failedToSendEmailAndDeleteUser', [
+                ...sendEmailResult.apiErrors,
+                e as Error,
+            ]);
+        }
+    } else {
+        return { tokenCreated: true, sendEmailResult };
+    }
 }

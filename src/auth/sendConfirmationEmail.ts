@@ -84,7 +84,7 @@ export async function sendConfirmationEmail<SendEmailResult>(
             token: Token<{ type: string; email: string }>;
         }>(q.Call('createEmailConfirmationToken', email));
     } catch (e) {
-        throw new ErrorWithKey('failedToCreateToken', e as Error);
+        throw new ErrorWithKey('failedToCreateToken', [e as Error]);
     }
 
     if (!createTokenResult) {
@@ -130,7 +130,7 @@ export async function sendConfirmationEmail<SendEmailResult>(
         try {
             sendEmailResult = await sendEmailFromTemplate(message);
         } catch (e) {
-            throw new ErrorWithKey('failedToSendEmail', e as Error);
+            throw new ErrorWithKey('failedToSendEmail', [e as Error]);
         }
     } else if ('sendCustomEmail' in input) {
         const { sendCustomEmail } = input;
@@ -143,7 +143,7 @@ export async function sendConfirmationEmail<SendEmailResult>(
         try {
             sendEmailResult = await sendCustomEmail(finalCallbackUrl);
         } catch (e) {
-            throw new ErrorWithKey('failedToSendEmail', e as Error);
+            throw new ErrorWithKey('failedToSendEmail', [e as Error]);
         }
     }
 

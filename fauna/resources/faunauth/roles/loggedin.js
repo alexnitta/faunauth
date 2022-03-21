@@ -1,5 +1,5 @@
 import faunadb from 'faunadb';
-import { IsCalledWithAccessToken } from '../../src/tokens';
+import { IsCalledWithAccessToken } from '../../../src/tokens';
 
 const q = faunadb.query;
 const {

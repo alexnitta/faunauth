@@ -1,5 +1,5 @@
 import faunadb from 'faunadb';
-import { RefreshToken } from '../../src/refresh';
+import { RefreshToken } from '../../../src/refresh';
 
 const q = faunadb.query;
 const { Query, Lambda, CreateFunction } = q;

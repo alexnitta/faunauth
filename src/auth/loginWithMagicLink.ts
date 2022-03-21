@@ -58,7 +58,7 @@ export async function loginWithMagicLink(
             q.Call('loginWithMagicLink', email, token),
         );
     } catch (error) {
-        throw new ErrorWithKey('failedToSetPassword', error as Error);
+        throw new ErrorWithKey('failedToSetPassword', [error as Error]);
     }
 
     if (!loginResult) {

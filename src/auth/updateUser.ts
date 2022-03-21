@@ -49,8 +49,8 @@ export async function updateUser(
         updateUserResult = await client.query(
             Update(Ref(Collection('User'), userID), { data }),
         );
-    } catch (error) {
-        throw new ErrorWithKey('failedToUpdateUser', error as Error);
+    } catch (e) {
+        throw new ErrorWithKey('failedToUpdateUser', [e as Error]);
     }
 
     if (updateUserResult === null) {

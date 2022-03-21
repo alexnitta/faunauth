@@ -1,5 +1,5 @@
 import faunadb from 'faunadb';
-import { SetPasswordForAccount } from '../../src/setPassword';
+import { SetPasswordForAccount } from '../../../src/setPassword';
 
 const q = faunadb.query;
 const { Query, Lambda, CreateFunction, Var } = q;

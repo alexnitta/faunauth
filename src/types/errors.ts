@@ -9,6 +9,7 @@ export type ErrorKey =
     | 'failedToCreateTokenAndSendEmail'
     | 'failedToRefreshToken'
     | 'failedToSendEmail'
+    | 'failedToSendEmailAndDeleteUser'
     | 'failedToLogout'
     | 'failedToUpdateUser'
     | 'publicFaunaKeyMissing'

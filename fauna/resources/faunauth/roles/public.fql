@@ -31,5 +31,11 @@ CreateRole({
         call: true
       }
     },
+    {
+      resource: Collection('User'),
+      actions: {
+        delete: true
+      },
+    }
   ]
 })

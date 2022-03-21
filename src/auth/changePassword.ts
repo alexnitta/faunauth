@@ -55,7 +55,7 @@ export async function changePassword(
             q.Call('setPassword', email, oldPassword, newPassword),
         );
     } catch (e) {
-        throw new ErrorWithKey('failedToSetPassword', e as Error);
+        throw new ErrorWithKey('failedToSetPassword', [e as Error]);
     }
 
     if (setPasswordResult === null) {
