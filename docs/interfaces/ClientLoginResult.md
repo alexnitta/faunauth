@@ -26,7 +26,7 @@ docs refer to this as a 'secret'; from the client perspective it's a JWT.
 
 #### Defined in
 
-[src/types/auth.ts:70](https://github.com/alexnitta/faunauth/blob/57157b8/src/types/auth.ts#L70)
+[src/types/auth.ts:70](https://github.com/alexnitta/faunauth/blob/185a6ac/src/types/auth.ts#L70)
 
 ___
 
@@ -38,4 +38,4 @@ Details for the user that was signed in
 
 #### Defined in
 
-[src/types/auth.ts:74](https://github.com/alexnitta/faunauth/blob/57157b8/src/types/auth.ts#L74)
+[src/types/auth.ts:74](https://github.com/alexnitta/faunauth/blob/185a6ac/src/types/auth.ts#L74)

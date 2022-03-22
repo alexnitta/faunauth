@@ -30,7 +30,7 @@ export interface SetPasswordInput {
 
 /**
  * Set a user's password in order to finish either the "register" or "forgot password" flow. By now,
- * the user has already triggered either `register` or `requestTokenEmail` to request a token.
+ * the user has already triggered either `register` or `sendConfirmationEmail` to request a token.
  * The token has been created in the database, and an email has been sent to the user with a link
  * which includes an encoded copy of the token. The user has clicked the link, opening a page in the
  * frontend app that calls an API endpoint which calls this function. This function checks

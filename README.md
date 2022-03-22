@@ -169,7 +169,7 @@ Access tokens expire in 10 minutes. When a request to the Fauna GraphQL endpoint
 
 ## Sending emails
 
-When calling either the `register` or `requestTokenEmail` functions, you have two options for sending the user an email that will confirm their identity:
+When calling either the `register` or `sendConfirmationEmail` functions, you have two options for sending the user an email that will confirm their identity:
 
 1. Pass an input that conforms to [AuthInputWithEmailTemplate](./docs/interfaces/AuthInputWithEmailTemplate.md) in order to use the built-in faunauth email template. When using this method, you provide a config object that includes details about the styles and locale (text content) for the email, as well as an async function that will be called to send the email. Typically this function will be a wrapper around something like [@sendgrid/mail](https://www.npmjs.com/package/@sendgrid/mail).
 2. Pass an input that confirms to [AuthInputWithCustomEmail](./docs/interfaces//AuthInputWithCustomEmail.md) in order to provide your own email template logic. When using this method, you also need to provide an async function that sends the email, similarly to the function passed when using the faunauth email template. However, the only input to this email sending function is the final callback URL; you are responsible for actually building the rest of the email including all styling and locale (text content).
