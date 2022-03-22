@@ -131,7 +131,8 @@ As part of these user flows, you will need to expose a page within your app at t
 Here's how you would parse the encoded `data` URL search parameter:
 
 ```TypeScript
-const search = window.location.search // if you're using react-router, you can do useLocation().search
+// If you're using react-router, you can get search params with useSearchParams()
+const search = window.location.search
 const urlQuery = new URLSearchParams(search);
 const data = urlQuery.get('data');
 

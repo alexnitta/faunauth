@@ -45,7 +45,8 @@ export type RequestPasswordResetInput<SendEmailResult> =
  * The token and email are wrapped into an object, then Base64-encoded and appended as a single
  * URL search parameter called `data`. Your client-side code can read these values by doing:
  * ```TypeScript
- *  const search = window.location.search // if you're using react-router, you can do useLocation().search
+ *  // If you're using react-router, you can get search params with useSearchParams()
+ *  const search = window.location.search
  *  const urlQuery = new URLSearchParams(search);
  *  const data = urlQuery.get('data');
  *

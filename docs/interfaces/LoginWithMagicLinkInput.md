@@ -21,7 +21,7 @@ Fauna client config object
 
 #### Defined in
 
-[src/auth/loginWithMagicLink.ts:11](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/loginWithMagicLink.ts#L11)
+[src/auth/loginWithMagicLink.ts:11](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/loginWithMagicLink.ts#L11)
 
 ___
 
@@ -33,7 +33,7 @@ Email address for the user who wants to log in
 
 #### Defined in
 
-[src/auth/loginWithMagicLink.ts:15](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/loginWithMagicLink.ts#L15)
+[src/auth/loginWithMagicLink.ts:15](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/loginWithMagicLink.ts#L15)
 
 ___
 
@@ -46,7 +46,7 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/loginWithMagicLink.ts:20](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/loginWithMagicLink.ts#L20)
+[src/auth/loginWithMagicLink.ts:20](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/loginWithMagicLink.ts#L20)
 
 ___
 
@@ -58,4 +58,4 @@ Token that was previously created in the database
 
 #### Defined in
 
-[src/auth/loginWithMagicLink.ts:24](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/loginWithMagicLink.ts#L24)
+[src/auth/loginWithMagicLink.ts:24](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/loginWithMagicLink.ts#L24)

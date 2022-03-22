@@ -85,7 +85,7 @@ faunauth
 
 #### Defined in
 
-[src/types/email.ts:172](https://github.com/alexnitta/faunauth/blob/185a6ac/src/types/email.ts#L172)
+[src/types/email.ts:172](https://github.com/alexnitta/faunauth/blob/a52671e/src/types/email.ts#L172)
 
 ___
 
@@ -95,7 +95,7 @@ ___
 
 #### Defined in
 
-[src/types/errors.ts:1](https://github.com/alexnitta/faunauth/blob/185a6ac/src/types/errors.ts#L1)
+[src/types/errors.ts:1](https://github.com/alexnitta/faunauth/blob/a52671e/src/types/errors.ts#L1)
 
 ___
 
@@ -105,7 +105,7 @@ ___
 
 #### Defined in
 
-[src/auth/login.ts:37](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/login.ts#L37)
+[src/auth/login.ts:37](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/login.ts#L37)
 
 ___
 
@@ -124,7 +124,7 @@ Maybe generic type. To keep things consistent, we're also going to do that here.
 
 #### Defined in
 
-[src/types/general.ts:5](https://github.com/alexnitta/faunauth/blob/185a6ac/src/types/general.ts#L5)
+[src/types/general.ts:5](https://github.com/alexnitta/faunauth/blob/a52671e/src/types/general.ts#L5)
 
 ___
 
@@ -140,7 +140,7 @@ ___
 
 #### Defined in
 
-[src/auth/register.ts:36](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/register.ts#L36)
+[src/auth/register.ts:36](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/register.ts#L36)
 
 ___
 
@@ -156,7 +156,7 @@ ___
 
 #### Defined in
 
-[src/auth/sendConfirmationEmail.ts:31](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/sendConfirmationEmail.ts#L31)
+[src/auth/sendConfirmationEmail.ts:31](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/sendConfirmationEmail.ts#L31)
 
 ___
 
@@ -196,7 +196,7 @@ will need to set an API key using `sgMail.setApiKey('API_KEY')` before passing i
 
 #### Defined in
 
-[src/types/email.ts:121](https://github.com/alexnitta/faunauth/blob/185a6ac/src/types/email.ts#L121)
+[src/types/email.ts:121](https://github.com/alexnitta/faunauth/blob/a52671e/src/types/email.ts#L121)
 
 ___
 
@@ -236,7 +236,7 @@ will need to set an API key using `sgMail.setApiKey('API_KEY')` before passing i
 
 #### Defined in
 
-[src/types/email.ts:107](https://github.com/alexnitta/faunauth/blob/185a6ac/src/types/email.ts#L107)
+[src/types/email.ts:107](https://github.com/alexnitta/faunauth/blob/a52671e/src/types/email.ts#L107)
 
 ## Functions
 
@@ -265,7 +265,7 @@ the input.path with the input.params added as search params
 
 #### Defined in
 
-[src/utils/addParamsToPath.ts:18](https://github.com/alexnitta/faunauth/blob/185a6ac/src/utils/addParamsToPath.ts#L18)
+[src/utils/addParamsToPath.ts:18](https://github.com/alexnitta/faunauth/blob/a52671e/src/utils/addParamsToPath.ts#L18)
 
 ___
 
@@ -291,7 +291,7 @@ The `input.email` is converted to lowercase, so it is case-insensitive.
 
 #### Defined in
 
-[src/auth/changePassword.ts:37](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/changePassword.ts#L37)
+[src/auth/changePassword.ts:37](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/changePassword.ts#L37)
 
 ___
 
@@ -377,7 +377,7 @@ You could then set up a package.json script that calls this function, ie:
 
 #### Defined in
 
-[src/utils/createOrUpdateUserRole.ts:88](https://github.com/alexnitta/faunauth/blob/185a6ac/src/utils/createOrUpdateUserRole.ts#L88)
+[src/utils/createOrUpdateUserRole.ts:88](https://github.com/alexnitta/faunauth/blob/a52671e/src/utils/createOrUpdateUserRole.ts#L88)
 
 ___
 
@@ -406,7 +406,7 @@ user registration or a password reset.
 
 #### Defined in
 
-[src/email/getEmailContent.ts:12](https://github.com/alexnitta/faunauth/blob/185a6ac/src/email/getEmailContent.ts#L12)
+[src/email/getEmailContent.ts:12](https://github.com/alexnitta/faunauth/blob/a52671e/src/email/getEmailContent.ts#L12)
 
 ___
 
@@ -434,7 +434,7 @@ The `input.email` or `input.username` is converted to lowercase, so it is case-i
 
 #### Defined in
 
-[src/auth/login.ts:48](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/login.ts#L48)
+[src/auth/login.ts:48](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/login.ts#L48)
 
 ___
 
@@ -467,7 +467,7 @@ The `input.email` is converted to lowercase, so it is case-insensitive.
 
 #### Defined in
 
-[src/auth/loginWithMagicLink.ts:40](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/loginWithMagicLink.ts#L40)
+[src/auth/loginWithMagicLink.ts:40](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/loginWithMagicLink.ts#L40)
 
 ___
 
@@ -491,7 +491,7 @@ true if user was signed out
 
 #### Defined in
 
-[src/auth/logout.ts:27](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/logout.ts#L27)
+[src/auth/logout.ts:27](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/logout.ts#L27)
 
 ___
 
@@ -542,7 +542,7 @@ conforms to [AuthInputWithCustomEmail](interfaces/AuthInputWithCustomEmail.md).
 
 #### Defined in
 
-[src/auth/register.ts:67](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/register.ts#L67)
+[src/auth/register.ts:67](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/register.ts#L67)
 
 ___
 
@@ -566,7 +566,7 @@ the new access and refresh tokens if successful
 
 #### Defined in
 
-[src/auth/rotateTokens.ts:24](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/rotateTokens.ts#L24)
+[src/auth/rotateTokens.ts:24](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/rotateTokens.ts#L24)
 
 ___
 
@@ -584,7 +584,8 @@ The `input.email` is converted to lowercase, so it is case-insensitive.
 The token and email are wrapped into an object, then Base64-encoded and appended as a single
 URL search parameter called `data`. Your client-side code can read these values by doing:
 ```TypeScript
- const search = window.location.search // if you're using react-router, you can do useLocation().search
+ // If you're using react-router, you can get search params with useSearchParams()
+ const search = window.location.search
  const urlQuery = new URLSearchParams(search);
  const data = urlQuery.get('data');
 
@@ -619,7 +620,7 @@ conforms to [AuthInputWithCustomEmail](interfaces/AuthInputWithCustomEmail.md).
 
 #### Defined in
 
-[src/auth/sendConfirmationEmail.ts:64](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/sendConfirmationEmail.ts#L64)
+[src/auth/sendConfirmationEmail.ts:65](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/sendConfirmationEmail.ts#L65)
 
 ___
 
@@ -653,7 +654,7 @@ The `input.email` is converted to lowercase, so it is case-insensitive.
 
 #### Defined in
 
-[src/auth/setPassword.ts:45](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/setPassword.ts#L45)
+[src/auth/setPassword.ts:45](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/setPassword.ts#L45)
 
 ___
 
@@ -677,4 +678,4 @@ a Promise that resolves to the [UpdateUserResult](interfaces/UpdateUserResult.md
 
 #### Defined in
 
-[src/auth/updateUser.ts:32](https://github.com/alexnitta/faunauth/blob/185a6ac/src/auth/updateUser.ts#L32)
+[src/auth/updateUser.ts:32](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/updateUser.ts#L32)

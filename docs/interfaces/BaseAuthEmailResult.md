@@ -18,4 +18,4 @@ True if a sign up token was created in database
 
 #### Defined in
 
-[src/types/email.ts:156](https://github.com/alexnitta/faunauth/blob/185a6ac/src/types/email.ts#L156)
+[src/types/email.ts:156](https://github.com/alexnitta/faunauth/blob/a52671e/src/types/email.ts#L156)
