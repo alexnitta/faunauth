@@ -7,7 +7,6 @@ import type {
     CollectionQueryResult,
     AuthInputWithEmailTemplate,
     AuthInputWithCustomEmail,
-    AuthEmailResult,
     Token,
     UserData,
     Maybe,
@@ -62,11 +61,11 @@ export type RegisterInput<SendEmailResult> = BaseRegisterInput &
  * You can either use the built-in email template system by passing in an input that conforms to
  * {@link AuthInputWithEmailTemplate}, or create your own email template by passing in an input that
  * conforms to {@link AuthInputWithCustomEmail}.
- * @returns - {@link RegisterResult}
+ * @returns the generic \`<SendEmailResult>\` that you specify
  */
 export async function register<SendEmailResult>(
     input: RegisterInput<SendEmailResult>,
-): Promise<AuthEmailResult<SendEmailResult>> {
+): Promise<SendEmailResult> {
     const {
         clientConfig,
         publicFaunaKey,
@@ -132,10 +131,9 @@ export async function register<SendEmailResult>(
     }
 
     if (!createTokenResult) {
-        return {
-            tokenCreated: false,
-            sendEmailResult: null,
-        };
+        // It would be really strange if this happened, because the user should be created just
+        // before this, but we check for this condition anyway.
+        throw new ErrorWithKey('userDoesNotExist');
     }
 
     const {
@@ -207,6 +205,6 @@ export async function register<SendEmailResult>(
             ]);
         }
     } else {
-        return { tokenCreated: true, sendEmailResult };
+        return sendEmailResult;
     }
 }

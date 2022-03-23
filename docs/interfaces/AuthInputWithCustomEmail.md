@@ -1,12 +1,12 @@
 [faunauth](../index.md) / AuthInputWithCustomEmail
 
-# Interface: AuthInputWithCustomEmail<SendCustomEmailResult\>
+# Interface: AuthInputWithCustomEmail<SendEmailResult\>
 
 ## Type parameters
 
 | Name |
 | :------ |
-| `SendCustomEmailResult` |
+| `SendEmailResult` |
 
 ## Table of contents
 
@@ -26,16 +26,16 @@ includes a Base64-encoded string containing the email and token.
 
 #### Defined in
 
-[src/types/email.ts:145](https://github.com/alexnitta/faunauth/blob/a52671e/src/types/email.ts#L145)
+[src/types/email.ts:145](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/types/email.ts#L145)
 
 ___
 
 ### sendCustomEmail
 
-• **sendCustomEmail**: [`SendCustomEmail`](../index.md#sendcustomemail)<`SendCustomEmailResult`\>
+• **sendCustomEmail**: [`SendCustomEmail`](../index.md#sendcustomemail)<`SendEmailResult`\>
 
 See [SendCustomEmail](../index.md#sendcustomemail)
 
 #### Defined in
 
-[src/types/email.ts:149](https://github.com/alexnitta/faunauth/blob/a52671e/src/types/email.ts#L149)
+[src/types/email.ts:149](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/types/email.ts#L149)

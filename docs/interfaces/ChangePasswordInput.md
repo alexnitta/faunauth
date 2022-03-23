@@ -22,7 +22,7 @@ Fauna client config object
 
 #### Defined in
 
-[src/auth/changePassword.ts:11](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/changePassword.ts#L11)
+[src/auth/changePassword.ts:11](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/changePassword.ts#L11)
 
 ___
 
@@ -34,7 +34,7 @@ The user's email address
 
 #### Defined in
 
-[src/auth/changePassword.ts:15](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/changePassword.ts#L15)
+[src/auth/changePassword.ts:15](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/changePassword.ts#L15)
 
 ___
 
@@ -46,7 +46,7 @@ The desired password
 
 #### Defined in
 
-[src/auth/changePassword.ts:19](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/changePassword.ts#L19)
+[src/auth/changePassword.ts:19](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/changePassword.ts#L19)
 
 ___
 
@@ -58,7 +58,7 @@ The current password
 
 #### Defined in
 
-[src/auth/changePassword.ts:23](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/changePassword.ts#L23)
+[src/auth/changePassword.ts:23](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/changePassword.ts#L23)
 
 ___
 
@@ -71,4 +71,4 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/changePassword.ts:28](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/changePassword.ts#L28)
+[src/auth/changePassword.ts:28](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/changePassword.ts#L28)

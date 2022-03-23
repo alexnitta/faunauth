@@ -10,11 +10,9 @@ faunauth
 
 ### Interfaces
 
+- [AddParamsToPathInput](interfaces/AddParamsToPathInput.md)
 - [AuthInputWithCustomEmail](interfaces/AuthInputWithCustomEmail.md)
 - [AuthInputWithEmailTemplate](interfaces/AuthInputWithEmailTemplate.md)
-- [AuthWithCustomEmailResult](interfaces/AuthWithCustomEmailResult.md)
-- [AuthWithEmailTemplateResult](interfaces/AuthWithEmailTemplateResult.md)
-- [BaseAuthEmailResult](interfaces/BaseAuthEmailResult.md)
 - [BaseLoginInput](interfaces/BaseLoginInput.md)
 - [BaseRegisterInput](interfaces/BaseRegisterInput.md)
 - [BaseRequestPasswordResetInput](interfaces/BaseRequestPasswordResetInput.md)
@@ -47,7 +45,6 @@ faunauth
 
 ### Type aliases
 
-- [AuthEmailResult](index.md#authemailresult)
 - [ErrorKey](index.md#errorkey)
 - [LoginInput](index.md#logininput)
 - [Maybe](index.md#maybe)
@@ -55,6 +52,7 @@ faunauth
 - [RequestPasswordResetInput](index.md#requestpasswordresetinput)
 - [SendCustomEmail](index.md#sendcustomemail)
 - [SendEmailFromTemplate](index.md#sendemailfromtemplate)
+- [URLParamTuple](index.md#urlparamtuple)
 
 ### Functions
 
@@ -73,29 +71,13 @@ faunauth
 
 ## Type aliases
 
-### AuthEmailResult
-
-Ƭ **AuthEmailResult**<`SendEmailResult`\>: [`BaseAuthEmailResult`](interfaces/BaseAuthEmailResult.md) & [`AuthWithEmailTemplateResult`](interfaces/AuthWithEmailTemplateResult.md)<`SendEmailResult`\> \| [`AuthWithCustomEmailResult`](interfaces/AuthWithCustomEmailResult.md)<`SendEmailResult`\>
-
-#### Type parameters
-
-| Name |
-| :------ |
-| `SendEmailResult` |
-
-#### Defined in
-
-[src/types/email.ts:172](https://github.com/alexnitta/faunauth/blob/a52671e/src/types/email.ts#L172)
-
-___
-
 ### ErrorKey
 
 Ƭ **ErrorKey**: ``"accessTokenMissing"`` \| ``"emailNotConfirmed"`` \| ``"emailOrPasswordMissing"`` \| ``"errorWhenInvalidatingTokens"`` \| ``"failedToAuthenticateWithNewPassword"`` \| ``"failedToSetPassword"`` \| ``"failedToCreateToken"`` \| ``"failedToCreateTokenAndSendEmail"`` \| ``"failedToRefreshToken"`` \| ``"failedToSendEmail"`` \| ``"failedToSendEmailAndDeleteUser"`` \| ``"failedToLogout"`` \| ``"failedToUpdateUser"`` \| ``"publicFaunaKeyMissing"`` \| ``"invalidToken"`` \| ``"invalidUserOrPassword"`` \| ``"notAuthenticated"`` \| ``"refreshTokenLockout"`` \| ``"refreshTokenMissing"`` \| ``"tokensNotFound"`` \| ``"userAlreadyExists"`` \| ``"userDoesNotExist"`` \| ``"userRefIsMissing"`` \| ``"queryError"``
 
 #### Defined in
 
-[src/types/errors.ts:1](https://github.com/alexnitta/faunauth/blob/a52671e/src/types/errors.ts#L1)
+[src/types/errors.ts:1](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/types/errors.ts#L1)
 
 ___
 
@@ -105,7 +87,7 @@ ___
 
 #### Defined in
 
-[src/auth/login.ts:37](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/login.ts#L37)
+[src/auth/login.ts:37](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/login.ts#L37)
 
 ___
 
@@ -124,7 +106,7 @@ Maybe generic type. To keep things consistent, we're also going to do that here.
 
 #### Defined in
 
-[src/types/general.ts:5](https://github.com/alexnitta/faunauth/blob/a52671e/src/types/general.ts#L5)
+[src/types/general.ts:5](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/types/general.ts#L5)
 
 ___
 
@@ -140,7 +122,7 @@ ___
 
 #### Defined in
 
-[src/auth/register.ts:36](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/register.ts#L36)
+[src/auth/register.ts:35](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/register.ts#L35)
 
 ___
 
@@ -156,26 +138,26 @@ ___
 
 #### Defined in
 
-[src/auth/sendConfirmationEmail.ts:31](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/sendConfirmationEmail.ts#L31)
+[src/auth/sendConfirmationEmail.ts:30](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/sendConfirmationEmail.ts#L30)
 
 ___
 
 ### SendCustomEmail
 
-Ƭ **SendCustomEmail**<`SendCustomEmailResult`\>: (`callbackUrl`: `string`) => `Promise`<`SendCustomEmailResult`\>
+Ƭ **SendCustomEmail**<`SendEmailResult`\>: (`callbackUrl`: `string`) => `Promise`<`SendEmailResult`\>
 
 #### Type parameters
 
 | Name |
 | :------ |
-| `SendCustomEmailResult` |
+| `SendEmailResult` |
 
 #### Type declaration
 
-▸ (`callbackUrl`): `Promise`<`SendCustomEmailResult`\>
+▸ (`callbackUrl`): `Promise`<`SendEmailResult`\>
 
 Async function for sending an email; accepts a callback URL and returns a Promise
-that resolves to the generic \`<SendCustomEmailResult>\`. Use this when you want to provide your
+that resolves to the generic \`<SendEmailResult>\`. Use this when you want to provide your
 own email template logic.
 
 **`remarks`**
@@ -192,30 +174,30 @@ will need to set an API key using `sgMail.setApiKey('API_KEY')` before passing i
 
 ##### Returns
 
-`Promise`<`SendCustomEmailResult`\>
+`Promise`<`SendEmailResult`\>
 
 #### Defined in
 
-[src/types/email.ts:121](https://github.com/alexnitta/faunauth/blob/a52671e/src/types/email.ts#L121)
+[src/types/email.ts:121](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/types/email.ts#L121)
 
 ___
 
 ### SendEmailFromTemplate
 
-Ƭ **SendEmailFromTemplate**<`SendEmailFromTemplateResult`\>: (`input`: [`EmailTemplateInput`](interfaces/EmailTemplateInput.md)) => `Promise`<`SendEmailFromTemplateResult`\>
+Ƭ **SendEmailFromTemplate**<`SendEmailResult`\>: (`input`: [`EmailTemplateInput`](interfaces/EmailTemplateInput.md)) => `Promise`<`SendEmailResult`\>
 
 #### Type parameters
 
 | Name |
 | :------ |
-| `SendEmailFromTemplateResult` |
+| `SendEmailResult` |
 
 #### Type declaration
 
-▸ (`input`): `Promise`<`SendEmailFromTemplateResult`\>
+▸ (`input`): `Promise`<`SendEmailResult`\>
 
 Async function for sending an email; accepts a [EmailTemplateInput](interfaces/EmailTemplateInput.md) and returns a Promise
-that resolves to the generic \`<SendEmailFromTemplateResult>\`. Use this when you want to send
+that resolves to the generic \`<SendEmailResult>\`. Use this when you want to send
 emails with the built-in template system provided by faunauth.
 
 **`remarks`**
@@ -232,11 +214,23 @@ will need to set an API key using `sgMail.setApiKey('API_KEY')` before passing i
 
 ##### Returns
 
-`Promise`<`SendEmailFromTemplateResult`\>
+`Promise`<`SendEmailResult`\>
 
 #### Defined in
 
-[src/types/email.ts:107](https://github.com/alexnitta/faunauth/blob/a52671e/src/types/email.ts#L107)
+[src/types/email.ts:107](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/types/email.ts#L107)
+
+___
+
+### URLParamTuple
+
+Ƭ **URLParamTuple**: [name: string, value: string]
+
+A [name, value] pair that will be used to create a URL search parameter.
+
+#### Defined in
+
+[src/utils/addParamsToPath.ts:4](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/utils/addParamsToPath.ts#L4)
 
 ## Functions
 
@@ -244,18 +238,19 @@ will need to set an API key using `sgMail.setApiKey('API_KEY')` before passing i
 
 ▸ **addParamsToPath**(`input`): `string`
 
-Add URL search params to a path. The path does not need to be a complete URL; it can be a path
-starting in `/`. If the path contains existing search parameters, they will be preserved. If the
-path contains a hash, it will also be preserved.
+Add URL search params to a path. If the path contains existing search parameters or a hash, they
+will be preserved.
 
-Search params are encoded to their UTF-8 equivalent by the `new URLSearchParams` constructor, similar to how
-[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) works.
+Search params are encoded to their UTF-8 equivalent by the `new URLSearchParams` constructor,
+similar to how
+[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent)
+works.
 
 #### Parameters
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `input` | `AddParamsToPathInput` | see {@link AddParamsToPathInput} |
+| `input` | [`AddParamsToPathInput`](interfaces/AddParamsToPathInput.md) | see [AddParamsToPathInput](interfaces/AddParamsToPathInput.md) |
 
 #### Returns
 
@@ -265,7 +260,7 @@ the input.path with the input.params added as search params
 
 #### Defined in
 
-[src/utils/addParamsToPath.ts:18](https://github.com/alexnitta/faunauth/blob/a52671e/src/utils/addParamsToPath.ts#L18)
+[src/utils/addParamsToPath.ts:29](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/utils/addParamsToPath.ts#L29)
 
 ___
 
@@ -291,7 +286,7 @@ The `input.email` is converted to lowercase, so it is case-insensitive.
 
 #### Defined in
 
-[src/auth/changePassword.ts:37](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/changePassword.ts#L37)
+[src/auth/changePassword.ts:37](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/changePassword.ts#L37)
 
 ___
 
@@ -377,7 +372,7 @@ You could then set up a package.json script that calls this function, ie:
 
 #### Defined in
 
-[src/utils/createOrUpdateUserRole.ts:88](https://github.com/alexnitta/faunauth/blob/a52671e/src/utils/createOrUpdateUserRole.ts#L88)
+[src/utils/createOrUpdateUserRole.ts:88](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/utils/createOrUpdateUserRole.ts#L88)
 
 ___
 
@@ -406,7 +401,7 @@ user registration or a password reset.
 
 #### Defined in
 
-[src/email/getEmailContent.ts:12](https://github.com/alexnitta/faunauth/blob/a52671e/src/email/getEmailContent.ts#L12)
+[src/email/getEmailContent.ts:12](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/email/getEmailContent.ts#L12)
 
 ___
 
@@ -434,7 +429,7 @@ The `input.email` or `input.username` is converted to lowercase, so it is case-i
 
 #### Defined in
 
-[src/auth/login.ts:48](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/login.ts#L48)
+[src/auth/login.ts:48](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/login.ts#L48)
 
 ___
 
@@ -467,7 +462,7 @@ The `input.email` is converted to lowercase, so it is case-insensitive.
 
 #### Defined in
 
-[src/auth/loginWithMagicLink.ts:40](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/loginWithMagicLink.ts#L40)
+[src/auth/loginWithMagicLink.ts:40](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/loginWithMagicLink.ts#L40)
 
 ___
 
@@ -491,13 +486,13 @@ true if user was signed out
 
 #### Defined in
 
-[src/auth/logout.ts:27](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/logout.ts#L27)
+[src/auth/logout.ts:27](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/logout.ts#L27)
 
 ___
 
 ### register
 
-▸ **register**<`SendEmailResult`\>(`input`): `Promise`<[`AuthEmailResult`](index.md#authemailresult)<`SendEmailResult`\>\>
+▸ **register**<`SendEmailResult`\>(`input`): `Promise`<`SendEmailResult`\>
 
 Register a user by creating a user in the User collection and sending the user an email with a
 confirmation link to the specified callbackUrl that includes the encoded token and email address.
@@ -536,13 +531,13 @@ conforms to [AuthInputWithCustomEmail](interfaces/AuthInputWithCustomEmail.md).
 
 #### Returns
 
-`Promise`<[`AuthEmailResult`](index.md#authemailresult)<`SendEmailResult`\>\>
+`Promise`<`SendEmailResult`\>
 
-- {@link RegisterResult}
+the generic \`<SendEmailResult>\` that you specify
 
 #### Defined in
 
-[src/auth/register.ts:67](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/register.ts#L67)
+[src/auth/register.ts:66](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/register.ts#L66)
 
 ___
 
@@ -566,13 +561,13 @@ the new access and refresh tokens if successful
 
 #### Defined in
 
-[src/auth/rotateTokens.ts:24](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/rotateTokens.ts#L24)
+[src/auth/rotateTokens.ts:24](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/rotateTokens.ts#L24)
 
 ___
 
 ### sendConfirmationEmail
 
-▸ **sendConfirmationEmail**<`SendEmailResult`\>(`input`): `Promise`<[`AuthEmailResult`](index.md#authemailresult)<`SendEmailResult`\>\>
+▸ **sendConfirmationEmail**<`SendEmailResult`\>(`input`): `Promise`<`SendEmailResult`\>
 
 Create an email confirmation token in the database, then send an email with a confirmation link
 that includes the token and email address. Upon clicking the link, either `setPassword` or
@@ -614,13 +609,13 @@ conforms to [AuthInputWithCustomEmail](interfaces/AuthInputWithCustomEmail.md).
 
 #### Returns
 
-`Promise`<[`AuthEmailResult`](index.md#authemailresult)<`SendEmailResult`\>\>
+`Promise`<`SendEmailResult`\>
 
-- {@link RequestPasswordResetResult}
+the generic \`<SendEmailResult>\` that you specify
 
 #### Defined in
 
-[src/auth/sendConfirmationEmail.ts:65](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/sendConfirmationEmail.ts#L65)
+[src/auth/sendConfirmationEmail.ts:65](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/sendConfirmationEmail.ts#L65)
 
 ___
 
@@ -654,7 +649,7 @@ The `input.email` is converted to lowercase, so it is case-insensitive.
 
 #### Defined in
 
-[src/auth/setPassword.ts:45](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/setPassword.ts#L45)
+[src/auth/setPassword.ts:45](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/setPassword.ts#L45)
 
 ___
 
@@ -678,4 +673,4 @@ a Promise that resolves to the [UpdateUserResult](interfaces/UpdateUserResult.md
 
 #### Defined in
 
-[src/auth/updateUser.ts:32](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/updateUser.ts#L32)
+[src/auth/updateUser.ts:32](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/updateUser.ts#L32)

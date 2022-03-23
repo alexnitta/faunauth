@@ -1,17 +1,28 @@
-type URLParamTuple = [string, string];
+/**
+ * A [name, value] pair that will be used to create a URL search parameter.
+ */
+export type URLParamTuple = [name: string, value: string];
 
-interface AddParamsToPathInput {
+export interface AddParamsToPathInput {
+    /**
+     * A path to add URL search parameters to. Can be a complete URL (starting in 'http://' or
+     * 'https://') or a path starting in '/'.
+     */
     path: string;
+    /**
+     * Array of {@link URLParamTuple}s that will be used to create new URL search parameters.
+     */
     params: URLParamTuple[];
 }
 
 /**
- * Add URL search params to a path. The path does not need to be a complete URL; it can be a path
- * starting in `/`. If the path contains existing search parameters, they will be preserved. If the
- * path contains a hash, it will also be preserved.
+ * Add URL search params to a path. If the path contains existing search parameters or a hash, they
+ * will be preserved.
  *
- * Search params are encoded to their UTF-8 equivalent by the `new URLSearchParams` constructor, similar to how
- * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent} works.
+ * Search params are encoded to their UTF-8 equivalent by the `new URLSearchParams` constructor,
+ * similar to how
+ * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent}
+ * works.
  * @param input - see {@link AddParamsToPathInput}
  * @returns the input.path with the input.params added as search params
  */

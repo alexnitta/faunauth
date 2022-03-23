@@ -20,7 +20,7 @@ Fauna client config object
 
 #### Defined in
 
-[src/auth/sendConfirmationEmail.ts:19](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/sendConfirmationEmail.ts#L19)
+[src/auth/sendConfirmationEmail.ts:18](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/sendConfirmationEmail.ts#L18)
 
 ___
 
@@ -32,7 +32,7 @@ Email address for the user who wants to reset their password
 
 #### Defined in
 
-[src/auth/sendConfirmationEmail.ts:23](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/sendConfirmationEmail.ts#L23)
+[src/auth/sendConfirmationEmail.ts:22](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/sendConfirmationEmail.ts#L22)
 
 ___
 
@@ -45,4 +45,4 @@ and resetting passwords
 
 #### Defined in
 
-[src/auth/sendConfirmationEmail.ts:28](https://github.com/alexnitta/faunauth/blob/a52671e/src/auth/sendConfirmationEmail.ts#L28)
+[src/auth/sendConfirmationEmail.ts:27](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/sendConfirmationEmail.ts#L27)

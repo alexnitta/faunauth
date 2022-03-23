@@ -4,7 +4,6 @@ import type { ClientConfig } from 'faunadb';
 import { addParamsToPath, ErrorWithKey } from '../utils';
 import { getEmailContent } from '../email';
 import type {
-    AuthEmailResult,
     AuthInputWithEmailTemplate,
     AuthInputWithCustomEmail,
     CollectionQueryResult,
@@ -41,6 +40,7 @@ export type RequestPasswordResetInput<SendEmailResult> =
  * `loginWithMagicLink` will need to be invoked with the decoded token to complete the process.
  *
  * The `input.email` is converted to lowercase, so it is case-insensitive.
+ *
  * @remarks
  * The token and email are wrapped into an object, then Base64-encoded and appended as a single
  * URL search parameter called `data`. Your client-side code can read these values by doing:
@@ -60,11 +60,11 @@ export type RequestPasswordResetInput<SendEmailResult> =
  * You can either use the built-in email template system by passing in an input that conforms to
  * {@link AuthInputWithEmailTemplate}, or create your own email template by passing in an input that
  * conforms to {@link AuthInputWithCustomEmail}.
- * @returns - {@link RequestPasswordResetResult}
+ * @returns the generic \`<SendEmailResult>\` that you specify
  */
 export async function sendConfirmationEmail<SendEmailResult>(
     input: RequestPasswordResetInput<SendEmailResult>,
-): Promise<AuthEmailResult<SendEmailResult>> {
+): Promise<SendEmailResult> {
     const { clientConfig, publicFaunaKey } = input;
 
     const email = input.email.toLowerCase();
@@ -90,10 +90,7 @@ export async function sendConfirmationEmail<SendEmailResult>(
     }
 
     if (!createTokenResult) {
-        return {
-            tokenCreated: false,
-            sendEmailResult: null,
-        };
+        throw new ErrorWithKey('userDoesNotExist');
     }
 
     const {
@@ -149,5 +146,5 @@ export async function sendConfirmationEmail<SendEmailResult>(
         }
     }
 
-    return { tokenCreated: true, sendEmailResult };
+    return sendEmailResult;
 }

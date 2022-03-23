@@ -48,7 +48,7 @@ Error.constructor
 
 #### Defined in
 
-[src/utils/ErrorWithKey.ts:25](https://github.com/alexnitta/faunauth/blob/a52671e/src/utils/ErrorWithKey.ts#L25)
+[src/utils/ErrorWithKey.ts:25](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/utils/ErrorWithKey.ts#L25)
 
 ## Properties
 
@@ -58,7 +58,7 @@ Error.constructor
 
 #### Defined in
 
-[src/utils/ErrorWithKey.ts:23](https://github.com/alexnitta/faunauth/blob/a52671e/src/utils/ErrorWithKey.ts#L23)
+[src/utils/ErrorWithKey.ts:23](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/utils/ErrorWithKey.ts#L23)
 
 ___
 
@@ -71,7 +71,7 @@ calling `new ErrorWithKey(key, apiErrors)`.
 
 #### Defined in
 
-[src/utils/ErrorWithKey.ts:20](https://github.com/alexnitta/faunauth/blob/a52671e/src/utils/ErrorWithKey.ts#L20)
+[src/utils/ErrorWithKey.ts:20](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/utils/ErrorWithKey.ts#L20)
 
 ___
 
@@ -84,7 +84,7 @@ display the error in the user's locale as part of your internationalization logi
 
 #### Defined in
 
-[src/utils/ErrorWithKey.ts:14](https://github.com/alexnitta/faunauth/blob/a52671e/src/utils/ErrorWithKey.ts#L14)
+[src/utils/ErrorWithKey.ts:14](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/utils/ErrorWithKey.ts#L14)
 
 ___
 
@@ -114,7 +114,7 @@ Error.name
 
 #### Defined in
 
-[src/utils/ErrorWithKey.ts:8](https://github.com/alexnitta/faunauth/blob/a52671e/src/utils/ErrorWithKey.ts#L8)
+[src/utils/ErrorWithKey.ts:8](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/utils/ErrorWithKey.ts#L8)
 
 ___
 
