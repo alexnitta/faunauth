@@ -1,8 +1,9 @@
 #! /usr/bin/env node
 const { program } = require('commander');
 
-const { init } = require('./init');
 const { createPublicKey } = require('./createPublicKey');
+const { init } = require('./init');
+const { update } = require('./update');
 
 const createPublicKeyDescription = `Create a Fauna key that has the "public" role. This key should
     be used by your client application for authentication requests.
@@ -14,14 +15,6 @@ const createPublicKeyDescription = `Create a Fauna key that has the "public" rol
     For more details, see the faunauth README.md file`;
 
 program
-    .command('init')
-    .description(
-        'Import files into your project to use with fauna-schema-migrate,\n' +
-            'including the /fauna folder and a .fauna-migrate.js config file.',
-    )
-    .action(init);
-
-program
     .command('create-public-key')
     .description(createPublicKeyDescription)
     .option(
@@ -30,5 +23,21 @@ program
         'us',
     )
     .action(createPublicKey);
+
+program
+    .command('init')
+    .description(
+        'Import files into your project to use with fauna-schema-migrate,\n' +
+            'including the /fauna folder and a .fauna-migrate.js config file.',
+    )
+    .action(init);
+
+program
+    .command('update')
+    .description(
+        "Update files in your project's /fauna folder by copying over files" +
+            'from faunauth, overwriting any existing files.',
+    )
+    .action(update);
 
 program.parse();

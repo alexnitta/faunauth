@@ -1,13 +1,18 @@
 import faunadb from 'faunadb';
 import { CreateTokensForAccount } from './tokens';
-import { GetAccountByEmail, VerifyAccountExists } from './identity';
+import {
+    GetAccountByEmail,
+    VerifyAccountExists,
+    IdentifyAccount,
+} from './identity';
 import {
     VerifyEmailConfirmationTokenForAccount,
     InvalidateEmailConfirmationTokensForAccount,
 } from './emailConfirmation';
+import { errors } from './errors';
 
 const q = faunadb.query;
-const { And, Update, If, Do, Select } = q;
+const { Abort, Update, If, Do, Select } = q;
 
 /**
  * Set a user's password via a token sent in an email confirmation link.
@@ -19,26 +24,27 @@ const { And, Update, If, Do, Select } = q;
  * @param refreshLifetimeSeconds - number of seconds from now that will set refresh token's
  * `.validUntil` property
  * @param refreshReclaimtimeSeconds - refresh token time to live in seconds
- * @returns a Fauna expression with the tokens bound to it, or false if either the account does not
- * exist or the old password is invalid
+ * @returns a Fauna expression with the tokens bound to it, or false if the token secret is invalid
  */
 export function SetPasswordForAccount(
-    email,
-    newPassword,
-    token,
-    accessTtlSeconds,
-    refreshLifetimeSeconds,
-    refreshReclaimtimeSeconds,
+    email: string,
+    newPassword: string,
+    token: string,
+    accessTtlSeconds?: number,
+    refreshLifetimeSeconds?: number,
+    refreshReclaimtimeSeconds?: number,
 ) {
+    if (IdentifyAccount(email, newPassword)) {
+        return Abort(errors.passwordAlreadyInUse);
+    }
+
+    if (!VerifyAccountExists(email)) {
+        return Abort(errors.userDoesNotExist);
+    }
+
     return If(
-        // First, check:
-        And(
-            // Whether the account exists
-            VerifyAccountExists(email),
-            // Whether the email confirmation token secret is valid
-            VerifyEmailConfirmationTokenForAccount(email, token),
-        ),
-        // If so:
+        // Whether the email confirmation token secret is valid
+        VerifyEmailConfirmationTokenForAccount(email, token),
         Do(
             // Update the password and set `data.confirmedEmail: true`
             Update(Select(['ref'], GetAccountByEmail(email)), {

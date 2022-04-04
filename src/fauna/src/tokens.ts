@@ -1,4 +1,5 @@
 import faunadb, { If } from 'faunadb';
+import type { ExprArg, Expr } from 'faunadb';
 import {
     LogAnomaly,
     REFRESH_TOKEN_EXPIRED,
@@ -81,8 +82,13 @@ function IsWithinGracePeriod() {
 }
 
 export function VerifyRefreshToken(
-    fqlStatementOnSuccessfulVerification,
-    action,
+    fqlStatementOnSuccessfulVerification:
+        | Expr
+        | {
+              tokens: Expr;
+              account: Expr;
+          },
+    action: string,
 ) {
     return If(
         And(IsTokenUsed(), Not(IsWithinGracePeriod())),
@@ -102,7 +108,10 @@ export function VerifyRefreshToken(
 /**
   Invalidate/Delete/Logout of tokens
  */
-export function InvalidateRefreshToken(refreshTokenRef, gracePeriodSeconds) {
+export function InvalidateRefreshToken(
+    refreshTokenRef: ExprArg,
+    gracePeriodSeconds?: number,
+) {
     return Update(refreshTokenRef, {
         data: {
             used: true,
@@ -115,7 +124,7 @@ export function InvalidateRefreshToken(refreshTokenRef, gracePeriodSeconds) {
     });
 }
 
-function InvalidateAccessToken(refreshTokenRef) {
+function InvalidateAccessToken(refreshTokenRef: ExprArg) {
     return If(
         Exists(Match(Index('access_token_by_refresh_token'), refreshTokenRef)),
         Delete(
@@ -133,11 +142,11 @@ function InvalidateAccessToken(refreshTokenRef) {
     );
 }
 
-function LogoutRefreshToken(refreshTokenRef) {
+function LogoutRefreshToken(refreshTokenRef: ExprArg) {
     return Update(refreshTokenRef, { data: { loggedOut: true } });
 }
 
-export function LogoutAccessAndRefreshToken(refreshTokenRef) {
+export function LogoutAccessAndRefreshToken(refreshTokenRef: ExprArg) {
     return Do(
         InvalidateAccessToken(refreshTokenRef),
         LogoutRefreshToken(refreshTokenRef),
@@ -147,7 +156,11 @@ export function LogoutAccessAndRefreshToken(refreshTokenRef) {
 /*
   Creation of tokens
  */
-export function CreateAccessToken(accountRef, refreshTokenRef, ttlSeconds) {
+export function CreateAccessToken(
+    accountRef: ExprArg,
+    refreshTokenRef: ExprArg,
+    ttlSeconds?: number,
+) {
     return Create(Tokens(), {
         instance: accountRef,
         // A  token is a document just like everything else in Fauna.
@@ -176,9 +189,9 @@ function CreateOrReuseId() {
 }
 
 export function CreateRefreshToken(
-    accountRef,
-    lifetimeSeconds,
-    reclaimtimeSeconds,
+    accountRef: ExprArg,
+    lifetimeSeconds?: number,
+    reclaimtimeSeconds?: number,
 ) {
     return Create(Tokens(), {
         instance: accountRef,
@@ -202,10 +215,10 @@ export function CreateRefreshToken(
 }
 
 export function CreateAccessAndRefreshToken(
-    instance,
-    accessTtlSeconds,
-    refreshLifetimeSeconds,
-    refreshReclaimtimeSeconds,
+    instance: ExprArg,
+    accessTtlSeconds?: number,
+    refreshLifetimeSeconds?: number,
+    refreshReclaimtimeSeconds?: number,
 ) {
     return Let(
         {
@@ -239,10 +252,10 @@ export function CreateAccessAndRefreshToken(
  * @returns a Fauna Expression with the tokens bound to it
  */
 export function CreateTokensForAccount(
-    email,
-    accessTtlSeconds,
-    refreshLifetimeSeconds,
-    refreshReclaimtimeSeconds,
+    email: string,
+    accessTtlSeconds?: number,
+    refreshLifetimeSeconds?: number,
+    refreshReclaimtimeSeconds?: number,
 ) {
     return Let(
         {
@@ -275,10 +288,10 @@ export function CreateTokensForAccount(
  * @returns a Fauna Expression with the tokens bound to it
  */
 export function CreateTokensForAccountByUsername(
-    username,
-    accessTtlSeconds,
-    refreshLifetimeSeconds,
-    refreshReclaimtimeSeconds,
+    username: string,
+    accessTtlSeconds?: number,
+    refreshLifetimeSeconds?: number,
+    refreshReclaimtimeSeconds?: number,
 ) {
     return Let(
         {
@@ -300,10 +313,10 @@ export function CreateTokensForAccountByUsername(
 }
 
 export function RotateAccessAndRefreshToken(
-    gracePeriodSeconds,
-    accessTtlSeconds,
-    refreshLifetimeSeconds,
-    refreshReclaimtimeSeconds,
+    gracePeriodSeconds?: number,
+    accessTtlSeconds?: number,
+    refreshLifetimeSeconds?: number,
+    refreshReclaimtimeSeconds?: number,
 ) {
     return Do(
         InvalidateRefreshToken(CurrentToken(), gracePeriodSeconds),
@@ -316,7 +329,11 @@ export function RotateAccessAndRefreshToken(
     );
 }
 
-export function CreateEmailConfirmationToken(instance, ttlSeconds, email) {
+export function CreateEmailConfirmationToken(
+    instance: ExprArg,
+    email: string,
+    ttlSeconds?: number,
+) {
     return Create(Tokens(), {
         instance,
         data: {
@@ -332,7 +349,9 @@ export function CreateEmailConfirmationToken(instance, ttlSeconds, email) {
     });
 }
 
-export function InvalidateEmailConfirmationToken(emailConfirmationTokenRef) {
+export function InvalidateEmailConfirmationToken(
+    emailConfirmationTokenRef: ExprArg,
+) {
     return Update(emailConfirmationTokenRef, {
         data: {
             used: true,

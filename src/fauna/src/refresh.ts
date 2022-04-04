@@ -9,10 +9,10 @@ const { CurrentIdentity, Get } = q;
  * in the time parameters from the client.
  */
 export function RefreshToken(
-    gracePeriodSeconds,
-    accessTtlSeconds,
-    refreshLifetimeSeconds,
-    refreshReclaimtimeSeconds,
+    gracePeriodSeconds?: number,
+    accessTtlSeconds?: number,
+    refreshLifetimeSeconds?: number,
+    refreshReclaimtimeSeconds?: number,
 ) {
     return VerifyRefreshToken(
         {

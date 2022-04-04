@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import { errors } from '../utils';
+import { errors } from '../fauna/src/errors';
 
 export interface LogoutInput {
     /**

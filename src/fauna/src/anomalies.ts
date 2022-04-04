@@ -19,8 +19,10 @@ export const REFRESH_TOKEN_USED_AFTER_LOGOUT = {
     message: 'The refresh token was used after logging out',
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function LogAnomaly(error, action) {
+export function LogAnomaly(
+    error: { code: string; message: string },
+    action: string,
+) {
     return Do(
         // Log the anomaly
         Create(Collection('anomalies'), {

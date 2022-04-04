@@ -1,4 +1,5 @@
 import faunadb from 'faunadb';
+import type { ExprArg } from 'faunadb';
 import {
     GetSessionId,
     LogoutAccessAndRefreshToken,
@@ -52,6 +53,6 @@ function LogoutAll() {
 }
 
 // Logout is called with the refresh token.
-export function Logout(all) {
+export function Logout(all: ExprArg) {
     return VerifyRefreshToken(If(all, LogoutAll(), LogoutOne()), 'logout');
 }

@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import { addParamsToPath, errors } from '../utils';
+import { errors } from '../fauna/src/errors';
 import { getEmailContent } from '../email';
 import type {
     CollectionQueryResult,
@@ -11,6 +11,7 @@ import type {
     UserData,
     Maybe,
 } from '../types';
+import { addParamsToPath } from '../utils';
 
 export interface BaseRegisterInput {
     /**

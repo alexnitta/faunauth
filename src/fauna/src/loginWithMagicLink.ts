@@ -23,11 +23,11 @@ const { And, If, Do } = q;
  * exist or the old password is invalid
  */
 export function LoginWithMagicLink(
-    email,
-    token,
-    accessTtlSeconds,
-    refreshLifetimeSeconds,
-    refreshReclaimtimeSeconds,
+    email: string,
+    token: string,
+    accessTtlSeconds?: number,
+    refreshLifetimeSeconds?: number,
+    refreshReclaimtimeSeconds?: number,
 ) {
     return If(
         // First, check:

@@ -22,12 +22,12 @@ const { Update, If, And, Do, Select } = q;
  * exist or the old password is invalid
  */
 export function ChangePasswordForAccount(
-    email,
-    oldPassword,
-    newPassword,
-    accessTtlSeconds,
-    refreshLifetimeSeconds,
-    refreshReclaimtimeSeconds,
+    email: string,
+    oldPassword: string,
+    newPassword: string,
+    accessTtlSeconds?: number,
+    refreshLifetimeSeconds?: number,
+    refreshReclaimtimeSeconds?: number,
 ) {
     return If(
         // First check whether the account exists and the account can be identified with the

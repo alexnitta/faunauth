@@ -21,15 +21,15 @@ const {
     IsArray,
 } = q;
 
-export function SaveEmailConfirmationToken(email, ttlSeconds) {
+export function SaveEmailConfirmationToken(email: string, ttlSeconds?: number) {
     return Let(
         {
             account: GetAccountByEmail(email),
             accountRef: Select(['ref'], Var('account')),
             token: CreateEmailConfirmationToken(
                 Var('accountRef'),
-                ttlSeconds,
                 email,
+                ttlSeconds,
             ),
         },
         {
@@ -40,7 +40,10 @@ export function SaveEmailConfirmationToken(email, ttlSeconds) {
     );
 }
 
-export function CreateEmailConfirmationTokenForAccount(email, ttlSeconds) {
+export function CreateEmailConfirmationTokenForAccount(
+    email: string,
+    ttlSeconds: number,
+) {
     return If(
         // First check whether the account exists and the account can be identified with the email
         And(VerifyAccountExists(email)),
@@ -53,7 +56,7 @@ export function CreateEmailConfirmationTokenForAccount(email, ttlSeconds) {
 
 // Invalidate all email confirmation tokens for an account (which could be on different machines or
 // different browsers)
-export function InvalidateEmailConfirmationTokensForAccount(email) {
+export function InvalidateEmailConfirmationTokensForAccount(email: string) {
     return IsArray(
         Let(
             {
@@ -86,7 +89,10 @@ export function InvalidateEmailConfirmationTokensForAccount(email) {
  *  - is of type `email_confirmation`
  *  - has `data.used: false`
  */
-export function VerifyEmailConfirmationTokenForAccount(email, checkSecret) {
+export function VerifyEmailConfirmationTokenForAccount(
+    email: string,
+    checkSecret: string,
+) {
     return IsNonEmpty(
         Let(
             {

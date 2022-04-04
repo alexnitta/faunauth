@@ -10,11 +10,11 @@ const { If, And } = q;
  * in the time parameters from the client.
  */
 export function Login(
-    email,
-    password,
-    accessTtlSeconds,
-    refreshLifetimeSeconds,
-    refreshReclaimtimeSeconds,
+    email: string,
+    password: string,
+    accessTtlSeconds?: number,
+    refreshLifetimeSeconds?: number,
+    refreshReclaimtimeSeconds?: number,
 ) {
     return If(
         // First check whether the account exists and the account can be identified with the

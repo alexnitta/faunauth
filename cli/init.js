@@ -6,11 +6,11 @@ existing files manually and re-run this command in order to make sure things
 will work properly.\n`;
 
 /**
- * Copy files from /fauna and .fauna-migrate.js into the consuming application directory.
+ * Copy .js files from faunauth/dist/fauna and faunauth/.fauna-migrate.js into the consuming application directory.
  */
 const init = () => {
     exec(
-        'rsync -r -vv --ignore-existing node_modules/faunauth/fauna/ ./fauna/',
+        "rsync -r -vv --exclude '*.d.ts' --exclude '*.js.map' --ignore-existing node_modules/faunauth/dist/fauna/ ./fauna/",
         (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
