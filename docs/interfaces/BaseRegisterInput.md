@@ -21,7 +21,7 @@ Fauna client config object
 
 #### Defined in
 
-[auth/register.ts:20](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/register.ts#L20)
+[auth/register.ts:20](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/register.ts#L20)
 
 ___
 
@@ -33,7 +33,7 @@ Password for the new user
 
 #### Defined in
 
-[auth/register.ts:29](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/register.ts#L29)
+[auth/register.ts:29](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/register.ts#L29)
 
 ___
 
@@ -46,7 +46,7 @@ and resetting passwords
 
 #### Defined in
 
-[auth/register.ts:25](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/register.ts#L25)
+[auth/register.ts:25](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/register.ts#L25)
 
 ___
 
@@ -58,4 +58,4 @@ Details for the new user - see [UserData](UserData.md)
 
 #### Defined in
 
-[auth/register.ts:33](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/register.ts#L33)
+[auth/register.ts:33](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/register.ts#L33)

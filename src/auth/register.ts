@@ -1,4 +1,4 @@
-import faunadb, { query as q } from 'faunadb';
+import faunadb, { query as q, errors as faunaErrors } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
 import { errors } from '../fauna/src/errors';
@@ -100,20 +100,21 @@ export async function register<SendEmailResult>(
             }),
         );
     } catch (e) {
-        // TODO find the Fauna type definition for errors when instance is not unique and use it
-        // instead of casting to `any`
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const error = e as any;
+        const error = e as faunaErrors.BadRequest;
 
-        const code =
+        const description =
+            // Looks like there is an error in the official Fauna type defs; the `cause` array is
+            // not shown in the type defs but exists in the response.
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             error?.requestResult?.responseContent?.errors?.[0]?.cause?.[0]
-                ?.code;
+                ?.description;
 
-        if (code === 'instance not unique') {
+        if (description === errors.userAlreadyExists) {
             throw new Error(errors.userAlreadyExists);
-        } else {
-            throw new Error(errors.failedToRegisterUser);
         }
+
+        throw new Error(errors.failedToRegisterUser);
     }
 
     if (!userResult?.ref) {

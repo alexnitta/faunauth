@@ -1,4 +1,4 @@
-import faunadb, { query as q } from 'faunadb';
+import faunadb, { query as q, errors as faunaErrors } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
 import type { ServerLoginResult, FaunaLoginResult } from '../types/auth';
@@ -64,8 +64,13 @@ export async function setPassword(
         setPasswordResult = await client.query(
             q.Call('setPassword', email, password, token),
         );
-    } catch {
-        throw new Error(errors.failedToSetPassword);
+    } catch (e) {
+        const error = e as faunaErrors.BadRequest;
+        const message =
+            error?.requestResult?.responseContent?.errors?.[0]?.description ??
+            errors.failedToSetPassword;
+
+        throw new Error(message);
     }
 
     if (!setPasswordResult) {

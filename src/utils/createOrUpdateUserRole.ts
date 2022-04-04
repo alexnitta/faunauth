@@ -1,9 +1,14 @@
 import faunadb, { Collection, ExprVal } from 'faunadb';
+import type { ClientConfig } from 'faunadb';
 
 const q = faunadb.query;
 const userRoleName = 'user';
 
 export interface CreateOrUpdateUserRoleInput {
+    /**
+     * Fauna client config object
+     */
+    clientConfig?: Omit<ClientConfig, 'secret'>;
     /**
      * A Fauna key that has the built-in role of "Admin"
      */
@@ -86,11 +91,15 @@ export interface CreateOrUpdateUserRoleInput {
  * ```
  * */
 export const createOrUpdateUserRole = async ({
+    clientConfig,
     faunaAdminKey,
     privileges,
     roleName = 'user',
 }: CreateOrUpdateUserRoleInput) => {
-    const client = new faunadb.Client({ secret: faunaAdminKey });
+    const client = new faunadb.Client({
+        ...clientConfig,
+        secret: faunaAdminKey,
+    });
 
     const roleExists = await client.query(q.Exists(q.Role(roleName)));
 

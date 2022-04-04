@@ -24,7 +24,7 @@ false if a user requests a password reset.
 
 #### Defined in
 
-[types/auth.ts:110](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/auth.ts#L110)
+[types/auth.ts:110](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/auth.ts#L110)
 
 ___
 
@@ -36,7 +36,7 @@ Any other details about the user
 
 #### Defined in
 
-[types/auth.ts:114](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/auth.ts#L114)
+[types/auth.ts:114](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/auth.ts#L114)
 
 ___
 
@@ -49,7 +49,7 @@ user in, so it is not case-sensitive.
 
 #### Defined in
 
-[types/auth.ts:119](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/auth.ts#L119)
+[types/auth.ts:119](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/auth.ts#L119)
 
 ___
 
@@ -61,7 +61,7 @@ The user ID - this is auto-generated when the user is created in Fauna.
 
 #### Defined in
 
-[types/auth.ts:105](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/auth.ts#L105)
+[types/auth.ts:105](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/auth.ts#L105)
 
 ___
 
@@ -73,7 +73,7 @@ User's preferred locale code, like 'en-US'
 
 #### Defined in
 
-[types/auth.ts:123](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/auth.ts#L123)
+[types/auth.ts:123](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/auth.ts#L123)
 
 ___
 
@@ -87,4 +87,4 @@ user can login via a username.
 
 #### Defined in
 
-[types/auth.ts:129](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/auth.ts#L129)
+[types/auth.ts:129](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/auth.ts#L129)

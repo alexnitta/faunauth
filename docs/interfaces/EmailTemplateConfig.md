@@ -26,7 +26,7 @@ User-facing application name
 
 #### Defined in
 
-[types/email.ts:34](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/email.ts#L34)
+[types/email.ts:34](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/email.ts#L34)
 
 ___
 
@@ -38,7 +38,7 @@ HTML color value for the call to action button
 
 #### Defined in
 
-[types/email.ts:47](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/email.ts#L47)
+[types/email.ts:47](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/email.ts#L47)
 
 ___
 
@@ -50,7 +50,7 @@ HTML color to apply on buttons on hover
 
 #### Defined in
 
-[types/email.ts:38](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/email.ts#L38)
+[types/email.ts:38](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/email.ts#L38)
 
 ___
 
@@ -63,7 +63,7 @@ includes a Base64-encoded string containing the email and token.
 
 #### Defined in
 
-[types/email.ts:43](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/email.ts#L43)
+[types/email.ts:43](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/email.ts#L43)
 
 ___
 
@@ -77,7 +77,7 @@ Font family for the email
 
 #### Defined in
 
-[types/email.ts:52](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/email.ts#L52)
+[types/email.ts:52](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/email.ts#L52)
 
 ___
 
@@ -91,7 +91,7 @@ Font size for the email
 
 #### Defined in
 
-[types/email.ts:57](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/email.ts#L57)
+[types/email.ts:57](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/email.ts#L57)
 
 ___
 
@@ -105,7 +105,7 @@ Font weight for the email
 
 #### Defined in
 
-[types/email.ts:62](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/email.ts#L62)
+[types/email.ts:62](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/email.ts#L62)
 
 ___
 
@@ -118,7 +118,7 @@ if you are using a font from Google Fonts as your `fontFamily`.
 
 #### Defined in
 
-[types/email.ts:67](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/email.ts#L67)
+[types/email.ts:67](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/email.ts#L67)
 
 ___
 
@@ -130,4 +130,4 @@ If provided, this object will be used to populate the text in the email.
 
 #### Defined in
 
-[types/email.ts:71](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/email.ts#L71)
+[types/email.ts:71](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/email.ts#L71)

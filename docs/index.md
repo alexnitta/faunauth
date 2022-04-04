@@ -76,7 +76,7 @@ faunauth
 
 #### Defined in
 
-[auth/login.ts:37](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/login.ts#L37)
+[auth/login.ts:37](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/login.ts#L37)
 
 ___
 
@@ -95,7 +95,7 @@ Maybe generic type. To keep things consistent, we're also going to do that here.
 
 #### Defined in
 
-[types/general.ts:5](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/general.ts#L5)
+[types/general.ts:5](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/general.ts#L5)
 
 ___
 
@@ -111,7 +111,7 @@ ___
 
 #### Defined in
 
-[auth/register.ts:36](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/register.ts#L36)
+[auth/register.ts:36](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/register.ts#L36)
 
 ___
 
@@ -127,7 +127,7 @@ ___
 
 #### Defined in
 
-[auth/sendConfirmationEmail.ts:31](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/sendConfirmationEmail.ts#L31)
+[auth/sendConfirmationEmail.ts:31](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/sendConfirmationEmail.ts#L31)
 
 ___
 
@@ -167,7 +167,7 @@ will need to set an API key using `sgMail.setApiKey('API_KEY')` before passing i
 
 #### Defined in
 
-[types/email.ts:121](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/email.ts#L121)
+[types/email.ts:121](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/email.ts#L121)
 
 ___
 
@@ -207,7 +207,7 @@ will need to set an API key using `sgMail.setApiKey('API_KEY')` before passing i
 
 #### Defined in
 
-[types/email.ts:107](https://github.com/alexnitta/faunauth/blob/2e19c33/src/types/email.ts#L107)
+[types/email.ts:107](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/email.ts#L107)
 
 ___
 
@@ -219,7 +219,7 @@ A [name, value] pair that will be used to create a URL search parameter.
 
 #### Defined in
 
-[utils/addParamsToPath.ts:4](https://github.com/alexnitta/faunauth/blob/2e19c33/src/utils/addParamsToPath.ts#L4)
+[utils/addParamsToPath.ts:4](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/utils/addParamsToPath.ts#L4)
 
 ## Variables
 
@@ -249,7 +249,7 @@ A [name, value] pair that will be used to create a URL search parameter.
 
 #### Defined in
 
-[fauna/src/errors.ts:1](https://github.com/alexnitta/faunauth/blob/2e19c33/src/fauna/src/errors.ts#L1)
+[fauna/src/errors.ts:1](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/fauna/src/errors.ts#L1)
 
 ## Functions
 
@@ -279,7 +279,7 @@ the input.path with the input.params added as search params
 
 #### Defined in
 
-[utils/addParamsToPath.ts:29](https://github.com/alexnitta/faunauth/blob/2e19c33/src/utils/addParamsToPath.ts#L29)
+[utils/addParamsToPath.ts:29](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/utils/addParamsToPath.ts#L29)
 
 ___
 
@@ -305,7 +305,7 @@ The `input.email` is converted to lowercase, so it is case-insensitive.
 
 #### Defined in
 
-[auth/changePassword.ts:37](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/changePassword.ts#L37)
+[auth/changePassword.ts:37](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/changePassword.ts#L37)
 
 ___
 
@@ -391,7 +391,7 @@ You could then set up a package.json script that calls this function, ie:
 
 #### Defined in
 
-[utils/createOrUpdateUserRole.ts:88](https://github.com/alexnitta/faunauth/blob/2e19c33/src/utils/createOrUpdateUserRole.ts#L88)
+[utils/createOrUpdateUserRole.ts:93](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/utils/createOrUpdateUserRole.ts#L93)
 
 ___
 
@@ -420,7 +420,7 @@ user registration or a password reset.
 
 #### Defined in
 
-[email/getEmailContent.ts:12](https://github.com/alexnitta/faunauth/blob/2e19c33/src/email/getEmailContent.ts#L12)
+[email/getEmailContent.ts:12](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/email/getEmailContent.ts#L12)
 
 ___
 
@@ -448,7 +448,7 @@ The `input.email` or `input.username` is converted to lowercase, so it is case-i
 
 #### Defined in
 
-[auth/login.ts:48](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/login.ts#L48)
+[auth/login.ts:48](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/login.ts#L48)
 
 ___
 
@@ -481,7 +481,7 @@ The `input.email` is converted to lowercase, so it is case-insensitive.
 
 #### Defined in
 
-[auth/loginWithMagicLink.ts:40](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/loginWithMagicLink.ts#L40)
+[auth/loginWithMagicLink.ts:40](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/loginWithMagicLink.ts#L40)
 
 ___
 
@@ -505,7 +505,7 @@ true if user was signed out
 
 #### Defined in
 
-[auth/logout.ts:27](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/logout.ts#L27)
+[auth/logout.ts:27](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/logout.ts#L27)
 
 ___
 
@@ -556,7 +556,7 @@ the generic \`<SendEmailResult>\` that you specify
 
 #### Defined in
 
-[auth/register.ts:67](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/register.ts#L67)
+[auth/register.ts:67](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/register.ts#L67)
 
 ___
 
@@ -580,7 +580,7 @@ the new access and refresh tokens if successful
 
 #### Defined in
 
-[auth/rotateTokens.ts:24](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/rotateTokens.ts#L24)
+[auth/rotateTokens.ts:24](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/rotateTokens.ts#L24)
 
 ___
 
@@ -634,7 +634,7 @@ the generic \`<SendEmailResult>\` that you specify
 
 #### Defined in
 
-[auth/sendConfirmationEmail.ts:66](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/sendConfirmationEmail.ts#L66)
+[auth/sendConfirmationEmail.ts:66](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/sendConfirmationEmail.ts#L66)
 
 ___
 
@@ -668,7 +668,7 @@ The `input.email` is converted to lowercase, so it is case-insensitive.
 
 #### Defined in
 
-[auth/setPassword.ts:45](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/setPassword.ts#L45)
+[auth/setPassword.ts:45](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/setPassword.ts#L45)
 
 ___
 
@@ -692,4 +692,4 @@ a Promise that resolves to the [UpdateUserResult](interfaces/UpdateUserResult.md
 
 #### Defined in
 
-[auth/updateUser.ts:32](https://github.com/alexnitta/faunauth/blob/2e19c33/src/auth/updateUser.ts#L32)
+[auth/updateUser.ts:32](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/auth/updateUser.ts#L32)
