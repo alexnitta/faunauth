@@ -2,7 +2,7 @@ import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
 import type { ServerLoginResult, FaunaLoginResult } from '../types/auth';
-import { ErrorWithKey } from '../utils';
+import { errors } from '../utils';
 
 export interface LoginWithMagicLinkInput {
     /**
@@ -45,7 +45,7 @@ export async function loginWithMagicLink(
     const email = input.email.toLowerCase();
 
     if (!publicFaunaKey) {
-        throw new ErrorWithKey('publicFaunaKeyMissing');
+        throw new Error(errors.missingPublicFaunaKey);
     }
 
     const client = new faunadb.Client({
@@ -59,12 +59,12 @@ export async function loginWithMagicLink(
         loginResult = await client.query(
             q.Call('loginWithMagicLink', email, token),
         );
-    } catch (error) {
-        throw new ErrorWithKey('failedToSetPassword', [error as Error]);
+    } catch {
+        throw new Error(errors.failedToSetPassword);
     }
 
     if (!loginResult) {
-        throw new ErrorWithKey('failedToSetPassword');
+        throw new Error(errors.failedToSetPassword);
     }
 
     const {

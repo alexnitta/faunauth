@@ -2,7 +2,7 @@ import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
 import type { ServerLoginResult, FaunaLoginResult } from '../types/auth';
-import { ErrorWithKey } from '../utils';
+import { errors } from '../utils';
 
 export interface SetPasswordInput {
     /**
@@ -50,7 +50,7 @@ export async function setPassword(
     const email = input.email.toLowerCase();
 
     if (!publicFaunaKey) {
-        throw new ErrorWithKey('publicFaunaKeyMissing');
+        throw new Error(errors.publicFaunaKeyMissing);
     }
 
     const client = new faunadb.Client({
@@ -64,12 +64,12 @@ export async function setPassword(
         setPasswordResult = await client.query(
             q.Call('setPassword', email, password, token),
         );
-    } catch (e) {
-        throw new ErrorWithKey('failedToSetPassword', [e as Error]);
+    } catch {
+        throw new Error(errors.failedToSetPassword);
     }
 
     if (!setPasswordResult) {
-        throw new ErrorWithKey('failedToSetPassword');
+        throw new Error(errors.failedToSetPassword);
     }
 
     const {

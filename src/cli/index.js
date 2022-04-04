@@ -27,7 +27,7 @@ program
     .option(
         '-r, --region-group <regionGroup>',
         'Fauna region group. Options include "classic", "us", "eu", and "preview".',
-        'classic',
+        'us',
     )
     .action(createPublicKey);
 

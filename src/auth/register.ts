@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import { addParamsToPath, ErrorWithKey } from '../utils';
+import { addParamsToPath, errors } from '../utils';
 import { getEmailContent } from '../email';
 import type {
     CollectionQueryResult,
@@ -78,7 +78,7 @@ export async function register<SendEmailResult>(
     const username = inputUsername ? inputUsername.toLowerCase() : null;
 
     if (!publicFaunaKey) {
-        throw new ErrorWithKey('publicFaunaKeyMissing');
+        throw new Error(errors.missingPublicFaunaKey);
     }
 
     const client = new faunadb.Client({
@@ -109,14 +109,14 @@ export async function register<SendEmailResult>(
                 ?.code;
 
         if (code === 'instance not unique') {
-            throw new ErrorWithKey('userAlreadyExists');
+            throw new Error(errors.userAlreadyExists);
         } else {
-            throw new ErrorWithKey('queryError', [e as Error]);
+            throw new Error(errors.failedToRegisterUser);
         }
     }
 
     if (!userResult?.ref) {
-        throw new ErrorWithKey('userRefIsMissing');
+        throw new Error(errors.missingUserRef);
     }
 
     let createTokenResult = null;
@@ -127,13 +127,13 @@ export async function register<SendEmailResult>(
             token: Token<{ type: string; email: string }>;
         }>(q.Call('createEmailConfirmationToken', email));
     } catch (e) {
-        throw new ErrorWithKey('failedToCreateToken', [e as Error]);
+        throw new Error(errors.failedToCreateToken);
     }
 
     if (!createTokenResult) {
         // It would be really strange if this happened, because the user should be created just
         // before this, but we check for this condition anyway.
-        throw new ErrorWithKey('userDoesNotExist');
+        throw new Error(errors.userDoesNotExist);
     }
 
     const {
@@ -147,7 +147,7 @@ export async function register<SendEmailResult>(
         }),
     ).toString('base64');
 
-    let sendEmailResult: Maybe<ErrorWithKey | SendEmailResult> = null;
+    let sendEmailResult: Maybe<Error | SendEmailResult> = null;
 
     if ('sendEmailFromTemplate' in input) {
         const { emailConfig, fromEmail, sendEmailFromTemplate } = input;
@@ -172,10 +172,8 @@ export async function register<SendEmailResult>(
 
         try {
             sendEmailResult = await sendEmailFromTemplate(message);
-        } catch (e) {
-            sendEmailResult = new ErrorWithKey('failedToSendEmail', [
-                e as Error,
-            ]);
+        } catch {
+            sendEmailResult = new Error(errors.failedToSendEmail);
         }
     } else if ('sendCustomEmail' in input) {
         const { sendCustomEmail } = input;
@@ -188,22 +186,21 @@ export async function register<SendEmailResult>(
         try {
             sendEmailResult = await sendCustomEmail(finalCallbackUrl);
         } catch (e) {
-            sendEmailResult = new ErrorWithKey('failedToSendEmail', [
-                e as Error,
-            ]);
+            sendEmailResult = new Error(errors.failedToSendEmail);
         }
     }
 
-    if (sendEmailResult instanceof ErrorWithKey) {
-        try {
-            // Delete user if email is not sent so that they can be re-created at a later time
-            await client.query(q.Delete(userResult.ref));
-        } catch (e) {
-            throw new ErrorWithKey('failedToSendEmailAndDeleteUser', [
-                ...sendEmailResult.apiErrors,
-                e as Error,
-            ]);
+    if (sendEmailResult instanceof Error) {
+        if (sendEmailResult.message === errors.failedToSendEmail) {
+            try {
+                // Delete user if email is not sent so that they can be re-created at a later time
+                await client.query(q.Delete(userResult.ref));
+            } catch {
+                throw new Error(errors.failedToSendEmailAndDeleteUser);
+            }
         }
+
+        throw sendEmailResult;
     } else {
         return sendEmailResult;
     }

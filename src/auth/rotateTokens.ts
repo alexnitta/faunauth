@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import { ErrorWithKey } from '../utils';
+import { errors } from '../utils';
 import type { FaunaRefreshResult, TokenPair, Maybe } from '../types';
 
 export interface RotateTokensInput {
@@ -35,11 +35,11 @@ export async function rotateTokens({
     try {
         result = await client.query(q.Call('refresh'));
     } catch (e) {
-        throw new ErrorWithKey('failedToRefreshToken', [e as Error]);
+        throw new Error(errors.failedToRefreshToken);
     }
 
     if (result === null) {
-        throw new ErrorWithKey('failedToRefreshToken');
+        throw new Error(errors.failedToRefreshToken);
     }
 
     return {

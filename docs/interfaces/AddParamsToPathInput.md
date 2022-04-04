@@ -19,7 +19,7 @@ Array of [URLParamTuple](../index.md#urlparamtuple)s that will be used to create
 
 #### Defined in
 
-[src/utils/addParamsToPath.ts:15](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/utils/addParamsToPath.ts#L15)
+[utils/addParamsToPath.ts:15](https://github.com/alexnitta/faunauth/blob/31b65b8/src/utils/addParamsToPath.ts#L15)
 
 ___
 
@@ -32,4 +32,4 @@ A path to add URL search parameters to. Can be a complete URL (starting in 'http
 
 #### Defined in
 
-[src/utils/addParamsToPath.ts:11](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/utils/addParamsToPath.ts#L11)
+[utils/addParamsToPath.ts:11](https://github.com/alexnitta/faunauth/blob/31b65b8/src/utils/addParamsToPath.ts#L11)

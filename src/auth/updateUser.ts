@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import { ErrorWithKey } from '../utils';
+import { errors } from '../utils';
 import type { UpdateUserResult } from '../types/auth';
 
 const { Ref, Collection, Update } = q;
@@ -35,7 +35,7 @@ export async function updateUser(
     const { accessToken, clientConfig, data, userID } = input;
 
     if (!accessToken) {
-        throw new ErrorWithKey('accessTokenMissing');
+        throw new Error(errors.missingAccessToken);
     }
 
     const client = new faunadb.Client({
@@ -49,12 +49,12 @@ export async function updateUser(
         updateUserResult = await client.query(
             Update(Ref(Collection('User'), userID), { data }),
         );
-    } catch (e) {
-        throw new ErrorWithKey('failedToUpdateUser', [e as Error]);
+    } catch {
+        throw new Error(errors.failedToUpdateUser);
     }
 
     if (updateUserResult === null) {
-        throw new ErrorWithKey('failedToUpdateUser');
+        throw new Error(errors.failedToUpdateUser);
     }
 
     return updateUserResult;

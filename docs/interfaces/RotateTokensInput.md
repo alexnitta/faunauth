@@ -19,7 +19,7 @@ Fauna client config object
 
 #### Defined in
 
-[src/auth/rotateTokens.ts:11](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/rotateTokens.ts#L11)
+[auth/rotateTokens.ts:11](https://github.com/alexnitta/faunauth/blob/31b65b8/src/auth/rotateTokens.ts#L11)
 
 ___
 
@@ -32,4 +32,4 @@ as a 'secret'; from the client perspective it's a JWT.
 
 #### Defined in
 
-[src/auth/rotateTokens.ts:16](https://github.com/alexnitta/faunauth/blob/7e6e39b/src/auth/rotateTokens.ts#L16)
+[auth/rotateTokens.ts:16](https://github.com/alexnitta/faunauth/blob/31b65b8/src/auth/rotateTokens.ts#L16)

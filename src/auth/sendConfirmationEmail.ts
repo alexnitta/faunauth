@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import { addParamsToPath, ErrorWithKey } from '../utils';
+import { addParamsToPath, errors } from '../utils';
 import { getEmailContent } from '../email';
 import type {
     AuthInputWithEmailTemplate,
@@ -70,7 +70,7 @@ export async function sendConfirmationEmail<SendEmailResult>(
     const email = input.email.toLowerCase();
 
     if (!publicFaunaKey) {
-        throw new ErrorWithKey('publicFaunaKeyMissing');
+        throw new Error(errors.publicFaunaKeyMissing);
     }
 
     const client = new faunadb.Client({
@@ -85,12 +85,12 @@ export async function sendConfirmationEmail<SendEmailResult>(
             account: CollectionQueryResult<UserData>;
             token: Token<{ type: string; email: string }>;
         }>(q.Call('createEmailConfirmationToken', email));
-    } catch (e) {
-        throw new ErrorWithKey('failedToCreateToken', [e as Error]);
+    } catch {
+        throw new Error(errors.failedToCreateToken);
     }
 
     if (!createTokenResult) {
-        throw new ErrorWithKey('userDoesNotExist');
+        throw new Error(errors.userDoesNotExist);
     }
 
     const {
@@ -128,8 +128,8 @@ export async function sendConfirmationEmail<SendEmailResult>(
 
         try {
             sendEmailResult = await sendEmailFromTemplate(message);
-        } catch (e) {
-            throw new ErrorWithKey('failedToSendEmail', [e as Error]);
+        } catch {
+            throw new Error(errors.failedToSendEmail);
         }
     } else if ('sendCustomEmail' in input) {
         const { sendCustomEmail } = input;
@@ -141,8 +141,8 @@ export async function sendConfirmationEmail<SendEmailResult>(
 
         try {
             sendEmailResult = await sendCustomEmail(finalCallbackUrl);
-        } catch (e) {
-            throw new ErrorWithKey('failedToSendEmail', [e as Error]);
+        } catch {
+            throw new Error(errors.failedToSendEmail);
         }
     }
 

@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import { ErrorWithKey } from '../utils';
+import { errors } from '../utils';
 import type { ServerLoginResult, FaunaLoginResult, Maybe } from '../types';
 
 export interface BaseLoginInput {
@@ -49,7 +49,7 @@ export async function login(input: LoginInput): Promise<ServerLoginResult> {
     const { clientConfig, publicFaunaKey, password } = input;
 
     if (!publicFaunaKey) {
-        throw new ErrorWithKey('publicFaunaKeyMissing');
+        throw new Error(errors.missingPublicFaunaKey);
     }
 
     const client = new faunadb.Client({
@@ -73,14 +73,12 @@ export async function login(input: LoginInput): Promise<ServerLoginResult> {
                 q.Call('loginWithUsername', username, password),
             );
         }
-    } catch (e) {
-        const error = e as Error;
-
-        throw new ErrorWithKey('invalidUserOrPassword', [error]);
+    } catch {
+        throw new Error(errors.invalidUserOrPassword);
     }
 
     if (loginResult === null) {
-        throw new ErrorWithKey('invalidUserOrPassword');
+        throw new Error(errors.invalidUserOrPassword);
     }
 
     const {

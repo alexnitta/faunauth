@@ -177,4 +177,29 @@ When calling either the `register` or `sendConfirmationEmail` functions, you hav
 
 ## Error handling
 
-To help your consuming application make use of errors, we use a class called `ErrorWithKey` that extends from the usual JavaScript `Error`. This class has a `.key` property that functions as a unique key for the particular reason the error ocurred. This allows you to set up internationalization logic that uses the error's `.key` property to look up a user-facing message based on the current locale. Each of these errors also has the normal `.message` property that displays an error message in the English (United States) locale, which you can display if you so choose as a default option. The type definition for these keys is exposed in the types as `ErrorKey`.
+This library exports an `errors` object that is a map of error messages. Every error thrown within faunauth uses one of these messages. In your application, you can import the `errors` object and check if an Error instance has a `.message` property that exists on it. This allows you to deterministically show custom error messages to the user, which is useful when localizing your application. For example:
+
+```TypeScript
+import { login, errors } from 'faunuath';
+
+// In your application code...
+
+login({
+    publicFaunaKey: process.env.PUBLIC_FAUNA_KEY,
+    password,
+    email,
+}).then(() => {
+    // Do something on successful login
+}).catch(e => {
+    if (e instanceof Error && e.message === errors.invalidUserOrPassword) {
+        // Show the user a message about their username or password being invalid
+    }
+
+    // Show the user some other error message
+})
+```
+
+To check for the possible errors in each function exported by faunauth, you could:
+
+1. Browse the source code and check which errors are used in each function, then handle each of them separately
+2. Create a function that takes an Error instance and returns a custom error message to show to the user. This function would need to import the `errors` object and use it to map the incoming Error to a custom message.

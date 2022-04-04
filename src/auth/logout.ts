@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import { ErrorWithKey } from '../utils';
+import { errors } from '../utils';
 
 export interface LogoutInput {
     /**
@@ -38,10 +38,8 @@ export async function logout({
 
     try {
         await client.query(q.Call('logout', logoutAll));
-    } catch (e) {
-        const error = e as Error;
-
-        throw new ErrorWithKey('failedToLogout', [error]);
+    } catch {
+        throw new Error(errors.failedToLogout);
     }
 
     return true;

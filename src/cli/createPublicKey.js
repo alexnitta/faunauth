@@ -29,7 +29,7 @@ const createPublicKey = async input => {
     }
 
     const lowercaseRegionGroup = (
-        input.regionGroup ? input.regionGroup : 'classic'
+        input.regionGroup ? input.regionGroup : 'us'
     ).toLowerCase();
 
     if (domainMap[lowercaseRegionGroup] === undefined) {
