@@ -1,8 +1,8 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import { errors } from '../fauna/src/errors';
-import type { ServerLoginResult, FaunaLoginResult, Maybe } from '../types';
+import { errors } from '../errors';
+import type { ServerLoginResult, FaunaLoginResult } from '../types';
 
 export interface BaseLoginInput {
     /**
@@ -57,19 +57,19 @@ export async function login(input: LoginInput): Promise<ServerLoginResult> {
         secret: publicFaunaKey,
     });
 
-    let loginResult: Maybe<FaunaLoginResult> = null;
+    let loginResult: FaunaLoginResult | false = false;
 
     try {
         if ('email' in input) {
             const email = input.email.toLowerCase();
 
-            loginResult = await client.query<Maybe<FaunaLoginResult>>(
+            loginResult = await client.query<FaunaLoginResult | false>(
                 q.Call('login', email, password),
             );
         } else {
             const username = input.username.toLowerCase();
 
-            loginResult = await client.query<Maybe<FaunaLoginResult>>(
+            loginResult = await client.query<FaunaLoginResult | false>(
                 q.Call('loginWithUsername', username, password),
             );
         }
@@ -77,7 +77,7 @@ export async function login(input: LoginInput): Promise<ServerLoginResult> {
         throw new Error(errors.invalidUserOrPassword);
     }
 
-    if (loginResult === null) {
+    if (!loginResult) {
         throw new Error(errors.invalidUserOrPassword);
     }
 

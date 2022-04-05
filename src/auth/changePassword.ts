@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import { errors } from '../fauna/src/errors';
+import { errors } from '../errors';
 import type { FaunaLoginResult, ServerLoginResult } from '../types/auth';
 
 export interface ChangePasswordInput {
@@ -50,25 +50,15 @@ export async function changePassword(
         secret: publicFaunaKey,
     });
 
-    let setPasswordResult: FaunaLoginResult | null = null;
-
-    try {
-        setPasswordResult = await client.query(
-            q.Call('setPassword', email, oldPassword, newPassword),
-        );
-    } catch (e) {
-        throw new Error(errors.failedToSetPassword);
-    }
-
-    if (setPasswordResult === null) {
-        throw new Error(errors.failedToSetPassword);
-    }
+    const changePasswordResult = await client.query<FaunaLoginResult>(
+        q.Call('changePassword', email, oldPassword, newPassword),
+    );
 
     const {
         tokens: { access, refresh },
         account,
         id,
-    } = setPasswordResult;
+    } = changePasswordResult;
 
     return {
         accessToken: access.secret,

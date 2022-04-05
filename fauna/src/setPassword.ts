@@ -9,10 +9,10 @@ import {
     VerifyEmailConfirmationTokenForAccount,
     InvalidateEmailConfirmationTokensForAccount,
 } from './emailConfirmation';
-import { errors } from './errors';
+import { errors } from '../../src/errors';
 
 const q = faunadb.query;
-const { Abort, Update, If, Do, Select } = q;
+const { Abort, Update, Do, Select } = q;
 
 /**
  * Set a user's password via a token sent in an email confirmation link.
@@ -42,30 +42,28 @@ export function SetPasswordForAccount(
         return Abort(errors.userDoesNotExist);
     }
 
-    return If(
-        // Whether the email confirmation token secret is valid
-        VerifyEmailConfirmationTokenForAccount(email, token),
-        Do(
-            // Update the password and set `data.confirmedEmail: true`
-            Update(Select(['ref'], GetAccountByEmail(email)), {
-                credentials: {
-                    password: newPassword,
-                },
-                data: {
-                    confirmedEmail: true,
-                },
-            }),
-            // Invalidate all email confirmation tokens for the account
-            InvalidateEmailConfirmationTokensForAccount(email),
-            // Create and return a new pair of access/refresh tokens
-            CreateTokensForAccount(
-                email,
-                accessTtlSeconds,
-                refreshLifetimeSeconds,
-                refreshReclaimtimeSeconds,
-            ),
+    if (!VerifyEmailConfirmationTokenForAccount(email, token)) {
+        return Abort(errors.invalidEmailConfirmationToken);
+    }
+
+    return Do(
+        // Update the password and set `data.confirmedEmail: true`
+        Update(Select(['ref'], GetAccountByEmail(email)), {
+            credentials: {
+                password: newPassword,
+            },
+            data: {
+                confirmedEmail: true,
+            },
+        }),
+        // Invalidate all email confirmation tokens for the account
+        InvalidateEmailConfirmationTokensForAccount(email),
+        // Create and return a new pair of access/refresh tokens
+        CreateTokensForAccount(
+            email,
+            accessTtlSeconds,
+            refreshLifetimeSeconds,
+            refreshReclaimtimeSeconds,
         ),
-        // If not, return false
-        false,
     );
 }

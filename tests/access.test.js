@@ -24,7 +24,7 @@ const setUp = async testName => {
         'fauna/resources/faunauth/collections/dinos.fql',
         'fauna/resources/faunauth/collections/User.fql',
         'fauna/resources/faunauth/functions/createEmailConfirmationToken.js',
-        'fauna/resources/faunauth/functions/register.fql',
+        'fauna/resources/faunauth/functions/register.js',
         'fauna/resources/faunauth/functions/changePassword.js',
         'fauna/resources/faunauth/functions/setPassword.js',
         'fauna/resources/faunauth/indexes/users-by-email.fql',

@@ -22,7 +22,7 @@ const setUp = async testName => {
 
     await populateDatabaseSchemaFromFiles(schemaMigrate, q, client, [
         'fauna/resources/faunauth/collections/User.fql',
-        'fauna/resources/faunauth/functions/register.fql',
+        'fauna/resources/faunauth/functions/register.js',
         'fauna/resources/faunauth/functions/login.js',
         'fauna/resources/faunauth/functions/loginWithUsername.js',
         'fauna/resources/faunauth/indexes/users-by-email.fql',

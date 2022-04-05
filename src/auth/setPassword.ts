@@ -2,7 +2,7 @@ import faunadb, { query as q, errors as faunaErrors } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
 import type { ServerLoginResult, FaunaLoginResult } from '../types/auth';
-import { errors } from '../fauna/src/errors';
+import { errors } from '../errors';
 
 export interface SetPasswordInput {
     /**
@@ -58,10 +58,10 @@ export async function setPassword(
         secret: publicFaunaKey,
     });
 
-    let setPasswordResult: FaunaLoginResult | null = null;
+    let setPasswordResult: FaunaLoginResult | false = false;
 
     try {
-        setPasswordResult = await client.query(
+        setPasswordResult = await client.query<FaunaLoginResult>(
             q.Call('setPassword', email, password, token),
         );
     } catch (e) {

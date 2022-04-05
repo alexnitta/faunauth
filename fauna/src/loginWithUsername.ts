@@ -1,4 +1,5 @@
 import faunadb from 'faunadb';
+import type { Expr } from 'faunadb';
 import { CreateTokensForAccountByUsername } from './tokens';
 import {
     IdentifyAccountByUsername,
@@ -18,7 +19,7 @@ export function LoginWithUsername(
     accessTtlSeconds?: number,
     refreshLifetimeSeconds?: number,
     refreshReclaimtimeSeconds?: number,
-) {
+): Expr | false {
     return If(
         // First check whether the account exists and the account can be identified with the
         // username/password
@@ -33,7 +34,7 @@ export function LoginWithUsername(
             refreshLifetimeSeconds,
             refreshReclaimtimeSeconds,
         ),
-        // if not, return null
-        null,
+        // if not, return false
+        false,
     );
 }

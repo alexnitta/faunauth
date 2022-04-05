@@ -1,4 +1,5 @@
 import faunadb from 'faunadb';
+import type { Expr } from 'faunadb';
 import { CreateTokensForAccount } from './tokens';
 import { VerifyAccountExists } from './identity';
 import {
@@ -28,7 +29,7 @@ export function LoginWithMagicLink(
     accessTtlSeconds?: number,
     refreshLifetimeSeconds?: number,
     refreshReclaimtimeSeconds?: number,
-) {
+): Expr | false {
     return If(
         // First, check:
         And(

@@ -1,7 +1,7 @@
 import faunadb, { query as q, errors as faunaErrors } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import { errors } from '../fauna/src/errors';
+import { errors } from '../errors';
 import { getEmailContent } from '../email';
 import type {
     CollectionQueryResult,

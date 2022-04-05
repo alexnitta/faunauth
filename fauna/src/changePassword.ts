@@ -5,9 +5,10 @@ import {
     IdentifyAccount,
     VerifyAccountExists,
 } from './identity';
+import { errors } from '../../src/errors';
 
 const q = faunadb.query;
-const { Update, If, And, Do, Select } = q;
+const { Abort, Update, Do, Select } = q;
 
 /**
  * Change a user's password when they know their old password.
@@ -29,25 +30,27 @@ export function ChangePasswordForAccount(
     refreshLifetimeSeconds?: number,
     refreshReclaimtimeSeconds?: number,
 ) {
-    return If(
-        // First check whether the account exists and the account can be identified with the
-        // email/password
-        And(VerifyAccountExists(email), IdentifyAccount(email, oldPassword)),
-        // If so, update the password and create and return a new pair of access/refresh tokens
-        Do(
-            Update(Select(['ref'], GetAccountByEmail(email)), {
-                credentials: {
-                    password: newPassword,
-                },
-            }),
-            CreateTokensForAccount(
-                email,
-                accessTtlSeconds,
-                refreshLifetimeSeconds,
-                refreshReclaimtimeSeconds,
-            ),
+    if (!VerifyAccountExists(email)) {
+        Abort(errors.userDoesNotExist);
+    }
+
+    if (!IdentifyAccount(email, oldPassword)) {
+        Abort(errors.invalidOldPassword);
+    }
+
+    return Do(
+        // Set the new password
+        Update(Select(['ref'], GetAccountByEmail(email)), {
+            credentials: {
+                password: newPassword,
+            },
+        }),
+        // Create and return a new pair of access/refresh tokens
+        CreateTokensForAccount(
+            email,
+            accessTtlSeconds,
+            refreshLifetimeSeconds,
+            refreshReclaimtimeSeconds,
         ),
-        // If not, return false
-        false,
     );
 }

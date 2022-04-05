@@ -1,4 +1,5 @@
 export const errors = {
+    failedToChangePassword: 'Failed to change password',
     failedToCreateToken: 'Failed to create token',
     failedToLogout: 'Failed to log out',
     failedToRefreshToken: 'Failed to refresh token',
@@ -8,7 +9,9 @@ export const errors = {
         'Failed to send email and delete user afterwards',
     failedToSetPassword: 'Failed to set password',
     failedToUpdateUser: 'Failed to update user',
+    invalidOldPassword: 'The old password is invalid',
     invalidUserOrPassword: 'Invalid user or password',
+    invalidEmailConfirmationToken: 'Invalid email confirmation token',
     missingAccessToken: 'Missing access token',
     missingPublicFaunaKey: 'missing publicFaunaKey',
     missingUserRef: 'Missing user ref',

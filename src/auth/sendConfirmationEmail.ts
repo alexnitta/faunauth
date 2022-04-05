@@ -1,12 +1,13 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import { errors } from '../fauna/src/errors';
+import { errors } from '../errors';
 import { addParamsToPath } from '../utils';
 import { getEmailContent } from '../email';
 import type {
     AuthInputWithEmailTemplate,
     AuthInputWithCustomEmail,
+    CreateTokenResult,
     CollectionQueryResult,
     Token,
     UserData,
@@ -79,13 +80,12 @@ export async function sendConfirmationEmail<SendEmailResult>(
         secret: publicFaunaKey,
     });
 
-    let createTokenResult = null;
+    let createTokenResult: CreateTokenResult | false = false;
 
     try {
-        createTokenResult = await client.query<{
-            account: CollectionQueryResult<UserData>;
-            token: Token<{ type: string; email: string }>;
-        }>(q.Call('createEmailConfirmationToken', email));
+        createTokenResult = await client.query<CreateTokenResult | false>(
+            q.Call('createEmailConfirmationToken', email),
+        );
     } catch {
         throw new Error(errors.failedToCreateToken);
     }

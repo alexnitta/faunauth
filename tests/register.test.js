@@ -25,7 +25,7 @@ const setUp = async testName => {
         'fauna/resources/faunauth/functions/createEmailConfirmationToken.js',
         'fauna/resources/faunauth/functions/login.js',
         'fauna/resources/faunauth/functions/logout.js',
-        'fauna/resources/faunauth/functions/register.fql',
+        'fauna/resources/faunauth/functions/register.js',
         'fauna/resources/faunauth/functions/setPassword.js',
         'fauna/resources/faunauth/indexes/users-by-email.fql',
         'fauna/resources/faunauth/roles/public.fql',
@@ -92,6 +92,42 @@ describe('register()', () => {
         );
 
         expect(res).toBeTruthy();
+
+        await tearDown(testName, context);
+    });
+
+    it('cannot register a user twice with the same email address', async () => {
+        const testName = 'registerDuplicateEmail';
+        const context = await setUp(testName);
+
+        const client = context.databaseClients.childClient;
+        const key = await client.query(CreateKey({ role: Role('public') }));
+        const publicClient = getClient(fauna, key.secret);
+        const res = await publicClient.query(
+            Call('register', 'verysecure', {
+                email: 'user@domain.com',
+                locale: 'en-US',
+                invitedBy: 'foo-user-id',
+                toGroup: 'foo-group-id',
+            }),
+        );
+
+        expect(res).toBeTruthy();
+
+        const registerWithDuplicateEmail = async () => {
+            return publicClient.query(
+                Call('register', 'verysecure', {
+                    email: 'user@domain.com',
+                    locale: 'en-US',
+                    invitedBy: 'foo-user-id',
+                    toGroup: 'foo-group-id',
+                }),
+            );
+        };
+
+        await expect(registerWithDuplicateEmail()).rejects.toBeInstanceOf(
+            fauna.errors.BadRequest,
+        );
 
         await tearDown(testName, context);
     });

@@ -2,7 +2,7 @@ import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
 import type { ServerLoginResult, FaunaLoginResult } from '../types/auth';
-import { errors } from '../fauna/src/errors';
+import { errors } from '../errors';
 
 export interface LoginWithMagicLinkInput {
     /**
@@ -53,10 +53,10 @@ export async function loginWithMagicLink(
         secret: publicFaunaKey,
     });
 
-    let loginResult: FaunaLoginResult | null = null;
+    let loginResult: FaunaLoginResult | false = false;
 
     try {
-        loginResult = await client.query(
+        loginResult = await client.query<FaunaLoginResult | false>(
             q.Call('loginWithMagicLink', email, token),
         );
     } catch {

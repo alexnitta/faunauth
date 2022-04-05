@@ -12,9 +12,10 @@ const { Call, CreateKey, Role } = q;
 
 jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
+const clientDomain = process.env.FAUNADB_DOMAIN;
+
 const setUp = async testName => {
     const context = {};
-
     const databaseClients = await setupTestDatabase(fauna, testName);
     const adminClient = databaseClients.childClient;
 
@@ -22,18 +23,18 @@ const setUp = async testName => {
         'fauna/resources/faunauth/collections/anomalies.fql',
         'fauna/resources/faunauth/collections/dinos.fql',
         'fauna/resources/faunauth/collections/User.fql',
+        'fauna/resources/faunauth/functions/changePassword.js',
         'fauna/resources/faunauth/functions/createEmailConfirmationToken.js',
         'fauna/resources/faunauth/functions/login.js',
         'fauna/resources/faunauth/functions/logout.js',
         'fauna/resources/faunauth/functions/refresh.js',
-        'fauna/resources/faunauth/functions/register.fql',
-        'fauna/resources/faunauth/functions/changePassword.js',
+        'fauna/resources/faunauth/functions/register.js',
         'fauna/resources/faunauth/functions/setPassword.js',
         'fauna/resources/faunauth/indexes/access-token-by-refresh-token.fql',
-        'fauna/resources/faunauth/indexes/users-by-email.fql',
         'fauna/resources/faunauth/indexes/tokens-by-instance-sessionid-type-and-loggedout.fql',
         'fauna/resources/faunauth/indexes/tokens-by-instance-type-and-loggedout.fql',
         'fauna/resources/faunauth/indexes/tokens-by-type-email-and-used.fql',
+        'fauna/resources/faunauth/indexes/users-by-email.fql',
         'fauna/resources/faunauth/roles/loggedin.js',
         'fauna/resources/faunauth/roles/public.fql',
         'fauna/resources/faunauth/roles/refresh.js',
@@ -71,14 +72,17 @@ describe('sample flow from refresh-tokens-advanced blueprint', () => {
             );
             const publicClient = new fauna.Client({
                 secret: publicKey.secret,
+                domain: clientDomain,
             });
 
             await publicClient.query(
                 Call('register', 'verysecure', {
                     email: 'user@domain.com',
                     locale: 'en-US',
-                    invitedBy: 'foo-user-id',
-                    toGroup: 'foo-group-id',
+                    details: {
+                        invitedBy: 'foo-user-id',
+                        toGroup: 'foo-group-id',
+                    },
                 }),
             );
 
@@ -88,20 +92,24 @@ describe('sample flow from refresh-tokens-advanced blueprint', () => {
 
             let accessClient = new fauna.Client({
                 secret: loginResult.tokens.access.secret,
+                domain: clientDomain,
             });
 
             let refreshClient = new fauna.Client({
                 secret: loginResult.tokens.refresh.secret,
+                domain: clientDomain,
             });
 
             const refreshResult = await refreshClient.query(Call('refresh'));
 
             accessClient = new fauna.Client({
                 secret: refreshResult.tokens.access.secret,
+                domain: clientDomain,
             });
 
             refreshClient = new fauna.Client({
                 secret: refreshResult.tokens.refresh.secret,
+                domain: clientDomain,
             });
 
             refreshClient.query(Call('logout', false));

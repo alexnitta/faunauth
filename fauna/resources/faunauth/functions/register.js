@@ -12,5 +12,5 @@ export default CreateFunction({
             RegisterAccount(Var('password'), Var('data')),
         ),
     ),
-    role: 'admin',
+    role: 'server',
 });

@@ -2,7 +2,7 @@ import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
 import type { UpdateUserResult } from '../types/auth';
-import { errors } from '../fauna/src/errors';
+import { errors } from '../errors';
 
 const { Ref, Collection, Update } = q;
 
@@ -43,17 +43,17 @@ export async function updateUser(
         secret: accessToken,
     });
 
-    let updateUserResult: UpdateUserResult | null = null;
+    let updateUserResult: UpdateUserResult | false = false;
 
     try {
-        updateUserResult = await client.query(
+        updateUserResult = await client.query<UpdateUserResult>(
             Update(Ref(Collection('User'), userID), { data }),
         );
     } catch {
         throw new Error(errors.failedToUpdateUser);
     }
 
-    if (updateUserResult === null) {
+    if (!updateUserResult) {
         throw new Error(errors.failedToUpdateUser);
     }
 

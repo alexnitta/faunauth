@@ -49,7 +49,7 @@ const setUp = async testName => {
         'fauna/resources/faunauth/functions/createEmailConfirmationToken.js',
         'fauna/resources/faunauth/functions/login.js',
         'fauna/resources/faunauth/functions/logout.js',
-        'fauna/resources/faunauth/functions/register.fql',
+        'fauna/resources/faunauth/functions/register.js',
         'fauna/resources/faunauth/functions/changePassword.js',
         'fauna/resources/faunauth/functions/setPassword.js',
         'fauna/resources/faunauth/indexes/access-token-by-refresh-token.fql',
