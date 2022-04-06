@@ -14,7 +14,7 @@ jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
 const clientDomain = process.env.FAUNADB_DOMAIN
     ? process.env.FAUNADB_DOMAIN
-    : undefined;
+    : 'db.fauna.com';
 
 const setUp = async testName => {
     const context = {};

@@ -1,5 +1,3 @@
-import { Maybe } from './general';
-
 export interface EmailTemplateLocale {
     body: {
         /**
