@@ -110,7 +110,7 @@ describe('login()', () => {
             Call('login', 'user@domain.com', 'wrong'),
         );
 
-        expect(loginResult).toBeNull();
+        expect(loginResult).toBe(false);
 
         await tearDown(testName, context);
     });
@@ -126,8 +126,7 @@ describe('login()', () => {
             Call('login', 'notuser@domain.com', 'verysecure'),
         );
 
-        // the returned result is the same as incorrect passwords
-        expect(loginResult).toBeNull();
+        expect(loginResult).toBe(false);
 
         await tearDown(testName, context);
     });
@@ -143,8 +142,7 @@ describe('login()', () => {
             Call('loginWithUsername', 'notuser', 'verysecure'),
         );
 
-        // the returned result is the same as incorrect passwords
-        expect(loginResult).toBeNull();
+        expect(loginResult).toBe(false);
 
         await tearDown(testName, context);
     });

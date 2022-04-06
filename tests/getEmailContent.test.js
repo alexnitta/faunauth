@@ -1,9 +1,9 @@
-import { getEmailContent } from '../email/getEmailContent';
+import { getEmailContent } from '../src/email/getEmailContent';
 import { EMAIL_TEST_TIMEOUT } from './constants';
 
 jest.setTimeout(EMAIL_TEST_TIMEOUT);
 
-test('getEmailContent should interpolate strings from the input into the output', () => {
+test('getEmailContent should pass strings from the input into the output', () => {
     const input = {
         appName: 'Test App',
         buttonColor: 'pink',

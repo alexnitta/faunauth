@@ -275,7 +275,7 @@ describe('refresh logic', () => {
     });
 
     // TODO: fix this failing test case
-    test.skip('cannot use the refresh token after the GRACE_PERIOD_SECONDS', async () => {
+    it.skip('cannot use the refresh token after the GRACE_PERIOD_SECONDS', async () => {
         const testName = 'refreshAfterGracePeriod';
         const context = await setUp(testName);
 
