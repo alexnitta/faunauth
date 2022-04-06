@@ -1,4 +1,4 @@
-import { AuthEmailLocale } from '~/types';
+import { EmailTemplateLocale } from '../types';
 
 /**
  * @param appName - name of the user-facing application
@@ -6,7 +6,7 @@ import { AuthEmailLocale } from '~/types';
  */
 export const getDefaultConfirmRegistrationLocale = (
     appName: string,
-): AuthEmailLocale => ({
+): EmailTemplateLocale => ({
     body: {
         beforeCallToAction: [
             `Thanks for signing up for an account at ${appName}.`,
@@ -29,7 +29,7 @@ export const getDefaultConfirmRegistrationLocale = (
  */
 export const getDefaultConfirmResetPasswordLocale = (
     appName: string,
-): AuthEmailLocale => ({
+): EmailTemplateLocale => ({
     body: {
         beforeCallToAction: [
             `You're almost done resetting your password for ${appName}.`,

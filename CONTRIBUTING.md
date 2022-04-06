@@ -56,6 +56,7 @@ We follow a few important conventions:
 ## Available Scripts
 
 -   `yarn check-types`: run tsc to check types without generating any output
+-   `yarn dev`: run tsc in watch mode to compile TypeScript to JavaScript in `/dist` when you make changes
 -   `yarn format`: automatically format code with eslint and prettier
 -   `yarn lint`: run eslint
 -   `yarn test`: run the unit tests with jest

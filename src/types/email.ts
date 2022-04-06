@@ -1,4 +1,6 @@
-export interface AuthEmailLocale {
+import { Maybe } from './general';
+
+export interface EmailTemplateLocale {
     body: {
         /**
          * Each of these strings will be rendered as a body paragraph before the call to action
@@ -25,7 +27,7 @@ export interface AuthEmailLocale {
     subject: string;
 }
 
-export interface AuthEmailConfig {
+export interface EmailTemplateConfig {
     /**
      * User-facing application name
      */
@@ -35,7 +37,8 @@ export interface AuthEmailConfig {
      */
     buttonColorOnHover: string;
     /**
-     * Target URL for the call to action button
+     * Target URL for the call to action button, including a URL parameter called `data` which
+     * includes a Base64-encoded string containing the email and token.
      */
     callbackUrl: string;
     /**
@@ -65,10 +68,10 @@ export interface AuthEmailConfig {
     /**
      * If provided, this object will be used to populate the text in the email.
      */
-    locale?: AuthEmailLocale;
+    locale?: EmailTemplateLocale;
 }
 
-export interface SendEmailInput {
+export interface EmailTemplateInput {
     /**
      * Recipient email address
      */
@@ -92,13 +95,56 @@ export interface SendEmailInput {
 }
 
 /**
- * Async function for sending an email; accepts a {@link SendEmailInput} and returns a Promise
- * that resolves to the generic <SendEmailResult>.
+ * Async function for sending an email; accepts a {@link EmailTemplateInput} and returns a Promise
+ * that resolves to the generic \`<SendEmailResult>\`. Use this when you want to send
+ * emails with the built-in template system provided by faunauth.
  * @remarks
- * Typically this will be something like {@link https://www.npmjs.com/package/@sendgrid/mail}.
- * If using \@sendgrid/mail as `sgMail`, you will need to set an API key using
- * `sgMail.setApiKey('API_KEY')` before passing in `sgMail` as a `SendMail` function.
+ * Typically this will be a wrapper around something like
+ * {@link https://www.npmjs.com/package/@sendgrid/mail}. If using \@sendgrid/mail as `sgMail`, you
+ * will need to set an API key using `sgMail.setApiKey('API_KEY')` before passing in `sgMail` as a
+ * `SendEmailFromTemplate` function.
  */
-export type SendEmail<SendEmailResult> = (
-    input: SendEmailInput,
+export type SendEmailFromTemplate<SendEmailResult> = (
+    input: EmailTemplateInput,
 ) => Promise<SendEmailResult>;
+
+/**
+ * Async function for sending an email; accepts a callback URL and returns a Promise
+ * that resolves to the generic \`<SendEmailResult>\`. Use this when you want to provide your
+ * own email template logic.
+ * @remarks
+ * Typically this will a wrapper around something like
+ * {@link https://www.npmjs.com/package/@sendgrid/mail}. If using \@sendgrid/mail as `sgMail`, you
+ * will need to set an API key using `sgMail.setApiKey('API_KEY')` before passing in `sgMail` as a
+ * `SendCustomEmail` function.
+ */
+export type SendCustomEmail<SendEmailResult> = (
+    callbackUrl: string,
+) => Promise<SendEmailResult>;
+
+export interface AuthInputWithEmailTemplate<SendEmailResult> {
+    /**
+     * Email address to use as the sender
+     */
+    fromEmail: string;
+    /**
+     * A configuration object for the email template - see {@link EmailTemplateConfig}
+     */
+    emailConfig: EmailTemplateConfig;
+    /**
+     * See {@link SendEmailFromTemplate}
+     */
+    sendEmailFromTemplate: SendEmailFromTemplate<SendEmailResult>;
+}
+
+export interface AuthInputWithCustomEmail<SendEmailResult> {
+    /**
+     * Target URL for the call to action button, including a URL parameter called `data` which
+     * includes a Base64-encoded string containing the email and token.
+     */
+    callbackUrl: string;
+    /**
+     * See {@link SendCustomEmail}
+     */
+    sendCustomEmail: SendCustomEmail<SendEmailResult>;
+}

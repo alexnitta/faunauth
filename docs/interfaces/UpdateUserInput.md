@@ -7,6 +7,7 @@
 ### Properties
 
 - [accessToken](UpdateUserInput.md#accesstoken)
+- [clientConfig](UpdateUserInput.md#clientconfig)
 - [data](UpdateUserInput.md#data)
 - [userID](UpdateUserInput.md#userid)
 
@@ -20,7 +21,19 @@ A Fauna secret that was returned after authenticating the user
 
 #### Defined in
 
-[src/auth/updateUser.ts:12](https://github.com/alexnitta/faunauth/blob/cdbb474/src/auth/updateUser.ts#L12)
+[auth/updateUser.ts:13](https://github.com/alexnitta/faunauth/blob/b462f3a/src/auth/updateUser.ts#L13)
+
+___
+
+### clientConfig
+
+• `Optional` **clientConfig**: `Omit`<`ClientConfig`, ``"secret"``\>
+
+Fauna client config object
+
+#### Defined in
+
+[auth/updateUser.ts:17](https://github.com/alexnitta/faunauth/blob/b462f3a/src/auth/updateUser.ts#L17)
 
 ___
 
@@ -32,7 +45,7 @@ Data to update on the user
 
 #### Defined in
 
-[src/auth/updateUser.ts:16](https://github.com/alexnitta/faunauth/blob/cdbb474/src/auth/updateUser.ts#L16)
+[auth/updateUser.ts:21](https://github.com/alexnitta/faunauth/blob/b462f3a/src/auth/updateUser.ts#L21)
 
 ___
 
@@ -44,4 +57,4 @@ ID of the user to update
 
 #### Defined in
 
-[src/auth/updateUser.ts:20](https://github.com/alexnitta/faunauth/blob/cdbb474/src/auth/updateUser.ts#L20)
+[auth/updateUser.ts:25](https://github.com/alexnitta/faunauth/blob/b462f3a/src/auth/updateUser.ts#L25)

@@ -21,12 +21,12 @@ const setUp = async testName => {
     const client = context.databaseClients.childClient;
 
     await populateDatabaseSchemaFromFiles(schemaMigrate, q, client, [
-        'fauna/resources/collections/User.fql',
-        'fauna/resources/functions/register.fql',
-        'fauna/resources/functions/login.js',
-        'fauna/resources/functions/loginWithUsername.js',
-        'fauna/resources/indexes/users-by-email.fql',
-        'fauna/resources/indexes/users-by-username.fql',
+        'src/fauna/resources/faunauth/collections/User.fql',
+        'src/fauna/resources/faunauth/functions/register.js',
+        'src/fauna/resources/faunauth/functions/login.js',
+        'src/fauna/resources/faunauth/functions/loginWithUsername.js',
+        'src/fauna/resources/faunauth/indexes/users-by-email.fql',
+        'src/fauna/resources/faunauth/indexes/users-by-username.fql',
     ]);
 
     await client.query(
@@ -110,7 +110,7 @@ describe('login()', () => {
             Call('login', 'user@domain.com', 'wrong'),
         );
 
-        expect(loginResult).toBeNull();
+        expect(loginResult).toBe(false);
 
         await tearDown(testName, context);
     });
@@ -126,8 +126,7 @@ describe('login()', () => {
             Call('login', 'notuser@domain.com', 'verysecure'),
         );
 
-        // the returned result is the same as incorrect passwords
-        expect(loginResult).toBeNull();
+        expect(loginResult).toBe(false);
 
         await tearDown(testName, context);
     });
@@ -143,8 +142,7 @@ describe('login()', () => {
             Call('loginWithUsername', 'notuser', 'verysecure'),
         );
 
-        // the returned result is the same as incorrect passwords
-        expect(loginResult).toBeNull();
+        expect(loginResult).toBe(false);
 
         await tearDown(testName, context);
     });

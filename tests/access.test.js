@@ -21,15 +21,15 @@ const setUp = async testName => {
     const client = context.databaseClients.childClient;
 
     await populateDatabaseSchemaFromFiles(schemaMigrate, q, client, [
-        'fauna/resources/collections/dinos.fql',
-        'fauna/resources/collections/User.fql',
-        'fauna/resources/functions/createEmailConfirmationToken.js',
-        'fauna/resources/functions/register.fql',
-        'fauna/resources/functions/changePassword.js',
-        'fauna/resources/functions/resetPassword.js',
-        'fauna/resources/indexes/users-by-email.fql',
-        'fauna/resources/indexes/users-by-username.fql',
-        'fauna/resources/roles/loggedin.js',
+        'src/fauna/resources/faunauth/collections/dinos.fql',
+        'src/fauna/resources/faunauth/collections/User.fql',
+        'src/fauna/resources/faunauth/functions/createEmailConfirmationToken.js',
+        'src/fauna/resources/faunauth/functions/register.js',
+        'src/fauna/resources/faunauth/functions/changePassword.js',
+        'src/fauna/resources/faunauth/functions/setPassword.js',
+        'src/fauna/resources/faunauth/indexes/users-by-email.fql',
+        'src/fauna/resources/faunauth/indexes/users-by-username.fql',
+        'src/fauna/resources/faunauth/roles/loggedin.js',
         // custom resources for this test with lower TTLs for access and refresh tokens (10s and 20s)
         'tests/resources/functions/_login-modified.js',
     ]);

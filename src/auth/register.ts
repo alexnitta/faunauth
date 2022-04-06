@@ -1,25 +1,23 @@
-import faunadb, { query as q } from 'faunadb';
+import faunadb, { query as q, errors as faunaErrors } from 'faunadb';
+import type { ClientConfig } from 'faunadb';
 
-import { ErrorWithKey } from '~/utils';
-import { getEmailContent } from '~/email';
+import { errors } from '../fauna/src/errors';
+import { getEmailContent } from '../email';
 import type {
     CollectionQueryResult,
-    AuthEmailConfig,
-    Maybe,
-    SendEmail,
+    AuthInputWithEmailTemplate,
+    AuthInputWithCustomEmail,
     Token,
     UserData,
-} from '~/types';
+    Maybe,
+} from '../types';
+import { addParamsToPath } from '../utils';
 
-export interface RegisterInput<SendEmailResult> {
+export interface BaseRegisterInput {
     /**
-     * Email address to use as the sender
+     * Fauna client config object
      */
-    fromEmail: string;
-    /**
-     * A configuration object for the email template - see {@link AuthEmailConfig}
-     */
-    emailConfig: AuthEmailConfig;
+    clientConfig?: Omit<ClientConfig, 'secret'>;
     /**
      * A Fauna secret that is limited to permissions needed for public actions when creating users
      * and resetting passwords
@@ -30,53 +28,62 @@ export interface RegisterInput<SendEmailResult> {
      */
     password: string;
     /**
-     * See {@link SendEmail}
-     */
-    sendEmail: SendEmail<SendEmailResult>;
-    /**
      * Details for the new user - see {@link UserData}
      */
     userData: UserData;
 }
 
-export interface RegisterResult<SendEmailResult> {
-    /**
-     * True if a sign up token was created in database
-     */
-    tokenCreated: boolean;
-    /**
-     * Result of sending email
-     */
-    sendEmailResult: Maybe<SendEmailResult>;
-}
+export type RegisterInput<SendEmailResult> = BaseRegisterInput &
+    (
+        | AuthInputWithEmailTemplate<SendEmailResult>
+        | AuthInputWithCustomEmail<SendEmailResult>
+    );
 
 /**
  * Register a user by creating a user in the User collection and sending the user an email with a
- * confirmation link that will can be used to confirm their account. A unique `input.userData.email`
- * is required. If desired, you can provide a unique username on `input.userData.username`. If you
- * do this (or if you later modify the user by adding a username to its `data` property), you can
- * call the `login` function with the username rather than the email.
- * @returns - {@link RegisterResult}
+ * confirmation link to the specified callbackUrl that includes the encoded token and email address.
+ * `setPassword` will need to be invoked with the decoded token to complete the process.
+ *
+ * A unique `input.userData.email` is required. If desired, you can provide a unique username on
+ * `input.userData.username`. If you do this (or if you later modify the user by adding a username
+ * to its `data` property), you can call the `login` function with the username rather than the
+ * email.
+ *
+ * Both `input.userData.email` and `input.userData.username` are converted to lowercase, so they
+ * are case-insensitive.
+ *
+ * @remarks
+ * The token and email are wrapped into an object, then Base64-encoded and appended as a single
+ * URL search parameter called `data`. Your client-side code can read these values by doing:
+ * ```JavaScript
+ * const { email, token } = JSON.parse(atob(data));
+ * ```
+ *
+ * You can either use the built-in email template system by passing in an input that conforms to
+ * {@link AuthInputWithEmailTemplate}, or create your own email template by passing in an input that
+ * conforms to {@link AuthInputWithCustomEmail}.
+ * @returns the generic \`<SendEmailResult>\` that you specify
  */
 export async function register<SendEmailResult>(
     input: RegisterInput<SendEmailResult>,
-): Promise<RegisterResult<SendEmailResult>> {
+): Promise<SendEmailResult> {
     const {
+        clientConfig,
         publicFaunaKey,
         password,
-        sendEmail,
         userData: { locale, details },
-        emailConfig,
-        fromEmail,
     } = input;
 
     const email = input.userData.email.toLowerCase();
+    const inputUsername = input.userData?.username ?? null;
+    const username = inputUsername ? inputUsername.toLowerCase() : null;
 
     if (!publicFaunaKey) {
-        throw new ErrorWithKey('publicFaunaKeyMissing');
+        throw new Error(errors.missingPublicFaunaKey);
     }
 
     const client = new faunadb.Client({
+        ...clientConfig,
         secret: publicFaunaKey,
     });
 
@@ -89,28 +96,29 @@ export async function register<SendEmailResult>(
                 details,
                 email,
                 locale,
-                username: input?.userData?.username ?? null,
+                username,
             }),
         );
     } catch (e) {
-        // TODO find the Fauna type definition for errors when instance is not unique and use it
-        // instead of casting to `any`
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const error = e as any;
+        const error = e as faunaErrors.BadRequest;
 
-        const code =
+        const description =
+            // Looks like there is an error in the official Fauna type defs; the `cause` array is
+            // not shown in the type defs but exists in the response.
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             error?.requestResult?.responseContent?.errors?.[0]?.cause?.[0]
-                ?.code;
+                ?.description;
 
-        if (code === 'instance not unique') {
-            throw new ErrorWithKey('userAlreadyExists');
-        } else {
-            throw new ErrorWithKey('queryError', e as Error);
+        if (description === errors.userAlreadyExists) {
+            throw new Error(errors.userAlreadyExists);
         }
+
+        throw new Error(errors.failedToRegisterUser);
     }
 
     if (!userResult?.ref) {
-        throw new ErrorWithKey('userRefIsMissing');
+        throw new Error(errors.missingUserRef);
     }
 
     let createTokenResult = null;
@@ -121,14 +129,13 @@ export async function register<SendEmailResult>(
             token: Token<{ type: string; email: string }>;
         }>(q.Call('createEmailConfirmationToken', email));
     } catch (e) {
-        throw new ErrorWithKey('failedToCreateToken', e as Error);
+        throw new Error(errors.failedToCreateToken);
     }
 
     if (!createTokenResult) {
-        return {
-            tokenCreated: false,
-            sendEmailResult: null,
-        };
+        // It would be really strange if this happened, because the user should be created just
+        // before this, but we check for this condition anyway.
+        throw new Error(errors.userDoesNotExist);
     }
 
     const {
@@ -142,28 +149,61 @@ export async function register<SendEmailResult>(
         }),
     ).toString('base64');
 
-    const finalCallbackUrl = `${emailConfig.callbackUrl}?data=${data}`;
+    let sendEmailResult: Maybe<Error | SendEmailResult> = null;
 
-    const { html, text, subject } = getEmailContent({
-        ...emailConfig,
-        callbackUrl: finalCallbackUrl,
-    });
+    if ('sendEmailFromTemplate' in input) {
+        const { emailConfig, fromEmail, sendEmailFromTemplate } = input;
 
-    const message = {
-        to: email,
-        from: fromEmail,
-        subject,
-        html,
-        text,
-    };
+        const finalCallbackUrl = addParamsToPath({
+            path: emailConfig.callbackUrl,
+            params: [['data', data]],
+        });
 
-    let sendEmailResult = null;
+        const { html, text, subject } = getEmailContent({
+            ...emailConfig,
+            callbackUrl: finalCallbackUrl,
+        });
 
-    try {
-        sendEmailResult = await sendEmail(message);
-    } catch (e) {
-        throw new ErrorWithKey('failedToSendEmail', e as Error);
+        const message = {
+            to: email,
+            from: fromEmail,
+            subject,
+            html,
+            text,
+        };
+
+        try {
+            sendEmailResult = await sendEmailFromTemplate(message);
+        } catch {
+            sendEmailResult = new Error(errors.failedToSendEmail);
+        }
+    } else if ('sendCustomEmail' in input) {
+        const { sendCustomEmail } = input;
+
+        const finalCallbackUrl = addParamsToPath({
+            path: input.callbackUrl,
+            params: [['data', data]],
+        });
+
+        try {
+            sendEmailResult = await sendCustomEmail(finalCallbackUrl);
+        } catch (e) {
+            sendEmailResult = new Error(errors.failedToSendEmail);
+        }
     }
 
-    return { tokenCreated: true, sendEmailResult };
+    if (sendEmailResult instanceof Error) {
+        if (sendEmailResult.message === errors.failedToSendEmail) {
+            try {
+                // Delete user if email is not sent so that they can be re-created at a later time
+                await client.query(q.Delete(userResult.ref));
+            } catch {
+                throw new Error(errors.failedToSendEmailAndDeleteUser);
+            }
+        }
+
+        throw sendEmailResult;
+    } else {
+        return sendEmailResult;
+    }
 }

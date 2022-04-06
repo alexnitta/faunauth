@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "rootDir": ".",
+        "rootDir": "./src",
         "sourceMap": true,
         "declaration": true,
         "moduleResolution": "node",
@@ -18,12 +18,9 @@
         "allowSyntheticDefaultImports": true,
         "noImplicitAny": true,
         "baseUrl": ".",
-        "paths": {
-            "~/*": ["./src/*"]
-        },
         "outDir": "./dist",
-        "types": ["node"]
+        "types": ["node", "jest"]
     },
-    "include": ["fauna/**/*.js", "fauna/**/*.ts", "src/**/*.js", "src/**/*.ts"],
-    "exclude": ["node_modules", "tmp"]
+    "include": ["src/**/*.js", "src/**/*.ts", "fauna"],
+    "exclude": ["node_modules", "tmp", "fauna/temp/**/*", "src/cli"]
 }

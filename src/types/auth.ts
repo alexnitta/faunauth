@@ -148,3 +148,8 @@ export interface FaunaGraphQLResponse<TData> {
     errors?: import('graphql').GraphQLError[];
     data?: TData;
 }
+
+export interface CreateTokenResult {
+    account: CollectionQueryResult<UserData>;
+    token: Token<{ type: string; email: string }>;
+}

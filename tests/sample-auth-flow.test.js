@@ -12,31 +12,32 @@ const { Call, CreateKey, Role } = q;
 
 jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
+const clientDomain = process.env.FAUNADB_DOMAIN;
+
 const setUp = async testName => {
     const context = {};
-
     const databaseClients = await setupTestDatabase(fauna, testName);
     const adminClient = databaseClients.childClient;
 
     await populateDatabaseSchemaFromFiles(schemaMigrate, q, adminClient, [
-        'fauna/resources/collections/anomalies.fql',
-        'fauna/resources/collections/dinos.fql',
-        'fauna/resources/collections/User.fql',
-        'fauna/resources/functions/createEmailConfirmationToken.js',
-        'fauna/resources/functions/login.js',
-        'fauna/resources/functions/logout.js',
-        'fauna/resources/functions/refresh.js',
-        'fauna/resources/functions/register.fql',
-        'fauna/resources/functions/changePassword.js',
-        'fauna/resources/functions/resetPassword.js',
-        'fauna/resources/indexes/access-token-by-refresh-token.fql',
-        'fauna/resources/indexes/users-by-email.fql',
-        'fauna/resources/indexes/tokens-by-instance-sessionid-type-and-loggedout.fql',
-        'fauna/resources/indexes/tokens-by-instance-type-and-loggedout.fql',
-        'fauna/resources/indexes/tokens-by-type-email-and-used.fql',
-        'fauna/resources/roles/loggedin.js',
-        'fauna/resources/roles/public.fql',
-        'fauna/resources/roles/refresh.js',
+        'src/fauna/resources/faunauth/collections/anomalies.fql',
+        'src/fauna/resources/faunauth/collections/dinos.fql',
+        'src/fauna/resources/faunauth/collections/User.fql',
+        'src/fauna/resources/faunauth/functions/changePassword.js',
+        'src/fauna/resources/faunauth/functions/createEmailConfirmationToken.js',
+        'src/fauna/resources/faunauth/functions/login.js',
+        'src/fauna/resources/faunauth/functions/logout.js',
+        'src/fauna/resources/faunauth/functions/refresh.js',
+        'src/fauna/resources/faunauth/functions/register.js',
+        'src/fauna/resources/faunauth/functions/setPassword.js',
+        'src/fauna/resources/faunauth/indexes/access-token-by-refresh-token.fql',
+        'src/fauna/resources/faunauth/indexes/tokens-by-instance-sessionid-type-and-loggedout.fql',
+        'src/fauna/resources/faunauth/indexes/tokens-by-instance-type-and-loggedout.fql',
+        'src/fauna/resources/faunauth/indexes/tokens-by-type-email-and-used.fql',
+        'src/fauna/resources/faunauth/indexes/users-by-email.fql',
+        'src/fauna/resources/faunauth/roles/loggedin.js',
+        'src/fauna/resources/faunauth/roles/public.fql',
+        'src/fauna/resources/faunauth/roles/refresh.js',
     ]);
 
     context.databaseClients = databaseClients;
@@ -71,14 +72,17 @@ describe('sample flow from refresh-tokens-advanced blueprint', () => {
             );
             const publicClient = new fauna.Client({
                 secret: publicKey.secret,
+                domain: clientDomain,
             });
 
             await publicClient.query(
                 Call('register', 'verysecure', {
                     email: 'user@domain.com',
                     locale: 'en-US',
-                    invitedBy: 'foo-user-id',
-                    toGroup: 'foo-group-id',
+                    details: {
+                        invitedBy: 'foo-user-id',
+                        toGroup: 'foo-group-id',
+                    },
                 }),
             );
 
@@ -88,20 +92,24 @@ describe('sample flow from refresh-tokens-advanced blueprint', () => {
 
             let accessClient = new fauna.Client({
                 secret: loginResult.tokens.access.secret,
+                domain: clientDomain,
             });
 
             let refreshClient = new fauna.Client({
                 secret: loginResult.tokens.refresh.secret,
+                domain: clientDomain,
             });
 
             const refreshResult = await refreshClient.query(Call('refresh'));
 
             accessClient = new fauna.Client({
                 secret: refreshResult.tokens.access.secret,
+                domain: clientDomain,
             });
 
             refreshClient = new fauna.Client({
                 secret: refreshResult.tokens.refresh.secret,
+                domain: clientDomain,
             });
 
             refreshClient.query(Call('logout', false));

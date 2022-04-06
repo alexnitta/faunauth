@@ -1,12 +1,17 @@
 import faunadb, { query as q } from 'faunadb';
+import type { ClientConfig } from 'faunadb';
 
-import { ErrorWithKey } from '~/utils';
-import type { FaunaRefreshResult, TokenPair, Maybe } from '~/types';
+import { errors } from '../fauna/src/errors';
+import type { FaunaRefreshResult, TokenPair, Maybe } from '../types';
 
 export interface RotateTokensInput {
     /**
-     * A token that can be used to authenticate further requests against the FaunaDB API. Fauna's
-     * docs refer to this as a 'secret'; from the client perspective it's a JWT.
+     * Fauna client config object
+     */
+    clientConfig?: Omit<ClientConfig, 'secret'>;
+    /**
+     * A token that can be used to authenticate further Fauna requests. Fauna's docs refer to this
+     * as a 'secret'; from the client perspective it's a JWT.
      */
     refreshToken: string;
 }
@@ -17,9 +22,11 @@ export interface RotateTokensInput {
  * @returns the new access and refresh tokens if successful
  */
 export async function rotateTokens({
+    clientConfig,
     refreshToken,
 }: RotateTokensInput): Promise<TokenPair> {
     const client = new faunadb.Client({
+        ...clientConfig,
         secret: refreshToken,
     });
 
@@ -28,11 +35,11 @@ export async function rotateTokens({
     try {
         result = await client.query(q.Call('refresh'));
     } catch (e) {
-        throw new ErrorWithKey('failedToRefreshToken', e as Error);
+        throw new Error(errors.failedToRefreshToken);
     }
 
     if (result === null) {
-        throw new ErrorWithKey('failedToRefreshToken');
+        throw new Error(errors.failedToRefreshToken);
     }
 
     return {

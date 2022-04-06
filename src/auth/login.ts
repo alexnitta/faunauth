@@ -1,28 +1,33 @@
 import faunadb, { query as q } from 'faunadb';
+import type { ClientConfig } from 'faunadb';
 
-import { ErrorWithKey } from '~/utils';
-import type { ServerLoginResult, FaunaLoginResult, Maybe } from '~/types';
+import { errors } from '../fauna/src/errors';
+import type { ServerLoginResult, FaunaLoginResult } from '../types';
 
-interface BaseLoginInput {
+export interface BaseLoginInput {
+    /**
+     * Fauna client config object
+     */
+    clientConfig?: Omit<ClientConfig, 'secret'>;
     /**
      * A Fauna secret that is limited to permissions needed for public actions when creating users
      * and resetting passwords
      */
     publicFaunaKey: string | null;
     /**
-     * New password to use
+     * The user's password
      */
     password: string;
 }
 
-interface LoginInputWithEmail extends BaseLoginInput {
+export interface LoginInputWithEmail extends BaseLoginInput {
     /**
      * Email address for the user who wants to sign in
      */
     email: string;
 }
 
-interface LoginInputWithUsername extends BaseLoginInput {
+export interface LoginInputWithUsername extends BaseLoginInput {
     /**
      * Username for the user who wants to sign in
      */
@@ -35,42 +40,45 @@ export type LoginInput = LoginInputWithEmail | LoginInputWithUsername;
  * Log a user in. The input can include either an `email` or a `username` in order to identify the
  * user. The returned data will include an `accessToken`, `refreshToken` and `user` object including
  * the user's `id` as well as any other data on the User document.
+ *
+ * The `input.email` or `input.username` is converted to lowercase, so it is case-insensitive.
  * @param input - {@link LoginInput}
  * @returns - {@link LoginResult}
  */
 export async function login(input: LoginInput): Promise<ServerLoginResult> {
-    const { publicFaunaKey, password } = input;
+    const { clientConfig, publicFaunaKey, password } = input;
 
     if (!publicFaunaKey) {
-        throw new ErrorWithKey('publicFaunaKeyMissing');
+        throw new Error(errors.missingPublicFaunaKey);
     }
 
     const client = new faunadb.Client({
+        ...clientConfig,
         secret: publicFaunaKey,
     });
 
-    let loginResult: Maybe<FaunaLoginResult> = null;
+    let loginResult: FaunaLoginResult | false = false;
 
     try {
         if ('email' in input) {
             const email = input.email.toLowerCase();
 
-            loginResult = await client.query<Maybe<FaunaLoginResult>>(
+            loginResult = await client.query<FaunaLoginResult | false>(
                 q.Call('login', email, password),
             );
         } else {
-            loginResult = await client.query<Maybe<FaunaLoginResult>>(
-                q.Call('loginWithUsername', input.username, password),
+            const username = input.username.toLowerCase();
+
+            loginResult = await client.query<FaunaLoginResult | false>(
+                q.Call('loginWithUsername', username, password),
             );
         }
-    } catch (e) {
-        const error = e as Error;
-
-        throw new ErrorWithKey('invalidUserOrPassword', error);
+    } catch {
+        throw new Error(errors.invalidUserOrPassword);
     }
 
-    if (loginResult === null) {
-        throw new ErrorWithKey('invalidUserOrPassword');
+    if (!loginResult) {
+        throw new Error(errors.invalidUserOrPassword);
     }
 
     const {

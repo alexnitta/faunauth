@@ -1,7 +1,8 @@
 import faunadb, { query as q } from 'faunadb';
+import type { ClientConfig } from 'faunadb';
 
-import { ErrorWithKey } from '~/utils';
-import type { UpdateUserResult } from '~/types/auth';
+import type { UpdateUserResult } from '../types/auth';
+import { errors } from '../fauna/src/errors';
 
 const { Ref, Collection, Update } = q;
 
@@ -10,6 +11,10 @@ export interface UpdateUserInput {
      * A Fauna secret that was returned after authenticating the user
      */
     accessToken: string | null;
+    /**
+     * Fauna client config object
+     */
+    clientConfig?: Omit<ClientConfig, 'secret'>;
     /**
      * Data to update on the user
      */
@@ -27,28 +32,29 @@ export interface UpdateUserInput {
 export async function updateUser(
     input: UpdateUserInput,
 ): Promise<UpdateUserResult> {
-    const { accessToken, data, userID } = input;
+    const { accessToken, clientConfig, data, userID } = input;
 
     if (!accessToken) {
-        throw new ErrorWithKey('accessTokenMissing');
+        throw new Error(errors.missingAccessToken);
     }
 
     const client = new faunadb.Client({
+        ...clientConfig,
         secret: accessToken,
     });
 
-    let updateUserResult: UpdateUserResult | null = null;
+    let updateUserResult: UpdateUserResult | false = false;
 
     try {
-        updateUserResult = await client.query(
+        updateUserResult = await client.query<UpdateUserResult>(
             Update(Ref(Collection('User'), userID), { data }),
         );
-    } catch (error) {
-        throw new ErrorWithKey('failedToUpdateUser', error as Error);
+    } catch {
+        throw new Error(errors.failedToUpdateUser);
     }
 
-    if (updateUserResult === null) {
-        throw new ErrorWithKey('failedToUpdateUser');
+    if (!updateUserResult) {
+        throw new Error(errors.failedToUpdateUser);
     }
 
     return updateUserResult;

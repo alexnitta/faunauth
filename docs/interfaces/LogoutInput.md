@@ -6,10 +6,23 @@
 
 ### Properties
 
+- [clientConfig](LogoutInput.md#clientconfig)
 - [logoutAll](LogoutInput.md#logoutall)
 - [refreshToken](LogoutInput.md#refreshtoken)
 
 ## Properties
+
+### clientConfig
+
+• `Optional` **clientConfig**: `Omit`<`ClientConfig`, ``"secret"``\>
+
+Fauna client config object
+
+#### Defined in
+
+[auth/logout.ts:10](https://github.com/alexnitta/faunauth/blob/b462f3a/src/auth/logout.ts#L10)
+
+___
 
 ### logoutAll
 
@@ -20,7 +33,7 @@ different browsers). If false, will just expire tokens for the current browser.
 
 #### Defined in
 
-[src/auth/logout.ts:10](https://github.com/alexnitta/faunauth/blob/cdbb474/src/auth/logout.ts#L10)
+[auth/logout.ts:15](https://github.com/alexnitta/faunauth/blob/b462f3a/src/auth/logout.ts#L15)
 
 ___
 
@@ -32,4 +45,4 @@ The user's refresh token secret
 
 #### Defined in
 
-[src/auth/logout.ts:14](https://github.com/alexnitta/faunauth/blob/cdbb474/src/auth/logout.ts#L14)
+[auth/logout.ts:19](https://github.com/alexnitta/faunauth/blob/b462f3a/src/auth/logout.ts#L19)
