@@ -1,5 +1,14 @@
 # `faunauth`
 
+<div style="display: flex; align-items: flex-start;">
+    <a style="margin-right: 5px;" href="https://github.com/alexnitta/faunauth/actions/workflows/ci-cd.yml">
+        <img src="https://github.com/alexnitta/faunauth/actions/workflows/ci-cd.yml/badge.svg?branch=main" />
+    </a>
+    <a style="margin: 0px 5px;" href="https://www.npmjs.com/package/faunauth">
+        <img src="https://img.shields.io/npm/v/faunauth" />
+    </a>
+</div>
+
 This library helps you add email-based authentication to your [Fauna](https://fauna.com/) database - in other words, the user's email address will be used to confirm their identity. This means you can support three login patterns:
 
 1. Log in with email and password
