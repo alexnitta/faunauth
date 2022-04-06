@@ -10,7 +10,7 @@ import { delay } from './helpers/_delay';
 import {
     REFRESH_TOKEN_EXPIRED,
     REFRESH_TOKEN_REUSE_ERROR,
-} from '../fauna/src/anomalies';
+} from '../src/fauna/src/anomalies';
 import {
     GRACE_PERIOD_SECONDS,
     ACCESS_TOKEN_LIFETIME_SECONDS,

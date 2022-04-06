@@ -12,7 +12,9 @@ const { Call, CreateKey, Role } = q;
 
 jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
-const clientDomain = process.env.FAUNADB_DOMAIN;
+const clientDomain = process.env.FAUNADB_DOMAIN
+    ? process.env.FAUNADB_DOMAIN
+    : undefined;
 
 const setUp = async testName => {
     const context = {};
