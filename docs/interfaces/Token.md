@@ -27,7 +27,7 @@
 
 #### Defined in
 
-[types/auth.ts:142](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/auth.ts#L142)
+[types/auth.ts:142](https://github.com/alexnitta/faunauth/blob/b462f3a/src/types/auth.ts#L142)
 
 ___
 
@@ -37,7 +37,7 @@ ___
 
 #### Defined in
 
-[types/auth.ts:141](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/auth.ts#L141)
+[types/auth.ts:141](https://github.com/alexnitta/faunauth/blob/b462f3a/src/types/auth.ts#L141)
 
 ___
 
@@ -47,7 +47,7 @@ ___
 
 #### Defined in
 
-[types/auth.ts:139](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/auth.ts#L139)
+[types/auth.ts:139](https://github.com/alexnitta/faunauth/blob/b462f3a/src/types/auth.ts#L139)
 
 ___
 
@@ -57,7 +57,7 @@ ___
 
 #### Defined in
 
-[types/auth.ts:144](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/auth.ts#L144)
+[types/auth.ts:144](https://github.com/alexnitta/faunauth/blob/b462f3a/src/types/auth.ts#L144)
 
 ___
 
@@ -67,7 +67,7 @@ ___
 
 #### Defined in
 
-[types/auth.ts:140](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/auth.ts#L140)
+[types/auth.ts:140](https://github.com/alexnitta/faunauth/blob/b462f3a/src/types/auth.ts#L140)
 
 ___
 
@@ -77,4 +77,4 @@ ___
 
 #### Defined in
 
-[types/auth.ts:143](https://github.com/alexnitta/faunauth/blob/0b7b1e9/src/types/auth.ts#L143)
+[types/auth.ts:143](https://github.com/alexnitta/faunauth/blob/b462f3a/src/types/auth.ts#L143)
