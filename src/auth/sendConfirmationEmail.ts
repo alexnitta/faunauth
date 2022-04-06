@@ -1,16 +1,13 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import { errors } from '../errors';
+import { errors } from '../fauna/src/errors';
 import { addParamsToPath } from '../utils';
 import { getEmailContent } from '../email';
 import type {
     AuthInputWithEmailTemplate,
     AuthInputWithCustomEmail,
     CreateTokenResult,
-    CollectionQueryResult,
-    Token,
-    UserData,
 } from '../types';
 
 export interface BaseRequestPasswordResetInput {

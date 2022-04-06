@@ -2,8 +2,7 @@ import faunadb, { query as q, errors as faunaErrors } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
 import type { ServerLoginResult, FaunaLoginResult } from '../types/auth';
-import { errors } from '../errors';
-
+import { errors } from '../fauna/src/errors';
 export interface SetPasswordInput {
     /**
      * Fauna client config object

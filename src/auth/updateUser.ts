@@ -2,7 +2,7 @@ import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
 import type { UpdateUserResult } from '../types/auth';
-import { errors } from '../errors';
+import { errors } from '../fauna/src/errors';
 
 const { Ref, Collection, Update } = q;
 

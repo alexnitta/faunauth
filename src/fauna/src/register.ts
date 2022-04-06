@@ -1,8 +1,8 @@
 import faunadb from 'faunadb';
 import { VerifyAccountExists } from './identity';
 
-import { errors } from '../../src/errors';
-import type { UserData } from '../../src/types';
+import { errors } from './errors';
+import type { UserData } from '../../types';
 
 const q = faunadb.query;
 const { Abort, Create, Collection } = q;

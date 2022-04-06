@@ -21,12 +21,12 @@ const setUp = async testName => {
     const client = context.databaseClients.childClient;
 
     await populateDatabaseSchemaFromFiles(schemaMigrate, q, client, [
-        'fauna/resources/faunauth/collections/User.fql',
-        'fauna/resources/faunauth/functions/register.js',
-        'fauna/resources/faunauth/functions/login.js',
-        'fauna/resources/faunauth/functions/loginWithUsername.js',
-        'fauna/resources/faunauth/indexes/users-by-email.fql',
-        'fauna/resources/faunauth/indexes/users-by-username.fql',
+        'src/fauna/resources/faunauth/collections/User.fql',
+        'src/fauna/resources/faunauth/functions/register.js',
+        'src/fauna/resources/faunauth/functions/login.js',
+        'src/fauna/resources/faunauth/functions/loginWithUsername.js',
+        'src/fauna/resources/faunauth/indexes/users-by-email.fql',
+        'src/fauna/resources/faunauth/indexes/users-by-username.fql',
     ]);
 
     await client.query(
