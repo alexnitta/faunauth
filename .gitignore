@@ -46,4 +46,4 @@ apps/**/.cache
 .env
 
 # Fauna temp files
-fauna/temp/
+/fauna
