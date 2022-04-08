@@ -15,12 +15,12 @@
 
 • **accessToken**: `string`
 
-A token that can be used to authenticate further requests against the FaunaDB API. Fauna's
-docs refer to this as a 'secret'; from the client perspective it's a JWT.
+A token that can be used to authenticate further requests against the public Fauna APIs.
+Fauna's docs refer to this as a 'secret'; from the client perspective it's a JWT.
 
 #### Defined in
 
-[types/auth.ts:93](https://github.com/alexnitta/faunauth/blob/fa844e9/src/types/auth.ts#L93)
+[types/auth.ts:98](https://github.com/alexnitta/faunauth/blob/ac43d73/src/types/auth.ts#L98)
 
 ___
 
@@ -28,9 +28,9 @@ ___
 
 • **refreshToken**: `string`
 
-A token that can be used to refresh the access token. Fauna's docs refer to this as a
-'secret'; from the client perspective it's a JWT.
+A token that can be used to acquire a new pair of accessToken / refreshToken values. Fauna's
+docs refer to this as a 'secret'; from the client perspective it's a JWT.
 
 #### Defined in
 
-[types/auth.ts:98](https://github.com/alexnitta/faunauth/blob/fa844e9/src/types/auth.ts#L98)
+[types/auth.ts:103](https://github.com/alexnitta/faunauth/blob/ac43d73/src/types/auth.ts#L103)
