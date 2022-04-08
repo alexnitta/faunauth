@@ -4,10 +4,13 @@
     <a style="margin-right: 5px;" href="https://github.com/alexnitta/faunauth/actions/workflows/ci-cd.yml">
         <img src="https://github.com/alexnitta/faunauth/actions/workflows/ci-cd.yml/badge.svg?branch=main" />
     </a>
+    <img style="margin: 0px 5px;" src="https://img.shields.io/npm/types/faunauth" />
     <a style="margin: 0px 5px;" href="https://www.npmjs.com/package/faunauth">
         <img src="https://img.shields.io/npm/v/faunauth" />
     </a>
-    <img style="margin: 0px 5px;" src="https://img.shields.io/npm/types/faunauth" />
+    <a style="margin: 0px 5px;" href="https://github.com/semantic-release/semantic-release">
+        <img src="https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release" />
+    </a>
 </div>
 
 This library helps you add email-based authentication to your [Fauna](https://fauna.com/) database, allowing you to support three login patterns:
@@ -18,9 +21,9 @@ This library helps you add email-based authentication to your [Fauna](https://fa
 
 \*Note that if you want your users to be able to log in with a username, they must register with both an email address and username.
 
-## Version and changelog
+## Version and change log
 
-This package follows `semver`
+This package follows [Semantic Versioning](https://semver.org/) by using [semantic-release](https://github.com/semantic-release/semantic-release). This means that the version number is determined automatically using commit messages. A change log is also automatically created in [./docs/CHANGELOG.md](./docs/CHANGELOG.md).
 
 ## Caveats
 
