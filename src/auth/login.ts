@@ -41,6 +41,10 @@ export type LoginInput = LoginInputWithEmail | LoginInputWithUsername;
  * user. The returned data will include an `accessToken`, `refreshToken` and `user` object including
  * the user's `id` as well as any other data on the User document.
  *
+ * If the email/username or password is incorrect, this function throws the same error. This is by
+ * design; the person trying to log in should not be allowed to know which of these values is
+ * incorrect because it would help them guess the other value if they are a malicious actor.
+ *
  * The `input.email` or `input.username` is converted to lowercase, so it is case-insensitive.
  * @param input - {@link LoginInput}
  * @returns - {@link LoginResult}

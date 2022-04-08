@@ -7,21 +7,26 @@
     <a style="margin: 0px 5px;" href="https://www.npmjs.com/package/faunauth">
         <img src="https://img.shields.io/npm/v/faunauth" />
     </a>
+    <img style="margin: 0px 5px;" src="https://img.shields.io/npm/types/faunauth" />
 </div>
 
-This library helps you add email-based authentication to your [Fauna](https://fauna.com/) database - in other words, the user's email address will be used to confirm their identity. This means you can support three login patterns:
+This library helps you add email-based authentication to your [Fauna](https://fauna.com/) database, allowing you to support three login patterns:
 
 1. Log in with email and password
-2. Log in with username and password. In this case, the username is used to look up the user and their email address.
+2. Log in with username and password\*
 3. Log in via a "magic link" sent to the user's email address
 
-Note that if you want your users to be able to log in with a username, they must register with both an email address and username.
+\*Note that if you want your users to be able to log in with a username, they must register with both an email address and username.
+
+## Version and changelog
+
+This package follows `semver`
 
 ## Caveats
 
 Before using this library, you should understand the different options available for authentication in Fauna. You can configure [external authentication](https://docs.fauna.com/fauna/current/security/external/) via an identity provider like [Auth0](https://auth0.com/), and this might be a good choice for your needs. On the other hand, if you wish to use the internal Fauna authentication features, then this library will allow you to add them to your database.
 
-This library is built on top of [fauna-schema-migrate](https://github.com/fauna-labs/fauna-schema-migrate). Note that `fauna-schema-migrate` is experimental; its README lists this disclaimer:
+This library is built on top of [fauna-schema-migrate](https://github.com/fauna-labs/fauna-schema-migrate) from [Fauna Labs](https://github.com/fauna-labs). Note that `fauna-schema-migrate` is experimental; its README lists this disclaimer:
 
 > This repository contains unofficial patterns, sample code, or tools to help developers build more effectively with Fauna. All Fauna Labs repositories are provided “as-is” and without support. By using this repository or its contents, you agree that this repository may never be officially supported and moved to the Fauna organization.
 
@@ -29,23 +34,21 @@ This means `faunauth` is also experimental; use it at your own discretion.
 
 You are likely using Fauna because you want to take advantage of its [GraphQL API](https://docs.fauna.com/fauna/current/api/graphql/). At this point, `fauna-schema-migrate` does not provide integration with resources defined in a GraphQL schema (this [might be added at some point](https://github.com/fauna-labs/fauna-schema-migrate#potential-extensions)). This means you cannot use `fauna-schema-migrate` to refer to indexes or collections created via GraphQL schemas. The one place this really matters is when provisioning a user role in order to grant access to your resources from your GraphQL schema. To help with this, you can create a script that calls the [createOrUpdateUserRole](./docs/index.md#createorupdateuserrole) utility function - more on this below.
 
-## Documentation
+## More documentation
 
-Auto-generated documentation is available in [./docs/index.md](./docs/index.md).
-
-## Resources
+Auto-generated documentation is available in [./docs/index.md](./docs/index.md). The most useful place to start is in the [functions](./docs/index.md#functions) section.
 
 It's a good idea to read up on a few topics before using `faunauth`:
 
 -   [The Fauna Query Language (FQL)](https://docs.fauna.com/fauna/current/api/fql/)
 -   [User-defined functions (UDFs)](https://docs.fauna.com/fauna/current/learn/understanding/user_defined_functions)
 
-The `fauna` and `tests` folders are based on examples from two Fauna blog posts:
+The `src/fauna` and `tests/fauna` folders are based on examples from two Fauna blog posts:
 
 1. [Refreshing authentication tokens in FQL](https://fauna.com/blog/refreshing-authentication-tokens-in-fql) - source code in [simple refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-simple)
 2. [Detecting leaked authentication tokens in FQL](https://fauna.com/blog/detecting-leaked-authentication-tokens-in-fql) - source code in [advanced refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-advanced)
 
-The `fauna` folder contains the building blocks for reusable FQL statements that can be added to an existing Fauna database. For example, the `login` function at [./fauna/src/login.js](./fauna/src/login.js) is added to a database by running the `CreateFunction` statement in [./fauna/resources/functions/login.js](./fauna/resources/functions/login.js). This creates a UDF or user-defined function that can later be called with a Fauna client, which is done within [./src/auth/login](./src/auth/login.ts).
+The `src/fauna` folder contains the building blocks for reusable FQL statements that can be added to an existing Fauna database. For example, the `login` function at [./src/fauna/src/login.ts](./src/fauna/src/login.ts) is added to a database by running the `CreateFunction` statement in [./src/fauna/resources/faunauth/functions/login.js](./src/fauna/resources/faunauth/functions/login.js). This creates a UDF or user-defined function that can later be called with a Fauna client, which is done within [./src/auth/login.ts](./src/auth/login.ts).
 
 ## About schema migrations
 
@@ -55,77 +58,81 @@ The `fauna` folder contains the building blocks for reusable FQL statements that
 
 There are two kinds of tools provided by `faunauth`: schema migrations and functions. You must complete the schema migration before the functions exposed by `faunauth` will work properly. The `faunauth` CLI tool will help you accomplish this.
 
-1. Add Fauna resources via schema migration
+### Step 1: add Fauna resources via schema migration
 
-    1. `npm i faunauth` to install this package
-    2. `npm i -D @fauna-labs/fauna-schema-migrate` to install `fauna-schema-migrate` as a dev dependency
-    3. `npx faunauth init` to copy over files that will be used by `fauna-schema-migrate` to complete the schema migration process. These files should be committed to version control. They will be copied over to your project at `fauna/src` and `fauna/resources/faunauth`. Note that the `npx faunauth init` command will not overwrite any existing files - if you see output indicating that any of the files already exist, you will need to delete or rename your existing files and run `npx faunauth init` again. If you need to update your existing files, you can run `npx faunauth update` to overwrite any existing files with the version from `faunauth`.
-    4. Using the [Fauna dashboard](https://dashboard.fauna.com/accounts/login), select your database (or create it if it doesn't yet exist). Once you have selected the database, click Security at the left and use the Keys feature to add a new key with the built-in "Admin" role. Save this key somewhere secure (i.e. in a password manager); you won't see it again.
-    5. In a terminal window, run `export FAUNA_ADMIN_KEY=<your_fauna_admin_key>`, using the admin key you just created. This sets the environment variable that `fauna-schema-migrate` will use to authenticate you and identify which database to apply your migrations to. If you are using something other than the "Classic" region group, you will need to also run `export FAUNADB_DOMAIN=<domain>` using the domain for your region group. As an example, the command for the US region group is: `export FAUNADB_DOMAIN="db.us.fauna.com"`. Other `domain` values are listed [here](https://docs.fauna.com/fauna/current/learn/understanding/region_groups).
-    6. Run `npx fauna-schema-migrate generate` to analyze the contents of the `/fauna` folder and determine what needs to be added to your database. The results of this analysis are saved in a new folder in `/fauna/migrations`. Review the migration that was created to make sure it looks correct.
-    7. Use `npx fauna-schema-migrate apply` to apply the migration to your database.
-    8. If needed, you can use `npx fauna-schema-migrate rollback` to revert your migrations.
+1. `npm i faunauth` to install this package
+2. `npm i -D @fauna-labs/fauna-schema-migrate` to install `fauna-schema-migrate` as a dev dependency
+3. `npx faunauth init` to copy over files that will be used by `fauna-schema-migrate` to complete the schema migration process. These files should be committed to version control. They will be copied over to your project at `fauna/src` and `fauna/resources/faunauth`. Note that the `npx faunauth init` command will not overwrite any existing files - if you see output indicating that any of the files already exist, you will need to delete or rename your existing files and run `npx faunauth init` again. If you need to update your existing files, you can run `npx faunauth update` to overwrite any existing files with the version from `faunauth`.
+4. Using the [Fauna dashboard](https://dashboard.fauna.com/accounts/login), select your database (or create it if it doesn't yet exist). Once you have selected the database, click Security at the left and use the Keys feature to add a new key with the built-in "Admin" role. Save this key somewhere secure (i.e. in a password manager); you won't see it again.
+5. In a terminal window, run `export FAUNA_ADMIN_KEY=<your_fauna_admin_key>`, using the admin key you just created. This sets the environment variable that `fauna-schema-migrate` will use to authenticate you and identify which database to apply your migrations to. If you are using something other than the "Classic" region group, you will need to also run `export FAUNADB_DOMAIN=<domain>` using the domain for your region group. As an example, the command for the US region group is: `export FAUNADB_DOMAIN="db.us.fauna.com"`. Other `domain` values are listed [here](https://docs.fauna.com/fauna/current/learn/understanding/region_groups).
+6. Run `npx fauna-schema-migrate generate` to analyze the contents of the `/fauna` folder and determine what needs to be added to your database. The results of this analysis are saved in a new folder in `/fauna/migrations`. Review the migration that was created to make sure it looks correct.
+7. Use `npx fauna-schema-migrate apply` to apply the migration to your database.
+8. If needed, you can use `npx fauna-schema-migrate rollback` to revert your migrations.
 
-    The `fauna-schema-migrate` commands are documented more thoroughly in the [`fauna-schema-migrate` readme](https://github.com/fauna-labs/fauna-schema-migrate#available-commands).
+Once you complete this process, your Fauna database will include the resources that were copied into your `fauna` folder when you ran `npx faunauth init`.
 
-    Your database now includes the resources exposed by `faunauth`.
+The `fauna-schema-migrate` commands are documented more thoroughly in the [`fauna-schema-migrate` readme](https://github.com/fauna-labs/fauna-schema-migrate#available-commands).
 
-2. Create a public Fauna key for your client application
+### Step 2: create a public Fauna key for your client application
 
-    1. If your terminal does not yet have the FAUNA_ADMIN_KEY environment variable set, run: `export FAUNA_ADMIN_KEY=<your_fauna_admin_key>` with the admin key you created in step 1 above.
-    2. `npx faunauth create-public-key` to create a key for the role named "public" and print it to the console. This role is created during schema migration, so you will see an error if you have not completed Step 1. If you are using a region group other than "Classic", you need to provide it after the `-r` flag, like this: `npx faunauth create-public-key -r us`. Run `npx faunauth create-public-key --help` to see other options.
+1. If your terminal does not yet have the FAUNA_ADMIN_KEY environment variable set, run: `export FAUNA_ADMIN_KEY=<your_fauna_admin_key>` with the admin key you created in Step 1 above.
+2. `npx faunauth create-public-key` to create a key for the role named "public" and print it to the console. This role is created during schema migration, so you will see an error if you have not completed Step 1. If you are using a region group other than "Classic", you need to provide it after the `-r` flag, like this: `npx faunauth create-public-key -r us` for the "us" region. Run `npx faunauth create-public-key --help` to see other options. Save this key somewhere secure (i.e. in a password manager).
 
-    This public key has limited permissions that are appropriate for un-authenticated users, i.e. user registration, login, and resetting passwords. It is safe to store in the browser in your client-side code and your client will need to provide it to your server when calling the various `faunauth` functions in Step 3 below.
+This public key has limited permissions that are appropriate for un-authenticated users, i.e. user registration, login, and resetting passwords. It is safe to store in the browser in your client-side code and your client will need to provide it to your server when calling the various `faunauth` functions in Step 4 below.
 
-3. Add a role so that users can access your resources
-   Fauna does not allow access to a resource unless it is specifically granted. You have two options for this:
+### Step 3: add a role so that users can access your resources
 
-    1. If you are not declaring your non-user resources with a GraphQL schema, you can add your own files to the `/fauna` folder in order to use `fauna-schema-migrate` with them. You must do the following:
-        - add FQL or JS files to `/fauna` for all of your database resources (collections, indexes, roles)
-        - add an FQL or JS file to `/fauna` to define a role that grants privileges to the `User` document for accessing your non-user resources
-    2. If you are declaring your resources with a GraphQL schema, or don't want to manage your non-user resources with `fauna-schema-migrate` there's a utility function called `createOrUpdateUserRole` that will help with this; see the docs [here](./docs/index.md#createorupdateuserrole).
+Fauna does not allow access to a resource unless it is specifically granted. You have two options for this:
 
-4. Use `faunauth` functions in your server-side code
-   After completing the schema migration, you can use the `faunauth` functions in your server. Complete documentation is available in [./docs/modules.md#functions](./docs/modules.md#functions).
+1. If you are not declaring your non-user resources with a GraphQL schema, you can add your own files to the `/fauna` folder in order to use `fauna-schema-migrate` with them. You must do the following:
+    - add FQL, JS or TS files to `/fauna` for all of your database resources (collections, indexes, roles)
+    - add an FQL, JS or TS file to `/fauna` to define a role that grants privileges to the `User` document for accessing your non-user resources
+2. If you are declaring your resources with a GraphQL schema, or don't want to manage your non-user resources with `fauna-schema-migrate` there's a utility function called `createOrUpdateUserRole` that will help with this; see the docs [here](./docs/index.md#createorupdateuserrole).
 
-    Here's an example of how you might use the `login` function from `faunauth` in an [Express](https://expressjs.com/) handler. Note that `faunauth` is framework-agnostic; it will work in any backend JavaScript framework.
+### Step 4: use `faunauth` functions in your server-side code
 
-    ```TypeScript
-    // This handler would be used in an Express route to handle login requests. You would
-    // typically use bodyparser to make sure responses are handled as JSON.
-    // Other frameworks will have slight differences in their implementations.
-    import { login } from 'faunauth';
+After completing the first three steps, you can use the `faunauth` functions in your server. Complete documentation is available in [./docs/modules.md#functions](./docs/modules.md#functions).
 
-    /**
-     * Log in a user in with an email and password, thereby getting access to an accessToken,
-     * refreshToken and user data.
-     */
-    export const loginHandler = async (req, res) => {
-        // The `publicFaunaKey` should be created using the faunauth CLI as described above.
-        // Your client-side application will need to store this public key in the browser and send
-        // it to the server for various un-authenticated requests.
-        const { email, password, publicFaunaKey } = req.body;
+Note that you'll need to pass in the `publicFaunaKey` that you created in Step 2 above.
 
-        try {
-            // Here is where you would validate the input or throw an error if it is invalid
+Here's an example of how you might use the `login` function from `faunauth` in an [Express](https://expressjs.com/) handler. Express is only used here for illustrative purposes; `faunauth` is framework-agnostic.
 
-            const { accessToken, refreshToken, user } = await login({
-                email,
-                password,
-                publicFaunaKey,
-            });
+```TypeScript
+// This handler would be used in an Express route to handle login requests. You would
+// typically use bodyparser to make sure responses are handled as JSON.
+// Other frameworks will have slight differences in their implementations.
+import { login } from 'faunauth';
 
-            // Here is where you would save the refreshToken in a session cookie.
+/**
+ * Log in a user in with an email and password, thereby getting access to an accessToken,
+ * refreshToken and user data.
+ */
+export const loginHandler = async (req, res) => {
+    // The `publicFaunaKey` should be created using the faunauth CLI as described above.
+    // Your client-side application will need to store this public key in the browser and send
+    // it to the server for various un-authenticated requests.
+    const { email, password, publicFaunaKey } = req.body;
 
-            // Send the `accessToken` and `user` back to the client so it can use the `accessToken`
-            // to authenticate requests against the Fauna GraphQL endpoint
-            res.send({ accessToken, user });
-        } catch (error) {
-            res.status(400).send({ error });
-        }
-    };
+    try {
+        // Here is where you would validate the input or throw an error if it is invalid
 
-    ```
+        const { accessToken, refreshToken, user } = await login({
+            email,
+            password,
+            publicFaunaKey,
+        });
+
+        // Here is where you would save the refreshToken in a session cookie.
+
+        // Send the `accessToken` and `user` back to the client so it can use the `accessToken`
+        // to authenticate requests against the Fauna GraphQL endpoint
+        res.send({ accessToken, user });
+    } catch (error) {
+        res.status(400).send({ error });
+    }
+};
+
+```
 
 ## Confirming a user's identity
 
@@ -147,8 +154,11 @@ const data = urlQuery.get('data');
 
 try {
     const { email, token } = JSON.parse(atob(data));
+
+    // Now that we have the email and token, we can call `setPassword()` or `loginWithMagicLink()`
 } catch {
-    // could not read data from URL
+    // Show an error message - we could not read data from URL, so maybe the user came to this page
+    // by accident or something fishy is going on.
 }
 ```
 
@@ -157,7 +167,7 @@ Here are the three user flows that implement this pattern:
 ### Sign up a new user
 
 1. The new user visits your sign up page and enters an email and password into a form. You may include an optional username field to allow your users to log in with a username and password. Your frontend app hits an API endpoint that calls the [`register`](./docs/index.md#register) function, which creates an entity in the User collection, creates a email confirmation token for that entity, and sends the confirmation email as described above.
-2. The new user opens the confirmation email and clicks the link, which opens the callback URL with the added `data` URL parameter. Your frontend app must decode the `email` and `token` from this `data` parameter, as shown above, then hit an API endpoint that calls the [`setPassword`](./docs/index.md#resetpassword) function. This function returns an object containing the `accessToken`, `refreshToken` and `user` object. The endpoint should set the `refreshToken` on a session cookie and return the `accessToken` and `user` data back to the frontend.
+2. The new user opens the confirmation email and clicks the link, which opens the callback URL with the added `data` URL parameter. Your frontend app must decode the `email` and `token` from this `data` parameter, as shown above, then hit an API endpoint that calls the [`setPassword`](./docs/index.md#setpassword) function. This function returns an object containing the `accessToken`, `refreshToken` and `user` object. The endpoint should set the `refreshToken` on a session cookie and return the `accessToken` and `user` data back to the frontend.
 3. You frontend should store a reference to the `accessToken` and `user` data, then redirect the user as appropriate, usually to the main dashboard of the app. The `accessToken` should be included in an Authorization header as the `Bearer ${accessToken}` when making requests at the Fauna GraphQL endpoint.
 
 ### Reset a password
@@ -181,8 +191,8 @@ Access tokens expire in 10 minutes. When a request to the Fauna GraphQL endpoint
 
 When calling either the `register` or `sendConfirmationEmail` functions, you have two options for sending the user an email that will confirm their identity:
 
-1. Pass an input that conforms to [AuthInputWithEmailTemplate](./docs/interfaces/AuthInputWithEmailTemplate.md) in order to use the built-in faunauth email template. When using this method, you provide a config object that includes details about the styles and locale (text content) for the email, as well as an async function that will be called to send the email. Typically this function will be a wrapper around something like [@sendgrid/mail](https://www.npmjs.com/package/@sendgrid/mail).
-2. Pass an input that confirms to [AuthInputWithCustomEmail](./docs/interfaces//AuthInputWithCustomEmail.md) in order to provide your own email template logic. When using this method, you also need to provide an async function that sends the email, similarly to the function passed when using the faunauth email template. However, the only input to this email sending function is the final callback URL; you are responsible for actually building the rest of the email including all styling and locale (text content).
+1. Pass an input that conforms to [AuthInputWithEmailTemplate](./docs/interfaces/AuthInputWithEmailTemplate.md) in order to use the built-in faunauth email template. When using this method, you provide a config object that includes details about the styles and text content for the email, as well as an async function that will be called to send the email. Typically this function will be a wrapper around something like [@sendgrid/mail](https://www.npmjs.com/package/@sendgrid/mail).
+2. Pass an input that confirms to [AuthInputWithCustomEmail](./docs/interfaces//AuthInputWithCustomEmail.md) in order to provide your own email template logic. When using this method, you also need to provide an async function that sends the email, similarly to the function passed when using the faunauth email template. However, the only input to this email sending function is the final callback URL; you are responsible for actually building the rest of the email including all styling and text content.
 
 ## Error handling
 
@@ -200,15 +210,16 @@ login({
 }).then(() => {
     // Do something on successful login
 }).catch(e => {
+    // In JavaScript, any expression can be thrown, so we have to check if it's an error - see: https://fettblog.eu/typescript-typing-catch-clauses/
     if (e instanceof Error && e.message === errors.invalidUserOrPassword) {
         // Show the user a message about their username or password being invalid
+    } else {
+        // Show the user some other error message
     }
-
-    // Show the user some other error message
 })
 ```
 
 To check for the possible errors in each function exported by faunauth, you could:
 
 1. Browse the source code and check which errors are used in each function, then handle each of them separately
-2. Create a function that takes an Error instance and returns a custom error message to show to the user. This function would need to import the `errors` object and use it to map the incoming Error to a custom message.
+2. Create a function that takes an `Error` instance and returns a custom error message to show to the user. This function would need to import the `errors` object and use it to map the incoming `Error` to a custom message.

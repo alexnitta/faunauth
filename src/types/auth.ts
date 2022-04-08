@@ -62,10 +62,14 @@ export interface FaunaRefreshResult {
     account: CollectionQueryResult<UserData>;
 }
 
+/**
+ * A ClientLoginResult only exposes the accessToken so that a malicious actor cannot acquire new
+ * tokens by stealing a refreshToken from the browser's local persistence.
+ */
 export interface ClientLoginResult {
     /**
-     * A token that can be used to authenticate further requests against the FaunaDB API. Fauna's
-     * docs refer to this as a 'secret'; from the client perspective it's a JWT.
+     * A token that can be used to authenticate further requests against the public Fauna APIs.
+     * Fauna's docs refer to this as a 'secret'; from the client perspective it's a JWT.
      */
     accessToken: string;
     /**
@@ -75,25 +79,26 @@ export interface ClientLoginResult {
 }
 
 /**
- * When logging in within an API route, we have access to the refresh token.
+ * A ServerLoginResult exposes both the accessToken and the refreshToken so they can be stored in
+ * a secure, HTTP-only session cookie, and later used to acquire new tokens.
  */
 export interface ServerLoginResult extends ClientLoginResult {
     /**
-     * A token that can be used to refresh the access token. Fauna's docs refer to this as a
-     * 'secret'; from the client perspective it's a JWT.
+     * A token that can be used to acquire a new pair of accessToken / refreshToken values. Fauna's
+     * docs refer to this as a 'secret'; from the client perspective it's a JWT.
      */
     refreshToken: string;
 }
 
 export interface TokenPair {
     /**
-     * A token that can be used to authenticate further requests against the FaunaDB API. Fauna's
-     * docs refer to this as a 'secret'; from the client perspective it's a JWT.
+     * A token that can be used to authenticate further requests against the public Fauna APIs.
+     * Fauna's docs refer to this as a 'secret'; from the client perspective it's a JWT.
      */
     accessToken: string;
     /**
-     * A token that can be used to refresh the access token. Fauna's docs refer to this as a
-     * 'secret'; from the client perspective it's a JWT.
+     * A token that can be used to acquire a new pair of accessToken / refreshToken values. Fauna's
+     * docs refer to this as a 'secret'; from the client perspective it's a JWT.
      */
     refreshToken: string;
 }

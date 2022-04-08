@@ -7,6 +7,11 @@ const q = faunadb.query;
 const { If, And } = q;
 
 /**
+ * Log a user in via email and password, then return access and refresh tokens.
+ * If either the email or password is incorrect, this function returns false. This is by design;
+ * the person trying to log in should not be allowed to know which of these values is incorrect
+ * because it would help them guess the other value if they are a malicious actor.
+ *
  * Login is parameterized to allow you to write tests; you should not be passing
  * in the time parameters from the client.
  */

@@ -1,5 +1,5 @@
-import { getEmailContent } from '../src/email/getEmailContent';
-import { EMAIL_TEST_TIMEOUT } from './constants';
+import { getEmailContent } from '../../src/email/getEmailContent';
+import { EMAIL_TEST_TIMEOUT } from '../constants';
 
 jest.setTimeout(EMAIL_TEST_TIMEOUT);
 

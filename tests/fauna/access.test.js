@@ -7,7 +7,7 @@ import {
     setupTestDatabase,
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
-import { FAUNA_TEST_TIMEOUT } from './constants';
+import { FAUNA_TEST_TIMEOUT } from '../constants';
 
 const q = fauna.query;
 const { Call, Create, Collection, Get, Paginate, Documents } = q;
@@ -31,7 +31,7 @@ const setUp = async testName => {
         'src/fauna/resources/faunauth/indexes/users-by-username.fql',
         'src/fauna/resources/faunauth/roles/loggedin.js',
         // custom resources for this test with lower TTLs for access and refresh tokens (10s and 20s)
-        'tests/resources/functions/_login-modified.js',
+        'tests/fauna/resources/functions/_login-modified.js',
     ]);
     // create some data in the test collection
     const testDocument = await client.query(

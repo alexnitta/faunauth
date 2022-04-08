@@ -1,5 +1,5 @@
 import faunadb from 'faunadb';
-import { Login } from '../../../src/fauna/src/login';
+import { Login } from '../../../../src/fauna/src/login';
 import {
     ACCESS_TOKEN_LIFETIME_SECONDS,
     REFRESH_TOKEN_LIFETIME_SECONDS,

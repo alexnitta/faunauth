@@ -1,5 +1,5 @@
 import faunadb from 'faunadb';
-import { RefreshToken } from '../../../src/fauna/src/refresh';
+import { RefreshToken } from '../../../../src/fauna/src/refresh';
 
 export const GRACE_PERIOD_SECONDS = 3;
 export const ACCESS_TOKEN_LIFETIME_SECONDS = 5;

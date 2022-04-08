@@ -57,8 +57,10 @@ export interface CreateOrUpdateUserRoleInput {
                 faunaAdminKey,
                 roleName: 'user',
                 privileges: [
+                    // This is an example of what a privilege object looks like; you would need to
+                    // change it to fit your needs.
                     {
-                        resource: Collection('Person'),
+                        resource: Collection('dinos'),
                         actions: {
                             create: true,
                             read: true,

@@ -61,8 +61,8 @@ const setUp = async testName => {
         'src/fauna/resources/faunauth/roles/public.fql',
         'src/fauna/resources/faunauth/roles/refresh.js',
         // Custom function for tests to verify the age calculation.
-        'tests/resources/functions/_refresh-modified.js',
-        'tests/resources/functions/_login-modified.js',
+        'tests/fauna/resources/functions/_refresh-modified.js',
+        'tests/fauna/resources/functions/_login-modified.js',
     ]);
 
     const testDocument = await adminClient.query(
