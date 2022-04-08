@@ -21,9 +21,9 @@ This library helps you add email-based authentication to your [Fauna](https://fa
 
 \*Note that if you want your users to be able to log in with a username, they must register with both an email address and username.
 
-## Version and change log
+Faunauth is MIT-licensed. Contributions are welcome; please see [./CONTRIBUTING.md](./CONTRIBUTING.md) for details on how to contribute.
 
-This package follows [Semantic Versioning](https://semver.org/) by using [semantic-release](https://github.com/semantic-release/semantic-release). This means that the version number is determined automatically using commit messages. A change log is also automatically created in [./docs/CHANGELOG.md](./docs/CHANGELOG.md).
+The faunuath npm package follows [Semantic Versioning](https://semver.org/) by using [semantic-release](https://github.com/semantic-release/semantic-release). This means that the version number is determined automatically using commit messages. A change log is also automatically created in [./docs/CHANGELOG.md](./docs/CHANGELOG.md).
 
 ## Caveats
 
@@ -37,29 +37,11 @@ This means `faunauth` is also experimental; use it at your own discretion.
 
 You are likely using Fauna because you want to take advantage of its [GraphQL API](https://docs.fauna.com/fauna/current/api/graphql/). At this point, `fauna-schema-migrate` does not provide integration with resources defined in a GraphQL schema (this [might be added at some point](https://github.com/fauna-labs/fauna-schema-migrate#potential-extensions)). This means you cannot use `fauna-schema-migrate` to refer to indexes or collections created via GraphQL schemas. The one place this really matters is when provisioning a user role in order to grant access to your resources from your GraphQL schema. To help with this, you can create a script that calls the [createOrUpdateUserRole](./docs/index.md#createorupdateuserrole) utility function - more on this below.
 
-## More documentation
-
-Auto-generated documentation is available in [./docs/index.md](./docs/index.md). The most useful place to start is in the [functions](./docs/index.md#functions) section.
-
-It's a good idea to read up on a few topics before using `faunauth`:
-
--   [The Fauna Query Language (FQL)](https://docs.fauna.com/fauna/current/api/fql/)
--   [User-defined functions (UDFs)](https://docs.fauna.com/fauna/current/learn/understanding/user_defined_functions)
-
-The `src/fauna` and `tests/fauna` folders are based on examples from two Fauna blog posts:
-
-1. [Refreshing authentication tokens in FQL](https://fauna.com/blog/refreshing-authentication-tokens-in-fql) - source code in [simple refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-simple)
-2. [Detecting leaked authentication tokens in FQL](https://fauna.com/blog/detecting-leaked-authentication-tokens-in-fql) - source code in [advanced refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-advanced)
-
-The `src/fauna` folder contains the building blocks for reusable FQL statements that can be added to an existing Fauna database. For example, the `login` function at [./src/fauna/src/login.ts](./src/fauna/src/login.ts) is added to a database by running the `CreateFunction` statement in [./src/fauna/resources/faunauth/functions/login.js](./src/fauna/resources/faunauth/functions/login.js). This creates a UDF or user-defined function that can later be called with a Fauna client, which is done within [./src/auth/login.ts](./src/auth/login.ts).
-
-## About schema migrations
-
-`faunauth` provides you with a set of FQL resources - collections, functions, indexes and roles - that will enable various authentication tasks. In this context, "schema migration" means that your current database schema will be migrated to a new schema that contains the FQL resources provided by `faunauth`. As noted in the `fauna-schema-migrate` readme, this is not a data migration tool.
-
 ## Getting started
 
-There are two kinds of tools provided by `faunauth`: schema migrations and functions. You must complete the schema migration before the functions exposed by `faunauth` will work properly. The `faunauth` CLI tool will help you accomplish this.
+`faunauth` provides you with a set of FQL resources - collections, functions, indexes and roles - that will enable various authentication tasks. To add these resources to your Fauna database, you will complete a "schema migration" using [fauna-schema-migrate](https://github.com/fauna-labs/fauna-schema-migrate). In this context, "schema migration" means that your current database schema will be migrated to a new schema that contains the FQL resources provided by `faunauth`. As noted in the `fauna-schema-migrate` readme, this is not a data migration tool.
+
+You must complete a schema migration before the functions exposed by `faunauth` will work properly. The `faunauth` CLI will help you accomplish this.
 
 ### Step 1: add Fauna resources via schema migration
 
@@ -94,11 +76,34 @@ Fauna does not allow access to a resource unless it is specifically granted. You
 
 ### Step 4: use `faunauth` functions in your server-side code
 
-After completing the first three steps, you can use the `faunauth` functions in your server. Complete documentation is available in [./docs/modules.md#functions](./docs/modules.md#functions).
+After completing the first three steps, you can use the `faunauth` functions in your server. Complete documentation is available in [./docs/modules.md#functions](./docs/modules.md#functions). Each of these functions is available as a top-level import - for example:
 
-Note that you'll need to pass in the `publicFaunaKey` that you created in Step 2 above.
+```TypeScript
+import { login } from 'faunauth';
+```
+
+To create a full set of authentication features, you will need to implement server-side logic that does the following:
+
+1. Sign up a new user with `register`
+2. Confirm a new user's email address with `setPassword`
+3. Log in a user with `login` (works with either email address or username)
+4. Log out a user with `logout`
+5. Initiate a "forgot password" flow with `sendConfirmationEmail`
+6. Finish a "forgot password" flow with `setPassword`
+7. Change a password for a user that knows their password with `changePassword`
+8. Rotate the accessToken / refreshToken pair with `rotateTokens`
+9. Update non-password user details (email, etc.) with `updateUser`
+
+Optionally, you can also implement login with magic link by doing:
+
+10. Initiate a "magic link" flow with `sendConfirmationEmail`
+11. Finish a "magi link" flow with `loginWithMagicLink`
+
+#### Example login code
 
 Here's an example of how you might use the `login` function from `faunauth` in an [Express](https://expressjs.com/) handler. Express is only used here for illustrative purposes; `faunauth` is framework-agnostic.
+
+Note that you'll need to pass in the `publicFaunaKey` that you created in Step 2 above.
 
 ```TypeScript
 // This handler would be used in an Express route to handle login requests. You would
@@ -226,3 +231,19 @@ To check for the possible errors in each function exported by faunauth, you coul
 
 1. Browse the source code and check which errors are used in each function, then handle each of them separately
 2. Create a function that takes an `Error` instance and returns a custom error message to show to the user. This function would need to import the `errors` object and use it to map the incoming `Error` to a custom message.
+
+## More documentation
+
+Auto-generated documentation is available in [./docs/index.md](./docs/index.md). The most useful place to start is in the [functions](./docs/index.md#functions) section.
+
+It's a good idea to read up on a few topics before using `faunauth`:
+
+-   [The Fauna Query Language (FQL)](https://docs.fauna.com/fauna/current/api/fql/)
+-   [User-defined functions (UDFs)](https://docs.fauna.com/fauna/current/learn/understanding/user_defined_functions)
+
+The `src/fauna` and `tests/fauna` folders are based on examples from two Fauna blog posts:
+
+1. [Refreshing authentication tokens in FQL](https://fauna.com/blog/refreshing-authentication-tokens-in-fql) - source code in [simple refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-simple)
+2. [Detecting leaked authentication tokens in FQL](https://fauna.com/blog/detecting-leaked-authentication-tokens-in-fql) - source code in [advanced refresh blueprint](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-advanced)
+
+The `src/fauna` folder contains the building blocks for reusable FQL statements that can be added to an existing Fauna database. For example, the `login` function at [./src/fauna/src/login.ts](./src/fauna/src/login.ts) is added to a database by running the `CreateFunction` statement in [./src/fauna/resources/faunauth/functions/login.js](./src/fauna/resources/faunauth/functions/login.js). This creates a UDF or user-defined function that can later be called with a Fauna client, which is done within [./src/auth/login.ts](./src/auth/login.ts).

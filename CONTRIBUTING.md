@@ -1,6 +1,6 @@
 # Contributing
 
-Contributions are welcome.
+Contributions are welcome! If you want to contribute, please read on.
 
 ## Installing dependencies
 
@@ -55,6 +55,7 @@ We follow a few important conventions:
 
 ## Available Scripts
 
+-   `yarn build`: run tsc to build the project
 -   `yarn check-types`: run tsc to check types without generating any output
 -   `yarn dev`: run tsc in watch mode to compile TypeScript to JavaScript in `/dist` when you make changes
 -   `yarn format`: automatically format code with eslint and prettier
