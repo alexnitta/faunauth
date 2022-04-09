@@ -25,7 +25,7 @@
         "lint": "eslint \"**/*.{ts,tsx,js}\"",
         "posttest": "npx rimraf fauna/temp",
         "precommit": "lint-staged",
-        "prepack": "yarn build",
+        "prepack": "npx rimraf dist && tsc",
         "semantic-release": "semantic-release",
         "test": "dotenv -e .env -- cross-var jest",
         "test-ci": "jest",
