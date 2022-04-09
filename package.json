@@ -1,6 +1,6 @@
 {
     "name": "faunauth",
-    "version": "0.0.0-development",
+    "version": "1.0.4",
     "main": "./dist/src/index.js",
     "typings": "./dist/src/index.d.ts",
     "bin": {
