@@ -29,7 +29,7 @@ Fauna's docs refer to this as a 'secret'; from the client perspective it's a JWT
 
 #### Defined in
 
-[types/auth.ts:74](https://github.com/alexnitta/faunauth/blob/d7db393/src/types/auth.ts#L74)
+[types/auth.ts:74](https://github.com/alexnitta/faunauth/blob/f9e5da2/src/types/auth.ts#L74)
 
 ___
 
@@ -41,4 +41,4 @@ Details for the user that was signed in
 
 #### Defined in
 
-[types/auth.ts:78](https://github.com/alexnitta/faunauth/blob/d7db393/src/types/auth.ts#L78)
+[types/auth.ts:78](https://github.com/alexnitta/faunauth/blob/f9e5da2/src/types/auth.ts#L78)
