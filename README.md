@@ -8,6 +8,9 @@
     <a style="margin: 0px 5px;" href="https://www.npmjs.com/package/faunauth">
         <img src="https://img.shields.io/npm/v/faunauth" />
     </a>
+    <a style="margin: 0px 5px;" href="https://www.npmjs.com/package/faunauth">
+        <img src="https://img.shields.io/npm/l/faunauth" />
+    </a>
     <a style="margin: 0px 5px;" href="https://github.com/semantic-release/semantic-release">
         <img src="https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release" />
     </a>
@@ -16,14 +19,14 @@
 This library helps you add email-based authentication to your [Fauna](https://fauna.com/) database, allowing you to support three login patterns:
 
 1. Log in with email and password
-2. Log in with username and password\*
+2. Log in with username and password (requires registration with both email & username)
 3. Log in via a "magic link" sent to the user's email address
 
-\*Note that if you want your users to be able to log in with a username, they must register with both an email address and username.
+Faunauth is [MIT-licensed](./LICENSE). Contributions are welcome; please see [./CONTRIBUTING.md](./CONTRIBUTING.md) for details on how to contribute.
 
-Faunauth is MIT-licensed. Contributions are welcome; please see [./CONTRIBUTING.md](./CONTRIBUTING.md) for details on how to contribute.
+The [faunuath npm package](https://www.npmjs.com/package/faunauth) follows [Semantic Versioning](https://semver.org/) by using [semantic-release](https://github.com/semantic-release/semantic-release). This means that the version number is determined automatically using commit messages. A change log is also automatically created in [./docs/CHANGELOG.md](./docs/CHANGELOG.md).
 
-The faunuath npm package follows [Semantic Versioning](https://semver.org/) by using [semantic-release](https://github.com/semantic-release/semantic-release). This means that the version number is determined automatically using commit messages. A change log is also automatically created in [./docs/CHANGELOG.md](./docs/CHANGELOG.md).
+The main functions of `faunauth` are implemented in TypeScript, and type definitions are included. As with any TypeScript library, you don't need to use TypeScript in your own project in order to use `faunauth`.
 
 ## Caveats
 
@@ -84,7 +87,7 @@ import { login } from 'faunauth';
 
 To create a full set of authentication features, you will need to implement server-side logic that does the following:
 
-1. Sign up a new user with `register`
+1. Sign up a new user with `register`. If you want users to be able to login with a username, they must provide both email, username and password. If you just want them to login with email, then only email and password are required.
 2. Confirm a new user's email address with `setPassword`
 3. Log in a user with `login` (works with either email address or username)
 4. Log out a user with `logout`
@@ -97,7 +100,7 @@ To create a full set of authentication features, you will need to implement serv
 Optionally, you can also implement login with magic link by doing:
 
 10. Initiate a "magic link" flow with `sendConfirmationEmail`
-11. Finish a "magi link" flow with `loginWithMagicLink`
+11. Finish a "magic link" flow with `loginWithMagicLink`
 
 #### Example login code
 
@@ -106,23 +109,26 @@ Here's an example of how you might use the `login` function from `faunauth` in a
 Note that you'll need to pass in the `publicFaunaKey` that you created in Step 2 above.
 
 ```TypeScript
-// This handler would be used in an Express route to handle login requests. You would
-// typically use bodyparser to make sure responses are handled as JSON.
-// Other frameworks will have slight differences in their implementations.
+// This function handles login requests for an Express server route.
+// You would typically use bodyparser to make sure responses are handled
+// as JSON. Other server frameworks will work differently.
 import { login } from 'faunauth';
 
 /**
- * Log in a user in with an email and password, thereby getting access to an accessToken,
- * refreshToken and user data.
+ * Log in a user in with an email and password, thereby getting access to
+ * an accessToken, refreshToken and user data.
  */
 export const loginHandler = async (req, res) => {
-    // The `publicFaunaKey` should be created using the faunauth CLI as described above.
-    // Your client-side application will need to store this public key in the browser and send
-    // it to the server for various un-authenticated requests.
+    // The `publicFaunaKey` should be created using the faunauth CLI as
+    // described above.
+    // Your client-side application will need to store this public key
+    // in the browser and send it to the server for various
+    // un-authenticated requests.
     const { email, password, publicFaunaKey } = req.body;
 
     try {
-        // Here is where you would validate the input or throw an error if it is invalid
+        // Here is where you would validate the input or throw an error
+        // if it is invalid
 
         const { accessToken, refreshToken, user } = await login({
             email,
@@ -130,10 +136,11 @@ export const loginHandler = async (req, res) => {
             publicFaunaKey,
         });
 
-        // Here is where you would save the refreshToken in a session cookie.
+        // Here is where you would save the refreshToken in a session
+        // cookie.
 
-        // Send the `accessToken` and `user` back to the client so it can use the `accessToken`
-        // to authenticate requests against the Fauna GraphQL endpoint
+        // Send the `accessToken` and `user` back to the client so it can
+        // use the `accessToken` to authenticate Fauna requests
         res.send({ accessToken, user });
     } catch (error) {
         res.status(400).send({ error });
@@ -155,7 +162,8 @@ As part of these user flows, you will need to expose a page within your app at t
 Here's how you would parse the encoded `data` URL search parameter:
 
 ```TypeScript
-// If you're using react-router, you can get search params with useSearchParams()
+// If you're using react-router, you can get search params with
+// useSearchParams()
 const search = window.location.search
 const urlQuery = new URLSearchParams(search);
 const data = urlQuery.get('data');
@@ -163,16 +171,18 @@ const data = urlQuery.get('data');
 try {
     const { email, token } = JSON.parse(atob(data));
 
-    // Now that we have the email and token, we can call `setPassword()` or `loginWithMagicLink()`
+    // Now that we have the email and token, we can call `setPassword()`
+    // or `loginWithMagicLink()`
 } catch {
-    // Show an error message - we could not read data from URL, so maybe the user came to this page
-    // by accident or something fishy is going on.
+    // Show an error message - we could not read data from URL, so either
+    // the user came to this page by accident or they are trying to
+    // impersonate someone else to gain access.
 }
 ```
 
 Here are the three user flows that implement this pattern:
 
-### Sign up a new user
+### Register a new user
 
 1. The new user visits your sign up page and enters an email and password into a form. You may include an optional username field to allow your users to log in with a username and password. Your frontend app hits an API endpoint that calls the [`register`](./docs/index.md#register) function, which creates an entity in the User collection, creates a email confirmation token for that entity, and sends the confirmation email as described above.
 2. The new user opens the confirmation email and clicks the link, which opens the callback URL with the added `data` URL parameter. Your frontend app must decode the `email` and `token` from this `data` parameter, as shown above, then hit an API endpoint that calls the [`setPassword`](./docs/index.md#setpassword) function. This function returns an object containing the `accessToken`, `refreshToken` and `user` object. The endpoint should set the `refreshToken` on a session cookie and return the `accessToken` and `user` data back to the frontend.
@@ -191,9 +201,11 @@ Step 2 and 3 are the same as when signing up a new user.
 
 Step 3 is the same as when signing up a new user.
 
-## Token rotation
+## Tokens
 
-Access tokens expire in 10 minutes. When a request to the Fauna GraphQL endpoint fails due to an expired token, your frontend app should hit an API endpoint that calls the [`rotateTokens`](./docs/index.md#rotatetokens) function. This function takes the `refreshToken` and uses it to get a new pair of `accessToken` and `refreshToken` values. Your endpoint handler should set the new `refreshToken` on the session cookie so that they can be used in the future to repeat the token rotation process. It should return the `accessToken` to the frontend app so that it can be used to authenticate requests made to the Fauna GraphQL endpoint.
+When a user logs in with the [`login`](./docs/index.md#login) function, they receive an `accessToken`, `refreshToken` and `user` object. The `accessToken` provides identity-based access to your Fauna database, which means you can use it to authenticate requests to the Fauna GraphQL endpoint as well as to authenticate a Fauna client from the [faunadb](https://www.npmjs.com/package/faunadb) JavaScript driver, or any of the other [drivers](https://docs.fauna.com/fauna/current/drivers/). In Fauna's terminology, the `accessToken` is technically a "token secret." You can read more on Fauna tokens [here](https://docs.fauna.com/fauna/current/security/tokens).
+
+Access tokens expire in 10 minutes. When a request to the Fauna GraphQL endpoint fails due to an expired token, your frontend app should hit an API endpoint that calls the [`rotateTokens`](./docs/index.md#rotatetokens) function. This function takes the `refreshToken` and uses it to get a new pair of `accessToken` and `refreshToken` values. Your endpoint handler should set the new `refreshToken` on the session cookie so that it can be used in the future to repeat the token rotation process. It should return the `accessToken` to the frontend app so that it can be used to authenticate further Fauna requests.
 
 ## Sending emails
 
@@ -218,9 +230,10 @@ login({
 }).then(() => {
     // Do something on successful login
 }).catch(e => {
-    // In JavaScript, any expression can be thrown, so we have to check if it's an error - see: https://fettblog.eu/typescript-typing-catch-clauses/
+    // In JavaScript, any expression can be thrown, so we have to check if
+    // it's an error.
     if (e instanceof Error && e.message === errors.invalidUserOrPassword) {
-        // Show the user a message about their username or password being invalid
+        // Show the user a message about invalid credentials
     } else {
         // Show the user some other error message
     }
