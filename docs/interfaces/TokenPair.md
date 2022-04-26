@@ -20,7 +20,7 @@ Fauna's docs refer to this as a 'secret'; from the client perspective it's a JWT
 
 #### Defined in
 
-[types/auth.ts:98](https://github.com/alexnitta/faunauth/blob/d68d595/src/types/auth.ts#L98)
+[types/auth.ts:98](https://github.com/alexnitta/faunauth/blob/210b57d/src/types/auth.ts#L98)
 
 ___
 
@@ -33,4 +33,4 @@ docs refer to this as a 'secret'; from the client perspective it's a JWT.
 
 #### Defined in
 
-[types/auth.ts:103](https://github.com/alexnitta/faunauth/blob/d68d595/src/types/auth.ts#L103)
+[types/auth.ts:103](https://github.com/alexnitta/faunauth/blob/210b57d/src/types/auth.ts#L103)
