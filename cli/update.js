@@ -20,7 +20,31 @@ const update = () => {
 
             console.log(stdout);
 
-            console.log('✅ Copied faunauth resources into /fauna folder.\n');
+            console.log(
+                '✅  Copied faunauth functions and roles into /fauna\n',
+            );
+        },
+    );
+
+    exec(
+        'rsync -r -vv node_modules/faunauth/src/fauna/resources/faunauth/collections ./fauna/resources/faunauth',
+        (error, stdout, stderr) => {
+            if (error) {
+                console.log(`error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.log(`stderr: ${stderr}`);
+                return;
+            }
+
+            console.log('Updating collections...\n');
+
+            console.log(stdout);
+
+            console.log(
+                '✅ Copied faunauth collections into /fauna/collections\n',
+            );
         },
     );
 };
