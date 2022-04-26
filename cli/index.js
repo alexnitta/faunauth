@@ -3,7 +3,6 @@ const { program } = require('commander');
 
 const { createPublicKey } = require('./createPublicKey');
 const { init } = require('./init');
-const { update } = require('./update');
 
 const createPublicKeyDescription = `Create a Fauna key that has the "public" role. This key should
     be used by your client application for authentication requests.
@@ -30,14 +29,7 @@ program
         'Import files into your project to use with fauna-schema-migrate,\n' +
             'including the /fauna folder and a .fauna-migrate.js config file.',
     )
+    .option('-o, --overwrite', 'Overwrite existing files')
     .action(init);
-
-program
-    .command('update')
-    .description(
-        "Update files in your project's /fauna folder by copying over files" +
-            'from faunauth, overwriting any existing files.',
-    )
-    .action(update);
 
 program.parse();
