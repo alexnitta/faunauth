@@ -31,7 +31,7 @@ Fauna client config object
 
 #### Defined in
 
-[auth/login.ts:11](https://github.com/alexnitta/faunauth/blob/d68d595/src/auth/login.ts#L11)
+[auth/login.ts:11](https://github.com/alexnitta/faunauth/blob/210b57d/src/auth/login.ts#L11)
 
 ___
 
@@ -43,7 +43,7 @@ Email address for the user who wants to sign in
 
 #### Defined in
 
-[auth/login.ts:27](https://github.com/alexnitta/faunauth/blob/d68d595/src/auth/login.ts#L27)
+[auth/login.ts:27](https://github.com/alexnitta/faunauth/blob/210b57d/src/auth/login.ts#L27)
 
 ___
 
@@ -59,7 +59,7 @@ The user's password
 
 #### Defined in
 
-[auth/login.ts:20](https://github.com/alexnitta/faunauth/blob/d68d595/src/auth/login.ts#L20)
+[auth/login.ts:20](https://github.com/alexnitta/faunauth/blob/210b57d/src/auth/login.ts#L20)
 
 ___
 
@@ -76,4 +76,4 @@ and resetting passwords
 
 #### Defined in
 
-[auth/login.ts:16](https://github.com/alexnitta/faunauth/blob/d68d595/src/auth/login.ts#L16)
+[auth/login.ts:16](https://github.com/alexnitta/faunauth/blob/210b57d/src/auth/login.ts#L16)
