@@ -17,7 +17,7 @@ export function RegisterAccount(password: string, data: UserData) {
     const { email } = data;
 
     if (VerifyAccountExists(email)) {
-        Abort(errors.userAlreadyExists);
+        return Abort(errors.userAlreadyExists);
     }
 
     return Create(Collection('User'), {
