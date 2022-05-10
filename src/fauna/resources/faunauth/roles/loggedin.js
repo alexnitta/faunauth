@@ -14,7 +14,7 @@ const {
 } = q;
 
 /**
- * Create a FaunaDB role that is scoped appropriately for a logged-in user.
+ * Create a FaunaDB role that is scoped appropriately for an authenticated user.
  *
  * NOTE: 9/24/21: This function doesn't work with any indexes or collections defined in the GraphQL
  * schema. This is a known shortcoming of `fauna-schema-migrate`. If you try to add an index or
@@ -25,8 +25,8 @@ const {
  * and was referenced from:
  *    type: Role, name: loggedin
  *
- * The createUserRole script in packages/stories/scripts/createUserRole.js is a workaround for this.
- * You'll need to add privileges there in order to grant rights to users.
+ * The {@link createOrUpdateUserRole} utility provides a workaround for this. You can use this to
+ * write a script that adds the privileges for your authenticated users.
  * */
 export default CreateRole({
     name: 'loggedin',
