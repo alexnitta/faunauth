@@ -21,7 +21,7 @@ Fauna client config object
 
 #### Defined in
 
-[utils/createOrUpdateUserRole.ts:11](https://github.com/alexnitta/faunauth/blob/210b57d/src/utils/createOrUpdateUserRole.ts#L11)
+[utils/createOrUpdateUserRole.ts:11](https://github.com/alexnitta/faunauth/blob/13b973e/src/utils/createOrUpdateUserRole.ts#L11)
 
 ___
 
@@ -33,7 +33,7 @@ A Fauna key that has the built-in role of "Admin"
 
 #### Defined in
 
-[utils/createOrUpdateUserRole.ts:15](https://github.com/alexnitta/faunauth/blob/210b57d/src/utils/createOrUpdateUserRole.ts#L15)
+[utils/createOrUpdateUserRole.ts:15](https://github.com/alexnitta/faunauth/blob/13b973e/src/utils/createOrUpdateUserRole.ts#L15)
 
 ___
 
@@ -45,7 +45,7 @@ Array of privileges to grant to every user.
 
 #### Defined in
 
-[utils/createOrUpdateUserRole.ts:19](https://github.com/alexnitta/faunauth/blob/210b57d/src/utils/createOrUpdateUserRole.ts#L19)
+[utils/createOrUpdateUserRole.ts:19](https://github.com/alexnitta/faunauth/blob/13b973e/src/utils/createOrUpdateUserRole.ts#L19)
 
 ___
 
@@ -57,4 +57,4 @@ A name for this role; defaults to "user".
 
 #### Defined in
 
-[utils/createOrUpdateUserRole.ts:23](https://github.com/alexnitta/faunauth/blob/210b57d/src/utils/createOrUpdateUserRole.ts#L23)
+[utils/createOrUpdateUserRole.ts:23](https://github.com/alexnitta/faunauth/blob/13b973e/src/utils/createOrUpdateUserRole.ts#L23)
