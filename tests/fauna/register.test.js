@@ -51,15 +51,20 @@ describe('register()', () => {
 
         const client = context.databaseClients.childClient;
 
-        // We now have a register function which we can call
-        await client.query(
-            Call('register', 'verysecure', {
-                email: 'user@domain.com',
-                locale: 'en-US',
-                invitedBy: 'foo-user-id',
-                toGroup: 'foo-group-id',
-            }),
-        );
+        try {
+            // We now have a register function which we can call
+            await client.query(
+                Call('register', 'verysecure', {
+                    email: 'user@domain.com',
+                    locale: 'en-US',
+                    invitedBy: 'foo-user-id',
+                    toGroup: 'foo-group-id',
+                }),
+            );
+        } catch (e) {
+            console.log('error', e);
+        }
+
         const accounts = await client.query(
             q.Map(
                 Paginate(Documents(Collection('User'))),

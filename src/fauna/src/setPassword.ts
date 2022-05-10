@@ -12,7 +12,7 @@ import {
 import { errors } from './errors';
 
 const q = faunadb.query;
-const { Abort, Update, Do, Select } = q;
+const { Abort, Update, Do, Select, If } = q;
 
 /**
  * Set a user's password via a token sent in an email confirmation link.
@@ -34,36 +34,43 @@ export function SetPasswordForAccount(
     refreshLifetimeSeconds?: number,
     refreshReclaimtimeSeconds?: number,
 ) {
-    if (IdentifyAccount(email, newPassword)) {
-        return Abort(errors.passwordAlreadyInUse);
-    }
-
-    if (!VerifyAccountExists(email)) {
-        return Abort(errors.userDoesNotExist);
-    }
-
-    if (!VerifyEmailConfirmationTokenForAccount(email, token)) {
-        return Abort(errors.invalidEmailConfirmationToken);
-    }
-
-    return Do(
-        // Update the password and set `data.confirmedEmail: true`
-        Update(Select(['ref'], GetAccountByEmail(email)), {
-            credentials: {
-                password: newPassword,
-            },
-            data: {
-                confirmedEmail: true,
-            },
-        }),
-        // Invalidate all email confirmation tokens for the account
-        InvalidateEmailConfirmationTokensForAccount(email),
-        // Create and return a new pair of access/refresh tokens
-        CreateTokensForAccount(
-            email,
-            accessTtlSeconds,
-            refreshLifetimeSeconds,
-            refreshReclaimtimeSeconds,
+    return If(
+        // If the new password is already in use,
+        IdentifyAccount(email, newPassword),
+        // abort the operation
+        Abort(errors.passwordAlreadyInUse),
+        // If the new password is not already in use,
+        If(
+            // If the user exists,
+            VerifyAccountExists(email),
+            If(
+                // And the email confirmation token is valid,
+                VerifyEmailConfirmationTokenForAccount(email, token),
+                Do(
+                    // Update the password and set `data.confirmedEmail: true`
+                    Update(Select(['ref'], GetAccountByEmail(email)), {
+                        credentials: {
+                            password: newPassword,
+                        },
+                        data: {
+                            confirmedEmail: true,
+                        },
+                    }),
+                    // Invalidate all email confirmation tokens for the account
+                    InvalidateEmailConfirmationTokensForAccount(email),
+                    // Create and return a new pair of access/refresh tokens
+                    CreateTokensForAccount(
+                        email,
+                        accessTtlSeconds,
+                        refreshLifetimeSeconds,
+                        refreshReclaimtimeSeconds,
+                    ),
+                ),
+                // If the email confirmation token is invalid, abort the operation
+                Abort(errors.invalidEmailConfirmationToken),
+            ),
+            // If the user does not exist, abort the operation
+            Abort(errors.userDoesNotExist),
         ),
     );
 }

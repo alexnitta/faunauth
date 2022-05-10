@@ -1,14 +1,10 @@
 import faunadb from 'faunadb';
 import { CreateTokensForAccount } from './tokens';
-import {
-    GetAccountByEmail,
-    IdentifyAccount,
-    VerifyAccountExists,
-} from './identity';
+import { GetAccountByEmail, IdentifyAccount } from './identity';
 import { errors } from './errors';
 
 const q = faunadb.query;
-const { Abort, Update, Do, Select } = q;
+const { Abort, Update, Do, Select, If } = q;
 
 /**
  * Change a user's password when they know their old password.
@@ -30,27 +26,25 @@ export function ChangePasswordForAccount(
     refreshLifetimeSeconds?: number,
     refreshReclaimtimeSeconds?: number,
 ) {
-    if (!VerifyAccountExists(email)) {
-        return Abort(errors.userDoesNotExist);
-    }
-
-    if (!IdentifyAccount(email, oldPassword)) {
-        return Abort(errors.invalidOldPassword);
-    }
-
-    return Do(
-        // Set the new password
-        Update(Select(['ref'], GetAccountByEmail(email)), {
-            credentials: {
-                password: newPassword,
-            },
-        }),
-        // Create and return a new pair of access/refresh tokens
-        CreateTokensForAccount(
-            email,
-            accessTtlSeconds,
-            refreshLifetimeSeconds,
-            refreshReclaimtimeSeconds,
+    return If(
+        // If the old password is valid,
+        IdentifyAccount(email, oldPassword),
+        Do(
+            // Set the new password
+            Update(Select(['ref'], GetAccountByEmail(email)), {
+                credentials: {
+                    password: newPassword,
+                },
+            }),
+            // Create and return a new pair of access/refresh tokens
+            CreateTokensForAccount(
+                email,
+                accessTtlSeconds,
+                refreshLifetimeSeconds,
+                refreshReclaimtimeSeconds,
+            ),
         ),
+        // If the old password is invalid, abort the operation
+        Abort(errors.invalidOldPassword),
     );
 }

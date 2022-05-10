@@ -5,7 +5,7 @@ import { errors } from './errors';
 import type { UserData } from '../../types';
 
 const q = faunadb.query;
-const { Abort, Create, Collection } = q;
+const { Abort, Create, Collection, If } = q;
 
 /**
  * Register a new user
@@ -16,15 +16,15 @@ const { Abort, Create, Collection } = q;
 export function RegisterAccount(password: string, data: UserData) {
     const { email } = data;
 
-    if (VerifyAccountExists(email)) {
-        return Abort(errors.userAlreadyExists);
-    }
-
-    return Create(Collection('User'), {
-        // credentials is a special field, the contents will never be returned
-        // and will be encrypted. { password: ... } is the only format it currently accepts.
-        credentials: { password },
-        // everything you want to store in the document should be scoped under 'data'
-        data,
-    });
+    return If(
+        // If the account already exists,
+        VerifyAccountExists(email),
+        // throw an error
+        Abort(errors.userAlreadyExists),
+        // If the account doesn't exist, create it
+        Create(Collection('User'), {
+            credentials: { password },
+            data,
+        }),
+    );
 }
