@@ -31,11 +31,11 @@ export function ChangePasswordForAccount(
     refreshReclaimtimeSeconds?: number,
 ) {
     if (!VerifyAccountExists(email)) {
-        Abort(errors.userDoesNotExist);
+        return Abort(errors.userDoesNotExist);
     }
 
     if (!IdentifyAccount(email, oldPassword)) {
-        Abort(errors.invalidOldPassword);
+        return Abort(errors.invalidOldPassword);
     }
 
     return Do(
