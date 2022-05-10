@@ -8,10 +8,10 @@ overwrite existing files.\n`;
  * Copy .js files from faunauth/dist/fauna and faunauth/.fauna-migrate.js into the consuming application directory.
  */
 const init = ({ overwrite = false }) => {
-    const ignoreExisting = overwrite ? '' : '--ignore-existing ';
+    const flag = overwrite ? '--ignore-times ' : '--ignore-existing ';
 
     exec(
-        `rsync -r -vv --exclude '*.d.ts' --exclude '*.js.map' ${ignoreExisting}node_modules/faunauth/dist/fauna/ ./fauna/`,
+        `rsync -r -vv --exclude '*.d.ts' --exclude '*.js.map' ${flag}node_modules/faunauth/dist/fauna/ ./fauna/`,
         (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
@@ -26,7 +26,7 @@ const init = ({ overwrite = false }) => {
 
             console.log(stdout);
 
-            if (ignoreExisting) {
+            if (!overwrite) {
                 console.log(ignoredExistingFilesWarning);
             }
 
@@ -35,7 +35,7 @@ const init = ({ overwrite = false }) => {
     );
 
     exec(
-        `rsync -r -vv --exclude '*.js' ${ignoreExisting}node_modules/faunauth/src/fauna/resources/faunauth ./fauna/resources`,
+        `rsync -r -vv --exclude '*.js' ${flag}node_modules/faunauth/src/fauna/resources/faunauth ./fauna/resources`,
         (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
@@ -50,7 +50,7 @@ const init = ({ overwrite = false }) => {
 
             console.log(stdout);
 
-            if (ignoreExisting) {
+            if (!overwrite) {
                 console.log(ignoredExistingFilesWarning);
             }
 
@@ -59,7 +59,7 @@ const init = ({ overwrite = false }) => {
     );
 
     exec(
-        `rsync -vv ${ignoreExisting}node_modules/faunauth/.fauna-migrate.js .fauna-migrate.js`,
+        `rsync -vv ${flag}node_modules/faunauth/.fauna-migrate.js .fauna-migrate.js`,
         (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
@@ -70,7 +70,7 @@ const init = ({ overwrite = false }) => {
                 return;
             }
 
-            if (ignoreExisting) {
+            if (!overwrite) {
                 console.log(ignoredExistingFilesWarning);
             }
 
