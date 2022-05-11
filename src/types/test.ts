@@ -1,4 +1,4 @@
-import type { Maybe } from '.';
+import type { FaunaLoginResult, Maybe } from '.';
 
 export type TestContext = {
     databaseClients: Maybe<{
@@ -6,7 +6,8 @@ export type TestContext = {
         parentClient: import('faunadb').Client;
     }>;
     secret?: string;
-    testDocumentRef?: import('faunadb').values.Ref;
+    testDocumentRef?: Maybe<import('faunadb').values.Ref>;
+    loginResult?: false | FaunaLoginResult;
 };
 
 export type SetUp = (testName: string) => Promise<TestContext>;

@@ -6,7 +6,6 @@ import {
     REFRESH_TOKEN_REUSE_ERROR,
     REFRESH_TOKEN_USED_AFTER_LOGOUT,
 } from './anomalies';
-import { FaunaLoginResult } from '../../types';
 
 import { GetAccountByEmail, GetAccountByUsername } from './identity';
 

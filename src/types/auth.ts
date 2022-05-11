@@ -1,7 +1,7 @@
 import { Maybe } from './general';
 
 export interface CollectionQueryResult<Data> {
-    ref: import('faunadb').Expr;
+    ref: import('faunadb').values.Ref;
     ts: number;
     data: Data;
 }
@@ -11,7 +11,7 @@ export interface CollectionQueryResultMap<Data> {
 }
 
 export interface TokenQueryResult {
-    ref: import('faunadb').Expr;
+    ref: import('faunadb').values.Ref;
     ts: number;
     instance: import('faunadb').Expr;
     data: {
@@ -31,7 +31,7 @@ export interface TokenCollectionQueryResult {
 }
 
 export interface TokenResult {
-    ref: import('faunadb').Expr;
+    ref: import('faunadb').values.Ref;
     ts: number;
     instance: import('faunadb').Expr;
     data: {
@@ -138,11 +138,11 @@ export interface UserData {
 export interface UpdateUserResult {
     data: UserData;
     ts: number;
-    ref: import('faunadb').Expr;
+    ref: import('faunadb').values.Ref;
 }
 
 export interface Token<Data> {
-    ref: import('faunadb').Expr;
+    ref: import('faunadb').values.Ref;
     ts: number;
     instance: import('faunadb').Expr;
     data: Data;
@@ -159,3 +159,19 @@ export interface CreateTokenResult {
     account: CollectionQueryResult<UserData>;
     token: Token<{ type: string; email: string }>;
 }
+
+export interface AnomalyData {
+    account: UserData;
+    action: string;
+    error: {
+        code: string;
+        message: string;
+    };
+    token: Token<{ type: string; email: string }>;
+}
+
+export interface Anomaly {
+    data: AnomalyData;
+}
+
+export type AnomalyCollectionQueryResult = CollectionQueryResult<Anomaly[]>;
