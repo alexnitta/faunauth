@@ -124,6 +124,12 @@ Optionally, you can also implement login with magic link by doing:
 10. Initiate a "magic link" flow with `sendConfirmationEmail`
 11. Finish a "magic link" flow with `loginWithMagicLink`
 
+#### Secrets vs. tokens
+
+You'll notice that `faunauth` uses the names `accessSecret` and `refreshSecret` to refer to the strings that you will use for various authentication tasks. This is because Fauna exposes a document type which is named [`Token`](https://docs.fauna.com/fauna/current/security/tokens). Each `Token` has a `secret` which can be used to authenticate queries. From a frontend developer perspective, the secret behaves like a token; in other words, you set the Authorization header to `Bearer ${accessSecret}` to get access to the Fauna API.
+
+To reduce confusion between the Fauna definition of a token (instance of Token document) vs. a conventional token, we use the Fauna term "secret", hence the names `accessSecret` and `refreshSecret`. This was a breaking change in version 2.0 of `faunauth`.
+
 #### Example login code
 
 Here's an example of how you might use the `login` function from `faunauth` in an [Express](https://expressjs.com/) handler. Express is only used here for illustrative purposes; `faunauth` is framework-agnostic.
