@@ -7,7 +7,7 @@ import {
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
 import { FAUNA_TEST_TIMEOUT } from '../constants';
-import {
+import type {
     TestContext,
     FaunaLoginResult,
     TokenCollectionQueryResult,
