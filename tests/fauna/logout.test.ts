@@ -1,5 +1,4 @@
 import fauna from 'faunadb';
-import * as schemaMigrate from '@fauna-labs/fauna-schema-migrate';
 import {
     verifyRefreshTokensLogout,
     verifyTokens,
@@ -36,7 +35,7 @@ const setUp: SetUp = async testName => {
     const databaseClients = await setupTestDatabase(fauna, testName);
     const adminClient = databaseClients.childClient;
 
-    await populateDatabaseSchemaFromFiles(schemaMigrate, q, adminClient, [
+    await populateDatabaseSchemaFromFiles(q, adminClient, [
         'src/fauna/resources/faunauth/collections/anomalies.fql',
         'src/fauna/resources/faunauth/collections/dinos.fql',
         'src/fauna/resources/faunauth/collections/User.fql',

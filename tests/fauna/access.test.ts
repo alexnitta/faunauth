@@ -1,5 +1,4 @@
 import fauna from 'faunadb';
-import * as schemaMigrate from '@fauna-labs/fauna-schema-migrate';
 import { delay } from './helpers/_delay';
 import {
     destroyTestDatabase,
@@ -29,7 +28,7 @@ const setUp: SetUp = async testName => {
     context.databaseClients = await setupTestDatabase(fauna, testName);
     const client = context.databaseClients.childClient;
 
-    await populateDatabaseSchemaFromFiles(schemaMigrate, q, client, [
+    await populateDatabaseSchemaFromFiles(q, client, [
         'src/fauna/resources/faunauth/collections/dinos.fql',
         'src/fauna/resources/faunauth/collections/User.fql',
         'src/fauna/resources/faunauth/functions/createEmailConfirmationToken.js',

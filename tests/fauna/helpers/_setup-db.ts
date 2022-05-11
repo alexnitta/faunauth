@@ -3,7 +3,13 @@ import fs from 'fs';
 import shell from 'shelljs';
 import dotenv from 'dotenv';
 import { Client, ClientConfig, query, Ref } from 'faunadb';
-import * as SchemaMigrate from '@fauna-labs/fauna-schema-migrate';
+import {
+    getSnippetsFromPaths,
+    getSnippetsFromStrings,
+    diffSnippets,
+    generateMigrations,
+    generateMigrationLetObject,
+} from '@fauna-labs/fauna-schema-migrate';
 
 import { CreateKeyResult } from '../../../src/types';
 
@@ -12,16 +18,15 @@ const fullPath = path.resolve(process.cwd(), '.env');
 dotenv.config({ path: fullPath });
 
 export const populateDatabaseSchemaFromFiles = async (
-    schemaMigrate: typeof SchemaMigrate,
     q: typeof query,
     childClient: Client,
     paths: string[],
 ) => {
-    const snippets = await schemaMigrate.getSnippetsFromPaths(paths);
-    const emptySnippets = schemaMigrate.getSnippetsFromStrings([]);
-    const diff = schemaMigrate.diffSnippets(emptySnippets, snippets);
-    const migrations = schemaMigrate.generateMigrations(diff);
-    const letObj = schemaMigrate.generateMigrationLetObject(migrations);
+    const snippets = await getSnippetsFromPaths(paths);
+    const emptySnippets = getSnippetsFromStrings([]);
+    const diff = diffSnippets(emptySnippets, snippets);
+    const migrations = generateMigrations(diff);
+    const letObj = generateMigrationLetObject(migrations);
     const query = q.Let(letObj, true);
 
     return await childClient.query(query);
