@@ -25,7 +25,6 @@ export interface TokenQueryResult {
     // eslint-disable-next-line camelcase
     hashed_secret: string;
 }
-
 export interface TokenCollectionQueryResult {
     data: TokenQueryResult[];
 }
@@ -43,6 +42,22 @@ export interface TokenResult {
         '@ts': string;
     };
     secret: string;
+}
+
+/**
+ * https://docs.fauna.com/fauna/current/api/fql/functions/createkey?lang=javascript
+ */
+export interface CreateKeyResult<Data> {
+    database: import('faunadb').values.Ref;
+    ref: import('faunadb').values.Ref;
+    role: string;
+    instance: import('faunadb').Expr;
+    data: Data;
+    name: string;
+    ts: number;
+    secret: string;
+    // eslint-disable-next-line camelcase
+    hashed_secret: string;
 }
 
 export interface FaunaLoginResult {
@@ -174,4 +189,10 @@ export interface Anomaly {
     data: AnomalyData;
 }
 
+export interface User {
+    data: UserData;
+}
+
 export type AnomalyCollectionQueryResult = CollectionQueryResult<Anomaly[]>;
+
+export type UserCollectionQueryResult = CollectionQueryResult<User[]>;

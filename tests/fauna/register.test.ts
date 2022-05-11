@@ -7,6 +7,12 @@ import {
     getClient,
 } from './helpers/_setup-db';
 import { FAUNA_TEST_TIMEOUT } from '../constants';
+import type {
+    CreateKeyResult,
+    SetUp,
+    TearDown,
+    UserCollectionQueryResult,
+} from '../../src/types';
 
 const q = fauna.query;
 const { Call, Paginate, Documents, Collection, Lambda, Get, CreateKey, Role } =
@@ -14,8 +20,10 @@ const { Call, Paginate, Documents, Collection, Lambda, Get, CreateKey, Role } =
 
 jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
-const setUp = async testName => {
-    const context = {};
+const setUp: SetUp = async testName => {
+    const context = {
+        databaseClients: null,
+    };
 
     context.databaseClients = await setupTestDatabase(fauna, testName);
     const client = context.databaseClients.childClient;
@@ -34,7 +42,7 @@ const setUp = async testName => {
     return context;
 };
 
-const tearDown = async (testName, context) => {
+const tearDown: TearDown = async (testName, context) => {
     await destroyTestDatabase(
         fauna.query,
         testName,
@@ -59,7 +67,7 @@ describe('register()', () => {
             }),
         );
 
-        const accounts = await client.query(
+        const accounts = await client.query<UserCollectionQueryResult>(
             q.Map(
                 Paginate(Documents(Collection('User'))),
                 Lambda(ref => Get(ref)),
@@ -69,7 +77,10 @@ describe('register()', () => {
         // There will be an email
         expect(accounts.data[0].data.email).toBe('user@domain.com');
         // Passwords are never returned
-        expect(accounts.data[0].data.password).toBeUndefined();
+        // eslint-disable-next-line
+        // @ts-ignore - we know that the password is not in the type definition; we want to check
+        // for its existence anyway
+        expect(accounts.data[0].data?.password).toBeUndefined();
 
         await tearDown(testName, context);
     });
@@ -79,7 +90,9 @@ describe('register()', () => {
         const context = await setUp(testName);
 
         const client = context.databaseClients.childClient;
-        const key = await client.query(CreateKey({ role: Role('public') }));
+        const key = await client.query<
+            CreateKeyResult<{ role: fauna.values.Ref }>
+        >(CreateKey({ role: Role('public') }));
         const publicClient = getClient(fauna, key.secret);
         const res = await publicClient.query(
             Call('register', 'verysecure', {
@@ -98,7 +111,9 @@ describe('register()', () => {
         const context = await setUp(testName);
 
         const client = context.databaseClients.childClient;
-        const key = await client.query(CreateKey({ role: Role('public') }));
+        const key = await client.query<
+            CreateKeyResult<{ role: fauna.values.Ref }>
+        >(CreateKey({ role: Role('public') }));
         const publicClient = getClient(fauna, key.secret);
         const res = await publicClient.query(
             Call('register', 'verysecure', {
