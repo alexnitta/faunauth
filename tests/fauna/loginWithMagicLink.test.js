@@ -57,8 +57,8 @@ const tearDown = async (testName, context) => {
 };
 
 describe('loginWithMagicLink()', () => {
-    it('can log in with correct email and token', async () => {
-        const testName = 'magicLinkWithCorrectEmailAndToken';
+    it('can log in with valid email and secret', async () => {
+        const testName = 'magicLinkWithCorrectEmailAndSecret';
         const context = await setUp(testName);
 
         expect.assertions(3);
@@ -80,31 +80,35 @@ describe('loginWithMagicLink()', () => {
         await tearDown(testName, context);
     });
 
-    it('cannot log in with invalid token', async () => {
-        const testName = 'magicLinkWithInvalidToken';
+    it('cannot log in with an invalid secret', async () => {
+        const testName = 'magicLinkWithInvalidSecret';
         const context = await setUp(testName);
 
         expect.assertions(1);
 
         const client = context.databaseClients.childClient;
-        const loginResult = await client.query(
-            Call('loginWithMagicLink', 'user@domain.com', 'invalidtoken'),
-        );
 
-        expect(loginResult).toBe(false);
+        const loginWithInvalidSecret = async () =>
+            await client.query(
+                Call('loginWithMagicLink', 'user@domain.com', 'invalid-secret'),
+            );
+
+        await expect(loginWithInvalidSecret()).rejects.toBeInstanceOf(
+            fauna.errors.BadRequest,
+        );
 
         await tearDown(testName, context);
     });
 
-    it('cannot log in with incorrect email', async () => {
-        const testName = 'magicLinkWithIncorrectEmail';
+    it('cannot log in with a non-user email', async () => {
+        const testName = 'magicLinkWithNonUserEmail';
         const context = await setUp(testName);
 
         expect.assertions(1);
 
         const client = context.databaseClients.childClient;
         const loginResult = await client.query(
-            Call('loginWithMagicLink', 'notuser@domain.com', context.secret),
+            Call('loginWithMagicLink', 'nonuser@domain.com', context.secret),
         );
 
         expect(loginResult).toBe(false);
@@ -131,25 +135,12 @@ describe('loginWithMagicLink()', () => {
             JSON.stringify(accessAndRefreshTokens, null, 4),
         );
 
-        // initially there are no access or refresh tokens.
+        // Initially there are no access or refresh tokens.
         expect(accessAndRefreshTokens.length).toEqual(0);
 
-        const doLogin = async () =>
-            await client.query(
-                Call('loginWithMagicLink', 'user@domain.com', context.secret),
-            );
-
-        let result = null;
-
-        try {
-            result = await doLogin();
-        } catch (e) {
-            // TODO figure out this error
-
-            console.log('e: ', JSON.stringify(e, null, 4));
-        }
-
-        console.log('result: ', JSON.stringify(result, null, 4));
+        await client.query(
+            Call('loginWithMagicLink', 'user@domain.com', context.secret),
+        );
 
         // Each login creates 2 tokens, one access, one refresh.
         // await client.query(
@@ -161,11 +152,6 @@ describe('loginWithMagicLink()', () => {
         );
         accessAndRefreshTokens = allTokens.data.filter(t =>
             ['access', 'refresh'].includes(t.data.type),
-        );
-
-        console.log(
-            'accessAndRefreshTokens 2: ',
-            JSON.stringify(accessAndRefreshTokens, null, 4),
         );
 
         // verifyTokens has 2 assertions in it

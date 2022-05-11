@@ -12,7 +12,7 @@ const { And, If, Do } = q;
 
 /**
  * Sign in a user via a link sent in an email. The link contains an encoded secret which must be
- * passed to this function as the `secret` argument.
+ * passed to this function as the `secret` argument. Throws an error if the secret is invalid.
  * @param email - the user's email address
  * @param secret - the email verification secret that was sent to the user's email account within an
  * encoded link
