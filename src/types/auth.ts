@@ -18,6 +18,7 @@ export interface TokenQueryResult {
         type: string;
         email?: string;
         used: boolean;
+        loggedOut?: boolean;
     };
     ttl: {
         '@ts': string;
@@ -175,13 +176,15 @@ export interface CreateTokenResult {
     token: Token<{ type: string; email: string }>;
 }
 
+export interface AnomalyError {
+    code: string;
+    message: string;
+}
+
 export interface AnomalyData {
     account: UserData;
     action: string;
-    error: {
-        code: string;
-        message: string;
-    };
+    error: AnomalyError;
     token: Token<{ type: string; email: string }>;
 }
 
@@ -196,3 +199,5 @@ export interface User {
 export type AnomalyCollectionQueryResult = CollectionQueryResult<Anomaly[]>;
 
 export type UserCollectionQueryResult = CollectionQueryResult<User[]>;
+
+export type RefreshResult = false | FaunaLoginResult | AnomalyError;

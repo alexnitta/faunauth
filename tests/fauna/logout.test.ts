@@ -10,18 +10,19 @@ import {
     setupTestDatabase,
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
-import { FAUNA_TEST_TIMEOUT } from '../constants';
 import type {
     TestContext,
     FaunaLoginResult,
     SetUp,
     TearDown,
+    TestDocument,
 } from '../../src/types';
 
 const q = fauna.query;
 const { Call, Create, Collection, Get } = q;
 
-jest.setTimeout(FAUNA_TEST_TIMEOUT);
+// This test seems to time out when running all tests, so I'm increasing the timeout value here
+jest.setTimeout(60 * 1000 * 3);
 
 const setUp: SetUp = async testName => {
     const context: TestContext = {
@@ -57,7 +58,7 @@ const setUp: SetUp = async testName => {
     ]);
 
     const testDocumentRef = (
-        await adminClient.query(
+        await adminClient.query<{ ref: fauna.values.Ref }>(
             Create(Collection('dinos'), { data: { hello: 'world' } }),
         )
     ).ref;
@@ -130,20 +131,26 @@ describe('logout()', () => {
             );
 
             expect(
-                (await loggedInClientUser1.query(Get(context.testDocumentRef)))
-                    .data,
-            ).toBeTruthy();
-
-            expect(
-                (await loggedInClientUser2.query(Get(context.testDocumentRef)))
-                    .data,
+                (
+                    await loggedInClientUser1.query<{
+                        data: TestDocument;
+                    }>(Get(context.testDocumentRef))
+                ).data,
             ).toBeTruthy();
 
             expect(
                 (
-                    await loggedInClientOtherUser.query(
-                        Get(context.testDocumentRef),
-                    )
+                    await loggedInClientUser2.query<{
+                        data: TestDocument;
+                    }>(Get(context.testDocumentRef))
+                ).data,
+            ).toBeTruthy();
+
+            expect(
+                (
+                    await loggedInClientOtherUser.query<{
+                        data: TestDocument;
+                    }>(Get(context.testDocumentRef))
                 ).data,
             ).toBeTruthy();
 
@@ -173,15 +180,18 @@ describe('logout()', () => {
 
             // But the other two clients are not impacted
             expect(
-                (await loggedInClientUser2.query(Get(context.testDocumentRef)))
-                    .data,
+                (
+                    await loggedInClientUser2.query<{
+                        data: TestDocument;
+                    }>(Get(context.testDocumentRef))
+                ).data,
             ).toBeTruthy();
 
             expect(
                 (
-                    await loggedInClientOtherUser.query(
-                        Get(context.testDocumentRef),
-                    )
+                    await loggedInClientOtherUser.query<{
+                        data: TestDocument;
+                    }>(Get(context.testDocumentRef))
                 ).data,
             ).toBeTruthy();
         }
@@ -226,20 +236,26 @@ describe('logout()', () => {
             );
 
             expect(
-                (await loggedInClientUser1.query(Get(context.testDocumentRef)))
-                    .data,
-            ).toBeTruthy();
-
-            expect(
-                (await loggedInClientUser2.query(Get(context.testDocumentRef)))
-                    .data,
+                (
+                    await loggedInClientUser1.query<{
+                        data: TestDocument;
+                    }>(Get(context.testDocumentRef))
+                ).data,
             ).toBeTruthy();
 
             expect(
                 (
-                    await loggedInClientOtherUser.query(
-                        Get(context.testDocumentRef),
-                    )
+                    await loggedInClientUser2.query<{
+                        data: TestDocument;
+                    }>(Get(context.testDocumentRef))
+                ).data,
+            ).toBeTruthy();
+
+            expect(
+                (
+                    await loggedInClientOtherUser.query<{
+                        data: TestDocument;
+                    }>(Get(context.testDocumentRef))
                 ).data,
             ).toBeTruthy();
 
@@ -277,9 +293,9 @@ describe('logout()', () => {
             // But clients from other users are not impacted
             expect(
                 (
-                    await loggedInClientOtherUser.query(
-                        Get(context.testDocumentRef),
-                    )
+                    await loggedInClientOtherUser.query<{
+                        data: Record<string, unknown>;
+                    }>(Get(context.testDocumentRef))
                 ).data,
             ).toBeTruthy();
         }

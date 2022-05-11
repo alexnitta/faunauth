@@ -16,3 +16,7 @@ export type TearDown = (
     testName: string,
     context: TestContext,
 ) => Promise<true>;
+
+export interface TestDocument {
+    hello: string;
+}

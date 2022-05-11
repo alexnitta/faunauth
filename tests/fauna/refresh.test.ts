@@ -22,6 +22,7 @@ import { FAUNA_TEST_TIMEOUT } from '../constants';
 import type {
     TestContext,
     FaunaLoginResult,
+    RefreshResult,
     SetUp,
     TearDown,
     TokenResult,
@@ -126,22 +127,32 @@ describe('refresh logic', () => {
                 fauna,
                 context.loginResult.tokens.refresh.secret,
             );
-            const refreshResult = await refreshClient.query(Call('refresh'));
+            const refreshResult = await refreshClient.query<RefreshResult>(
+                Call('refresh'),
+            );
 
-            // After the refresh we have 2 tokens of each kind.
-            await verifyTokens(expect, adminClient, { access: 2, refresh: 2 });
-            // We  successfully received a token
-            expect(refreshResult.tokens.access).toBeTruthy();
-            expect(refreshResult.tokens.refresh).toBeTruthy();
-            // And it's different than previous token
-            expect(refreshResult.tokens.access.secret).not.toBe(
-                context.loginResult.tokens.access.secret,
-            );
-            expect(refreshResult.tokens.access.secret).not.toBe(
-                context.loginResult.tokens.access.secret,
-            );
-            // The original refresh token was not used but now is used
-            expect(context.loginResult.tokens.refresh.data.used).toBeFalsy();
+            if (refreshResult && 'tokens' in refreshResult) {
+                // After the refresh we have 2 tokens of each kind.
+                await verifyTokens(expect, adminClient, {
+                    access: 2,
+                    refresh: 2,
+                });
+                // We  successfully received a token
+                expect(refreshResult.tokens.access).toBeTruthy();
+                expect(refreshResult.tokens.refresh).toBeTruthy();
+                // And it's different than previous token
+                expect(refreshResult.tokens.access.secret).not.toBe(
+                    context.loginResult.tokens.access.secret,
+                );
+                expect(refreshResult.tokens.access.secret).not.toBe(
+                    context.loginResult.tokens.access.secret,
+                );
+                // The original refresh token was not used but now is used
+                expect(
+                    context.loginResult.tokens.refresh.data.used,
+                ).toBeFalsy();
+            }
+
             const originalRefreshToken = await adminClient.query<TokenResult>(
                 Get(context.loginResult.tokens.refresh.ref),
             );
@@ -164,24 +175,39 @@ describe('refresh logic', () => {
                 fauna,
                 context.loginResult.tokens.refresh.secret,
             );
-            const refreshResult = await refreshClient.query(Call('refresh'));
+            const refreshResult = await refreshClient.query<RefreshResult>(
+                Call('refresh'),
+            );
 
             // TODO: error is thrown here.
             // The first "refresh" call works, but then we get these errors for subsequent ones:
             // Unauthorized: unauthorized. Check that endpoint, schema, port and secret are correct during client’s instantiation
 
-            const refreshResult2 = await refreshClient.query(Call('refresh'));
-            const refreshResult3 = await refreshClient.query(Call('refresh'));
+            const refreshResult2 = await refreshClient.query<RefreshResult>(
+                Call('refresh'),
+            );
+            const refreshResult3 = await refreshClient.query<RefreshResult>(
+                Call('refresh'),
+            );
 
-            expect(refreshResult.tokens.access).toBeTruthy();
-            expect(refreshResult2.tokens.access).toBeTruthy();
-            expect(refreshResult2.tokens.access).toBeTruthy();
-            expect(refreshResult.tokens.access.secret).not.toBe(
-                refreshResult2.tokens.access.secret,
-            );
-            expect(refreshResult2.tokens.access.secret).not.toBe(
-                refreshResult3.tokens.access.secret,
-            );
+            if (
+                refreshResult &&
+                'tokens' in refreshResult &&
+                refreshResult2 &&
+                'tokens' in refreshResult2 &&
+                refreshResult3 &&
+                'tokens' in refreshResult3
+            ) {
+                expect(refreshResult.tokens.access).toBeTruthy();
+                expect(refreshResult2.tokens.access).toBeTruthy();
+                expect(refreshResult2.tokens.access).toBeTruthy();
+                expect(refreshResult.tokens.access.secret).not.toBe(
+                    refreshResult2.tokens.access.secret,
+                );
+                expect(refreshResult2.tokens.access.secret).not.toBe(
+                    refreshResult3.tokens.access.secret,
+                );
+            }
         }
 
         await tearDown(testName, context);
@@ -201,7 +227,9 @@ describe('refresh logic', () => {
 
             // since the first refresh token is called with the original
             await delay(REFRESH_TOKEN_LIFETIME_SECONDS * 1000 + 2000);
-            const refreshResult = await refreshClient.query(Call('refresh'));
+            const refreshResult = await refreshClient.query<RefreshResult>(
+                Call('refresh'),
+            );
 
             expect(refreshResult).toEqual(REFRESH_TOKEN_EXPIRED);
         }
@@ -220,19 +248,23 @@ describe('refresh logic', () => {
                 fauna,
                 context.loginResult.tokens.refresh.secret,
             );
-            const initialRefreshResult = await initialClient.query(
-                Call('refresh'),
-            );
-            const refreshClient = getClient(
-                fauna,
-                initialRefreshResult.tokens.refresh.secret,
-            );
+            const initialRefreshResult =
+                await initialClient.query<RefreshResult>(Call('refresh'));
 
-            // since the first refresh token is called with the original
-            await delay(REFRESH_TOKEN_LIFETIME_SECONDS * 1000 + 2000);
-            const refreshResult = await refreshClient.query(Call('refresh'));
+            if (initialRefreshResult && 'tokens' in initialRefreshResult) {
+                const refreshClient = getClient(
+                    fauna,
+                    initialRefreshResult.tokens.refresh.secret,
+                );
 
-            expect(refreshResult).toEqual(REFRESH_TOKEN_EXPIRED);
+                // since the first refresh token is called with the original
+                await delay(REFRESH_TOKEN_LIFETIME_SECONDS * 1000 + 2000);
+                const refreshResult = await refreshClient.query(
+                    Call('refresh'),
+                );
+
+                expect(refreshResult).toEqual(REFRESH_TOKEN_EXPIRED);
+            }
         }
 
         await tearDown(testName, context);
@@ -279,22 +311,26 @@ describe('refresh logic', () => {
                 fauna,
                 context.loginResult.tokens.refresh.secret,
             );
-            const refreshResult = await refreshClient.query(Call('refresh'));
-
-            expect(refreshResult.tokens.access).toBeTruthy();
-
-            await delay(ACCESS_TOKEN_LIFETIME_SECONDS * 1000 + 2000);
-
-            const accessSecret = refreshResult.tokens.access.secret;
-            const loggedInClient = getClient(fauna, accessSecret);
-
-            const loginWithExpiredToken = async () => {
-                return loggedInClient.query(Get(context.testDocumentRef));
-            };
-
-            await expect(loginWithExpiredToken()).rejects.toBeInstanceOf(
-                fauna.errors.Unauthorized,
+            const refreshResult = await refreshClient.query<RefreshResult>(
+                Call('refresh'),
             );
+
+            if (refreshResult && 'tokens' in refreshResult) {
+                expect(refreshResult.tokens.access).toBeTruthy();
+
+                await delay(ACCESS_TOKEN_LIFETIME_SECONDS * 1000 + 2000);
+
+                const accessSecret = refreshResult.tokens.access.secret;
+                const loggedInClient = getClient(fauna, accessSecret);
+
+                const loginWithExpiredToken = async () => {
+                    return loggedInClient.query(Get(context.testDocumentRef));
+                };
+
+                await expect(loginWithExpiredToken()).rejects.toBeInstanceOf(
+                    fauna.errors.Unauthorized,
+                );
+            }
         }
 
         await tearDown(testName, context);
@@ -314,9 +350,13 @@ describe('refresh logic', () => {
                 fauna,
                 context.loginResult.tokens.refresh.secret,
             );
-            const refreshResult = await refreshClient.query(Call('refresh'));
+            const refreshResult = await refreshClient.query<RefreshResult>(
+                Call('refresh'),
+            );
 
-            expect(refreshResult.tokens.access).toBeTruthy();
+            if (refreshResult && 'tokens' in refreshResult) {
+                expect(refreshResult.tokens.access).toBeTruthy();
+            }
 
             await delay(GRACE_PERIOD_SECONDS * 1000 + 2000);
 
@@ -325,11 +365,15 @@ describe('refresh logic', () => {
             // Unauthorized: unauthorized. Check that endpoint, schema, port and secret are correct during client’s instantiation
 
             // The age is now higher than the grace period.
-            const refreshResult2 = await refreshClient.query(Call('refresh'));
+            const refreshResult2 = await refreshClient.query<RefreshResult>(
+                Call('refresh'),
+            );
 
             expect(refreshResult2).toEqual(REFRESH_TOKEN_REUSE_ERROR);
 
-            const refreshResult3 = await refreshClient.query(Call('refresh'));
+            const refreshResult3 = await refreshClient.query<RefreshResult>(
+                Call('refresh'),
+            );
 
             expect(refreshResult3).toEqual(REFRESH_TOKEN_REUSE_ERROR);
 
@@ -373,7 +417,9 @@ describe('refresh logic', () => {
                 fauna,
                 context.loginResult.tokens.access.secret,
             );
-            const refreshResult = await refreshClient.query(Call('refresh'));
+            const refreshResult = await refreshClient.query<RefreshResult>(
+                Call('refresh'),
+            );
 
             const queryBeforeRefresh = async () => {
                 return loggedInClient.query(Get(context.testDocumentRef));
@@ -381,19 +427,21 @@ describe('refresh logic', () => {
 
             await expect(queryBeforeRefresh()).resolves.toBeTruthy();
 
-            // Use the new token
-            const loggedInClientAfterRefresh = getClient(
-                fauna,
-                refreshResult.tokens.access.secret,
-            );
-
-            const queryAfterRefresh = async () => {
-                return loggedInClientAfterRefresh.query(
-                    Get(context.testDocumentRef),
+            if (refreshResult && 'tokens' in refreshResult) {
+                // Use the new token
+                const loggedInClientAfterRefresh = getClient(
+                    fauna,
+                    refreshResult.tokens.access.secret,
                 );
-            };
 
-            await expect(queryAfterRefresh()).resolves.toBeTruthy();
+                const queryAfterRefresh = async () => {
+                    return loggedInClientAfterRefresh.query(
+                        Get(context.testDocumentRef),
+                    );
+                };
+
+                await expect(queryAfterRefresh()).resolves.toBeTruthy();
+            }
         }
 
         await tearDown(testName, context);

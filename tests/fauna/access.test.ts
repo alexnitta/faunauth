@@ -13,6 +13,7 @@ import type {
     FaunaLoginResult,
     SetUp,
     TearDown,
+    TestDocument,
 } from '../../src/types';
 
 const q = fauna.query;
@@ -86,7 +87,7 @@ describe('access token behavior', () => {
         if (loginResult) {
             const accessSecret = loginResult.tokens.access.secret;
             const loggedInClient = getClient(fauna, accessSecret);
-            const doc = await loggedInClient.query(
+            const doc = await loggedInClient.query<{ data: TestDocument }>(
                 Get(context.testDocumentRef),
             );
 

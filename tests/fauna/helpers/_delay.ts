@@ -1,7 +1,7 @@
-export function delay(millisec) {
+export function delay(ms: number) {
     return new Promise(resolve => {
         setTimeout(() => {
             resolve('');
-        }, millisec);
+        }, ms);
     });
 }
