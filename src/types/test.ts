@@ -7,3 +7,10 @@ export type TestContext = {
     }>;
     secret?: string;
 };
+
+export type SetUp = (testName: string) => Promise<TestContext>;
+
+export type TearDown = (
+    testName: string,
+    context: TestContext,
+) => Promise<true>;

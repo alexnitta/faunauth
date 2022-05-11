@@ -13,7 +13,7 @@ export interface RotateTokensInput {
      * A token that can be used to authenticate further Fauna requests. Fauna's docs refer to this
      * as a 'secret'; from the client perspective it's a JWT.
      */
-    refreshToken: string;
+    refreshSecret: string;
 }
 
 /**
@@ -23,11 +23,11 @@ export interface RotateTokensInput {
  */
 export async function rotateTokens({
     clientConfig,
-    refreshToken,
+    refreshSecret,
 }: RotateTokensInput): Promise<TokenPair> {
     const client = new faunadb.Client({
         ...clientConfig,
-        secret: refreshToken,
+        secret: refreshSecret,
     });
 
     let result: Maybe<FaunaRefreshResult> = null;
@@ -43,7 +43,7 @@ export async function rotateTokens({
     }
 
     return {
-        accessToken: result.tokens.access.secret,
-        refreshToken: result.tokens.refresh.secret,
+        accessSecret: result.tokens.access.secret,
+        refreshSecret: result.tokens.refresh.secret,
     };
 }

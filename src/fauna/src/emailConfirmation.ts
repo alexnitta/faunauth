@@ -83,15 +83,15 @@ export function InvalidateEmailConfirmationTokensForAccount(email: string) {
 
 /**
  * @param email - a user's email address
- * @param checkSecret - a email confirmation token secret
+ * @param secret - a email confirmation token secret
  * @returns true if at least one token is found that meets all these conditions:
  *  - belongs to the email address
  *  - is of type `email_confirmation`
  *  - has `data.used: false`
  */
-export function VerifyEmailConfirmationTokenForAccount(
+export function VerifyEmailConfirmationSecretForAccount(
     email: string,
-    checkSecret: string,
+    secret: string,
 ) {
     return IsNonEmpty(
         Let(
@@ -108,7 +108,7 @@ export function VerifyEmailConfirmationTokenForAccount(
             },
             q.Map(
                 Var('emailConfirmationTokens'),
-                Lambda(['token'], KeyFromSecret(checkSecret)),
+                Lambda(['token'], KeyFromSecret(secret)),
             ),
         ),
     );

@@ -63,15 +63,15 @@ export interface FaunaRefreshResult {
 }
 
 /**
- * A ClientLoginResult only exposes the accessToken so that a malicious actor cannot acquire new
- * tokens by stealing a refreshToken from the browser's local persistence.
+ * A ClientLoginResult only exposes the accessSecret so that a malicious actor cannot acquire new
+ * tokens by stealing a refreshSecret from the browser's local persistence.
  */
 export interface ClientLoginResult {
     /**
      * A token that can be used to authenticate further requests against the public Fauna APIs.
      * Fauna's docs refer to this as a 'secret'; from the client perspective it's a JWT.
      */
-    accessToken: string;
+    accessSecret: string;
     /**
      * Details for the user that was signed in
      */
@@ -79,28 +79,29 @@ export interface ClientLoginResult {
 }
 
 /**
- * A ServerLoginResult exposes both the accessToken and the refreshToken so they can be stored in
+ * A ServerLoginResult exposes both the accessSecret and the refreshSecret so they can be stored in
  * a secure, HTTP-only session cookie, and later used to acquire new tokens.
  */
 export interface ServerLoginResult extends ClientLoginResult {
     /**
-     * A token that can be used to acquire a new pair of accessToken / refreshToken values. Fauna's
-     * docs refer to this as a 'secret'; from the client perspective it's a JWT.
+     * A secret that can be used to acquire a new pair of accessSecret / refreshSecret values.
+     * Fauna's docs refer to this as a 'secret'; from the client perspective it's a JWT.
      */
-    refreshToken: string;
+    refreshSecret: string;
 }
 
 export interface TokenPair {
     /**
-     * A token that can be used to authenticate further requests against the public Fauna APIs.
+     * A secret that can be used to authenticate further requests against the public Fauna APIs.
      * Fauna's docs refer to this as a 'secret'; from the client perspective it's a JWT.
      */
-    accessToken: string;
+    accessSecret: string;
     /**
-     * A token that can be used to acquire a new pair of accessToken / refreshToken values. Fauna's
+     * A secret that can be used to acquire a new pair of accessSecret / refreshSecret values.
+     * Fauna's
      * docs refer to this as a 'secret'; from the client perspective it's a JWT.
      */
-    refreshToken: string;
+    refreshSecret: string;
 }
 
 export interface UserData {
@@ -114,7 +115,7 @@ export interface UserData {
      */
     confirmedEmail: boolean;
     /**
-     * Any other details about the user
+     * Any other application-specific details about the user
      */
     details: Record<string, string | number | boolean | null>;
     /**

@@ -46,8 +46,6 @@ const setUp = async testName => {
             confirmedEmail: false,
             email: 'user@domain.com',
             locale: 'en-US',
-            invitedBy: 'foo-user-id',
-            toGroup: 'foo-group-id',
         }),
     );
 
@@ -76,8 +74,8 @@ describe('access token behavior', () => {
         const loginResult = await client.query(
             Call('login-modified', 'user@domain.com', 'verysecure'),
         );
-        const accessToken = loginResult.tokens.access.secret;
-        const loggedInClient = getClient(fauna, accessToken);
+        const accessSecret = loginResult.tokens.access.secret;
+        const loggedInClient = getClient(fauna, accessSecret);
         const doc = await loggedInClient.query(Get(context.testDocumentRef));
 
         expect(doc.data).toBeTruthy();
@@ -97,8 +95,8 @@ describe('access token behavior', () => {
             Call('login-modified', 'user@domain.com', 'verysecure'),
         );
 
-        const accessToken = loginResult.tokens.access.secret;
-        const loggedInClient = getClient(fauna, accessToken);
+        const accessSecret = loginResult.tokens.access.secret;
+        const loggedInClient = getClient(fauna, accessSecret);
 
         // wait 11s
         await delay(11000);
@@ -122,7 +120,7 @@ describe('access token behavior', () => {
     });
 
     test('refresh tokens do not provide access to the data', async () => {
-        const testName = 'refreshTokenPrivileges';
+        const testName = 'refreshSecretPrivileges';
         const context = await setUp(testName);
 
         expect.assertions(1);
@@ -132,8 +130,8 @@ describe('access token behavior', () => {
             const loginResult = await client.query(
                 Call('login-modified', 'user@domain.com', 'verysecure'),
             );
-            const refreshToken = loginResult.tokens.refresh.secret;
-            const refreshClient = getClient(fauna, refreshToken);
+            const refreshSecret = loginResult.tokens.refresh.secret;
+            const refreshClient = getClient(fauna, refreshSecret);
 
             await refreshClient.query(Get(context.testDocumentRef));
         }).rejects.toThrow(fauna.errors.PermissionDenied);

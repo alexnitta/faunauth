@@ -11,6 +11,8 @@ import {
     TestContext,
     FaunaLoginResult,
     TokenCollectionQueryResult,
+    SetUp,
+    TearDown,
 } from '../../src/types';
 
 const q = fauna.query;
@@ -18,7 +20,7 @@ const { Call, Paginate, Tokens, Lambda, Get, Var } = q;
 
 jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
-const setUp = async testName => {
+const setUp: SetUp = async testName => {
     const context: TestContext = {
         databaseClients: null,
     };
@@ -41,8 +43,6 @@ const setUp = async testName => {
             email: 'user@domain.com',
             username: 'user',
             locale: 'en-US',
-            invitedBy: 'foo-user-id',
-            toGroup: 'foo-group-id',
         }),
     );
 
@@ -51,15 +51,13 @@ const setUp = async testName => {
             email: 'user2@domain.com',
             username: 'user2',
             locale: 'en-US',
-            invitedBy: 'foo-user-id',
-            toGroup: 'foo-group-id',
         }),
     );
 
     return context;
 };
 
-const tearDown = async (testName, context) => {
+const tearDown: TearDown = async (testName, context) => {
     await destroyTestDatabase(
         q,
         testName,

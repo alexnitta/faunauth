@@ -5,15 +5,24 @@ import {
     setupTestDatabase,
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
-import { FAUNA_TEST_TIMEOUT } from './constants';
+import { FAUNA_TEST_TIMEOUT } from '../constants';
+import {
+    TestContext,
+    TokenResult,
+    FaunaLoginResult,
+    SetUp,
+    TearDown,
+} from '../../src/types';
 
 const q = fauna.query;
 const { Call } = q;
 
 jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
-const setUp = async testName => {
-    const context = {};
+const setUp: SetUp = async testName => {
+    const context: TestContext = {
+        databaseClients: null,
+    };
 
     context.databaseClients = await setupTestDatabase(fauna, testName);
 
@@ -36,21 +45,19 @@ const setUp = async testName => {
             email: 'user@domain.com',
             username: 'user',
             locale: 'en-US',
-            invitedBy: 'foo-user-id',
-            toGroup: 'foo-group-id',
         }),
     );
 
-    const createTokenResult = await client.query(
+    const createTokenResult = await client.query<{ token: TokenResult }>(
         Call('createEmailConfirmationToken', 'user@domain.com'),
     );
 
-    context.token = createTokenResult.token.secret;
+    context.secret = createTokenResult.token.secret;
 
     return context;
 };
 
-const tearDown = async (testName, context) => {
+const tearDown: TearDown = async (testName, context) => {
     await destroyTestDatabase(
         q,
         testName,
@@ -69,27 +76,36 @@ describe('setPassword()', () => {
 
         const client = context.databaseClients.childClient;
 
-        const setPasswordResult = await client.query(
-            Call(
-                'setPassword',
-                'user@domain.com',
-                'supersecret',
-                context.token,
-            ),
-        );
+        try {
+            const setPasswordResult = await client.query<
+                false | FaunaLoginResult
+            >(
+                Call(
+                    'setPassword',
+                    'user@domain.com',
+                    'supersecret',
+                    context.secret,
+                ),
+            );
 
-        expect(setPasswordResult.tokens.access).toBeTruthy();
-        expect(setPasswordResult.tokens.refresh).toBeTruthy();
-        expect(setPasswordResult.account).toBeTruthy();
+            if (setPasswordResult) {
+                expect(setPasswordResult.tokens.access).toBeTruthy();
+                expect(setPasswordResult.tokens.refresh).toBeTruthy();
+                expect(setPasswordResult.account).toBeTruthy();
+            }
 
-        const loginResult = await client.query(
-            Call('login', 'user@domain.com', 'supersecret'),
-        );
+            const loginResult = await client.query<false | FaunaLoginResult>(
+                Call('login', 'user@domain.com', 'supersecret'),
+            );
 
-        expect(loginResult.tokens.access).toBeTruthy();
-        expect(loginResult.tokens.refresh).toBeTruthy();
-        expect(loginResult.account).toBeTruthy();
-
+            if (loginResult) {
+                expect(loginResult.tokens.access).toBeTruthy();
+                expect(loginResult.tokens.refresh).toBeTruthy();
+                expect(loginResult.account).toBeTruthy();
+            }
+        } catch (e) {
+            console.log('e: ', JSON.stringify(e, null, 4));
+        }
         await tearDown(testName, context);
     });
 
@@ -106,7 +122,7 @@ describe('setPassword()', () => {
                     'setPassword',
                     'user@domain.com',
                     'verysecure',
-                    context.token,
+                    context.secret,
                 ),
             );
 
@@ -130,7 +146,7 @@ describe('setPassword()', () => {
                     'setPassword',
                     'notauser@domain.com',
                     'verysecure',
-                    context.token,
+                    context.secret,
                 ),
             );
 

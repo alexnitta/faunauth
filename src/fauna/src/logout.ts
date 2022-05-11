@@ -13,7 +13,7 @@ const { Let, Var, Lambda, Match, CurrentIdentity, Index, If, Paginate } = q;
 function LogoutOne() {
     return Let(
         {
-            refreshTokens: Paginate(
+            refreshSecrets: Paginate(
                 Match(
                     Index('tokens_by_instance_sessionid_type_and_loggedout'),
                     CurrentIdentity(),
@@ -25,7 +25,7 @@ function LogoutOne() {
             ),
         },
         q.Map(
-            Var('refreshTokens'),
+            Var('refreshSecrets'),
             Lambda(['token'], LogoutAccessAndRefreshToken(Var('token'))),
         ),
     );
@@ -35,7 +35,7 @@ function LogoutOne() {
 function LogoutAll() {
     return Let(
         {
-            refreshTokens: Paginate(
+            refreshSecrets: Paginate(
                 Match(
                     Index('tokens_by_instance_type_and_loggedout'),
                     CurrentIdentity(),
@@ -46,7 +46,7 @@ function LogoutAll() {
             ),
         },
         q.Map(
-            Var('refreshTokens'),
+            Var('refreshSecrets'),
             Lambda(['token'], LogoutAccessAndRefreshToken(Var('token'))),
         ),
     );

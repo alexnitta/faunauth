@@ -6,7 +6,7 @@ import {
     populateDatabaseSchemaFromFiles,
     getClient,
 } from './helpers/_setup-db';
-import { FAUNA_TEST_TIMEOUT } from './constants';
+import { FAUNA_TEST_TIMEOUT } from '../constants';
 
 const q = fauna.query;
 const { Call, Paginate, Documents, Collection, Lambda, Get, CreateKey, Role } =
@@ -51,19 +51,13 @@ describe('register()', () => {
 
         const client = context.databaseClients.childClient;
 
-        try {
-            // We now have a register function which we can call
-            await client.query(
-                Call('register', 'verysecure', {
-                    email: 'user@domain.com',
-                    locale: 'en-US',
-                    invitedBy: 'foo-user-id',
-                    toGroup: 'foo-group-id',
-                }),
-            );
-        } catch (e) {
-            console.log('error', e);
-        }
+        // We now have a register function which we can call
+        await client.query(
+            Call('register', 'verysecure', {
+                email: 'user@domain.com',
+                locale: 'en-US',
+            }),
+        );
 
         const accounts = await client.query(
             q.Map(
@@ -91,8 +85,6 @@ describe('register()', () => {
             Call('register', 'verysecure', {
                 email: 'user@domain.com',
                 locale: 'en-US',
-                invitedBy: 'foo-user-id',
-                toGroup: 'foo-group-id',
             }),
         );
 
@@ -112,8 +104,6 @@ describe('register()', () => {
             Call('register', 'verysecure', {
                 email: 'user@domain.com',
                 locale: 'en-US',
-                invitedBy: 'foo-user-id',
-                toGroup: 'foo-group-id',
             }),
         );
 
@@ -124,8 +114,6 @@ describe('register()', () => {
                 Call('register', 'verysecure', {
                     email: 'user@domain.com',
                     locale: 'en-US',
-                    invitedBy: 'foo-user-id',
-                    toGroup: 'foo-group-id',
                 }),
             );
         };

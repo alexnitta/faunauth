@@ -18,7 +18,7 @@ import {
     REFRESH_TOKEN_RECLAIMTIME_SECONDS,
 } from './resources/functions/_refresh-modified';
 import { verifyTokens } from './helpers/_test-extensions';
-import { FAUNA_TEST_TIMEOUT } from './constants';
+import { FAUNA_TEST_TIMEOUT } from '../constants';
 
 const q = fauna.query;
 const {
@@ -76,8 +76,6 @@ const setUp = async testName => {
         Call('register', 'verysecure', {
             email: 'user@domain.com',
             locale: 'en-US',
-            invitedBy: 'foo-user-id',
-            toGroup: 'foo-group-id',
         }),
     );
 
@@ -246,7 +244,7 @@ describe('refresh logic', () => {
     });
 
     it('cannot use the access tokens after ACCESS_TOKEN_LIFETIME_SECONDS', async () => {
-        const testName = 'accessTokenLifetime';
+        const testName = 'accessSecretLifetime';
         const context = await setUp(testName);
 
         expect.assertions(2);
@@ -260,8 +258,8 @@ describe('refresh logic', () => {
 
         await delay(ACCESS_TOKEN_LIFETIME_SECONDS * 1000 + 2000);
 
-        const accessToken = refreshResult.tokens.access.secret;
-        const loggedInClient = getClient(fauna, accessToken);
+        const accessSecret = refreshResult.tokens.access.secret;
+        const loggedInClient = getClient(fauna, accessSecret);
 
         const loginWithExpiredToken = async () => {
             return loggedInClient.query(Get(context.testDocumentRef));

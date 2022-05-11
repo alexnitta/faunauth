@@ -38,7 +38,7 @@ export type LoginInput = LoginInputWithEmail | LoginInputWithUsername;
 
 /**
  * Log a user in. The input can include either an `email` or a `username` in order to identify the
- * user. The returned data will include an `accessToken`, `refreshToken` and `user` object including
+ * user. The returned data will include an `accessSecret`, `refreshSecret` and `user` object including
  * the user's `id` as well as any other data on the User document.
  *
  * If the email/username or password is incorrect, this function throws the same error. This is by
@@ -92,8 +92,8 @@ export async function login(input: LoginInput): Promise<ServerLoginResult> {
     } = loginResult;
 
     return {
-        accessToken: access.secret,
-        refreshToken: refresh.secret,
+        accessSecret: access.secret,
+        refreshSecret: refresh.secret,
         user: {
             id,
             ...account.data,

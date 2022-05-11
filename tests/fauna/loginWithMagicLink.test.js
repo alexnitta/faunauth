@@ -6,7 +6,7 @@ import {
     setupTestDatabase,
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
-import { FAUNA_TEST_TIMEOUT } from './constants';
+import { FAUNA_TEST_TIMEOUT } from '../constants';
 
 const q = fauna.query;
 const { Call, Paginate, Lambda, Get, Var, Tokens } = q;
@@ -34,8 +34,6 @@ const setUp = async testName => {
             email: 'user@domain.com',
             username: 'user',
             locale: 'en-US',
-            invitedBy: 'foo-user-id',
-            toGroup: 'foo-group-id',
         }),
     );
 
@@ -43,7 +41,7 @@ const setUp = async testName => {
         Call('createEmailConfirmationToken', 'user@domain.com'),
     );
 
-    context.token = createTokenResult.token.secret;
+    context.secret = createTokenResult.token.secret;
 
     return context;
 };
@@ -60,25 +58,30 @@ const tearDown = async (testName, context) => {
 
 describe('loginWithMagicLink()', () => {
     it('can log in with correct email and token', async () => {
-        const testName = 'correctEmailAndToken';
+        const testName = 'magicLinkWithCorrectEmailAndToken';
         const context = await setUp(testName);
 
         expect.assertions(3);
 
         const client = context.databaseClients.childClient;
-        const loginResult = await client.query(
-            Call('loginWithMagicLink', 'user@domain.com', context.token),
-        );
 
-        expect(loginResult.tokens.access).toBeTruthy();
-        expect(loginResult.tokens.refresh).toBeTruthy();
-        expect(loginResult.account).toBeTruthy();
+        try {
+            const loginResult = await client.query(
+                Call('loginWithMagicLink', 'user@domain.com', context.secret),
+            );
+
+            expect(loginResult.tokens.access).toBeTruthy();
+            expect(loginResult.tokens.refresh).toBeTruthy();
+            expect(loginResult.account).toBeTruthy();
+        } catch (e) {
+            console.log('e: ', JSON.stringify(e, null, 4));
+        }
 
         await tearDown(testName, context);
     });
 
     it('cannot log in with invalid token', async () => {
-        const testName = 'invalidToken';
+        const testName = 'magicLinkWithInvalidToken';
         const context = await setUp(testName);
 
         expect.assertions(1);
@@ -94,14 +97,14 @@ describe('loginWithMagicLink()', () => {
     });
 
     it('cannot log in with incorrect email', async () => {
-        const testName = 'incorrectEmail';
+        const testName = 'magicLinkWithIncorrectEmail';
         const context = await setUp(testName);
 
         expect.assertions(1);
 
         const client = context.databaseClients.childClient;
         const loginResult = await client.query(
-            Call('loginWithMagicLink', 'notuser@domain.com', context.token),
+            Call('loginWithMagicLink', 'notuser@domain.com', context.secret),
         );
 
         expect(loginResult).toBe(false);
@@ -109,8 +112,8 @@ describe('loginWithMagicLink()', () => {
         await tearDown(testName, context);
     });
 
-    it.skip('creates creates two tokens per login; refresh tokens are unused', async () => {
-        const testName = 'checkTokenCreation';
+    it('creates creates two tokens per login; refresh tokens are unused', async () => {
+        const testName = 'magicLinkCheckTokenCreation';
         const context = await setUp(testName);
 
         expect.assertions(3);
@@ -133,7 +136,7 @@ describe('loginWithMagicLink()', () => {
 
         const doLogin = async () =>
             await client.query(
-                Call('loginWithMagicLink', 'user@domain.com', context.token),
+                Call('loginWithMagicLink', 'user@domain.com', context.secret),
             );
 
         let result = null;
@@ -150,7 +153,7 @@ describe('loginWithMagicLink()', () => {
 
         // Each login creates 2 tokens, one access, one refresh.
         // await client.query(
-        //     Call('loginWithMagicLink', 'user@domain.com', context.token),
+        //     Call('loginWithMagicLink', 'user@domain.com', context.secret),
         // );
 
         allTokens = await client.query(

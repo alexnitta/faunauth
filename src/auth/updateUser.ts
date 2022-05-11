@@ -10,7 +10,7 @@ export interface UpdateUserInput {
     /**
      * A Fauna secret that was returned after authenticating the user
      */
-    accessToken: string | null;
+    accessSecret: string | null;
     /**
      * Fauna client config object
      */
@@ -32,15 +32,15 @@ export interface UpdateUserInput {
 export async function updateUser(
     input: UpdateUserInput,
 ): Promise<UpdateUserResult> {
-    const { accessToken, clientConfig, data, userID } = input;
+    const { accessSecret, clientConfig, data, userID } = input;
 
-    if (!accessToken) {
+    if (!accessSecret) {
         throw new Error(errors.missingAccessToken);
     }
 
     const client = new faunadb.Client({
         ...clientConfig,
-        secret: accessToken,
+        secret: accessSecret,
     });
 
     let updateUserResult: UpdateUserResult | false = false;

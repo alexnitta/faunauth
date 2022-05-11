@@ -10,7 +10,7 @@ import {
     setupTestDatabase,
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
-import { FAUNA_TEST_TIMEOUT } from './constants';
+import { FAUNA_TEST_TIMEOUT } from '../constants';
 
 const q = fauna.query;
 const { Call, Create, Collection, Get } = q;
@@ -60,8 +60,6 @@ const setUp = async testName => {
         Call('register', 'verysecure', {
             email: 'user@domain.com',
             locale: 'en-US',
-            invitedBy: 'foo-user-id',
-            toGroup: 'foo-group-id',
         }),
     );
 
@@ -69,8 +67,6 @@ const setUp = async testName => {
         Call('register', 'verysecure', {
             email: 'foo@other.com',
             locale: 'en-US',
-            invitedBy: 'foo-user-id',
-            toGroup: 'foo-group-id',
         }),
     );
 
