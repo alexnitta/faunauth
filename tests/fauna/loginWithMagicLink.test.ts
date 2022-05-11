@@ -7,14 +7,24 @@ import {
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
 import { FAUNA_TEST_TIMEOUT } from '../constants';
+import type {
+    TestContext,
+    FaunaLoginResult,
+    TokenCollectionQueryResult,
+    TokenResult,
+    SetUp,
+    TearDown,
+} from '../../src/types';
 
 const q = fauna.query;
 const { Call, Paginate, Lambda, Get, Var, Tokens } = q;
 
 jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
-const setUp = async testName => {
-    const context = {};
+const setUp: SetUp = async testName => {
+    const context: TestContext = {
+        databaseClients: null,
+    };
 
     context.databaseClients = await setupTestDatabase(fauna, testName);
 
@@ -37,7 +47,7 @@ const setUp = async testName => {
         }),
     );
 
-    const createTokenResult = await client.query(
+    const createTokenResult = await client.query<{ token: TokenResult }>(
         Call('createEmailConfirmationToken', 'user@domain.com'),
     );
 
@@ -46,7 +56,7 @@ const setUp = async testName => {
     return context;
 };
 
-const tearDown = async (testName, context) => {
+const tearDown: TearDown = async (testName, context) => {
     await destroyTestDatabase(
         q,
         testName,
@@ -65,16 +75,14 @@ describe('loginWithMagicLink()', () => {
 
         const client = context.databaseClients.childClient;
 
-        try {
-            const loginResult = await client.query(
-                Call('loginWithMagicLink', 'user@domain.com', context.secret),
-            );
+        const loginResult = await client.query<false | FaunaLoginResult>(
+            Call('loginWithMagicLink', 'user@domain.com', context.secret),
+        );
 
+        if (loginResult) {
             expect(loginResult.tokens.access).toBeTruthy();
             expect(loginResult.tokens.refresh).toBeTruthy();
             expect(loginResult.account).toBeTruthy();
-        } catch (e) {
-            console.log('e: ', JSON.stringify(e, null, 4));
         }
 
         await tearDown(testName, context);
@@ -89,7 +97,7 @@ describe('loginWithMagicLink()', () => {
         const client = context.databaseClients.childClient;
 
         const loginWithInvalidSecret = async () =>
-            await client.query(
+            await client.query<false | FaunaLoginResult>(
                 Call('loginWithMagicLink', 'user@domain.com', 'invalid-secret'),
             );
 
@@ -107,7 +115,7 @@ describe('loginWithMagicLink()', () => {
         expect.assertions(1);
 
         const client = context.databaseClients.childClient;
-        const loginResult = await client.query(
+        const loginResult = await client.query<false | FaunaLoginResult>(
             Call('loginWithMagicLink', 'nonuser@domain.com', context.secret),
         );
 
@@ -123,29 +131,21 @@ describe('loginWithMagicLink()', () => {
         expect.assertions(3);
 
         const client = context.databaseClients.childClient;
-        let allTokens = await client.query(
+        let allTokens = await client.query<TokenCollectionQueryResult>(
             q.Map(Paginate(Tokens()), Lambda(['t'], Get(Var('t')))),
         );
         let accessAndRefreshTokens = allTokens.data.filter(t =>
             ['access', 'refresh'].includes(t.data.type),
         );
 
-        console.log(
-            'accessAndRefreshTokens 1',
-            JSON.stringify(accessAndRefreshTokens, null, 4),
-        );
-
         // Initially there are no access or refresh tokens.
         expect(accessAndRefreshTokens.length).toEqual(0);
 
-        await client.query(
+        await client.query<false | FaunaLoginResult>(
             Call('loginWithMagicLink', 'user@domain.com', context.secret),
         );
 
         // Each login creates 2 tokens, one access, one refresh.
-        // await client.query(
-        //     Call('loginWithMagicLink', 'user@domain.com', context.secret),
-        // );
 
         allTokens = await client.query(
             q.Map(Paginate(Tokens()), Lambda(['t'], Get(Var('t')))),
