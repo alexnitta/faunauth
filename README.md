@@ -116,13 +116,19 @@ To create a full set of authentication features, you will need to implement serv
 5. Initiate a "forgot password" flow with `sendConfirmationEmail`
 6. Finish a "forgot password" flow with `setPassword`
 7. Change a password for a user that knows their password with `changePassword`
-8. Rotate the accessToken / refreshToken pair with `rotateTokens`
+8. Rotate the accessSecret / refreshSecret pair with `rotateTokens`
 9. Update non-password user details (email, etc.) with `updateUser`
 
 Optionally, you can also implement login with magic link by doing:
 
 10. Initiate a "magic link" flow with `sendConfirmationEmail`
 11. Finish a "magic link" flow with `loginWithMagicLink`
+
+#### Secrets vs. tokens
+
+You'll notice that `faunauth` uses the names `accessSecret` and `refreshSecret` to refer to the strings that you will use for various authentication tasks. This is because Fauna exposes a document type which is named [`Token`](https://docs.fauna.com/fauna/current/security/tokens). Each `Token` has a `secret` which can be used to authenticate queries. From a frontend developer perspective, the secret behaves like a token; in other words, you set the Authorization header to `Bearer ${accessSecret}` to get access to the Fauna API.
+
+To reduce confusion between the Fauna definition of a token (instance of Token document) vs. a conventional token, we use the Fauna term "secret", hence the names `accessSecret` and `refreshSecret`. This was a breaking change in version 2.0 of `faunauth`.
 
 #### Example login code
 
@@ -138,7 +144,7 @@ import { login } from 'faunauth';
 
 /**
  * Log in a user in with an email and password, thereby getting access to
- * an accessToken, refreshToken and user data.
+ * an accessSecret, refreshSecret and user data.
  */
 export const loginHandler = async (req, res) => {
     // The `publicFaunaKey` should be created using the faunauth CLI as
@@ -152,18 +158,18 @@ export const loginHandler = async (req, res) => {
         // Here is where you would validate the input or throw an error
         // if it is invalid
 
-        const { accessToken, refreshToken, user } = await login({
+        const { accessSecret, refreshSecret, user } = await login({
             email,
             password,
             publicFaunaKey,
         });
 
-        // Here is where you would save the refreshToken in a session
+        // Here is where you would save the refreshSecret in a session
         // cookie.
 
-        // Send the `accessToken` and `user` back to the client so it can
-        // use the `accessToken` to authenticate Fauna requests
-        res.send({ accessToken, user });
+        // Send the `accessSecret` and `user` back to the client so it can
+        // use the `accessSecret` to authenticate Fauna requests
+        res.send({ accessSecret, user });
     } catch (error) {
         res.status(400).send({ error });
     }
@@ -207,8 +213,8 @@ Here are the three user flows that implement this pattern:
 ### Register a new user
 
 1. The new user visits your sign up page and enters an email and password into a form. You may include an optional username field to allow your users to log in with a username and password. Your frontend app hits an API endpoint that calls the [`register`](./docs/index.md#register) function, which creates an entity in the User collection, creates a email confirmation token for that entity, and sends the confirmation email as described above.
-2. The new user opens the confirmation email and clicks the link, which opens the callback URL with the added `data` URL parameter. Your frontend app must decode the `email` and `token` from this `data` parameter, as shown above, then hit an API endpoint that calls the [`setPassword`](./docs/index.md#setpassword) function. This function returns an object containing the `accessToken`, `refreshToken` and `user` object. The endpoint should set the `refreshToken` on a session cookie and return the `accessToken` and `user` data back to the frontend.
-3. You frontend should store a reference to the `accessToken` and `user` data, then redirect the user as appropriate, usually to the main dashboard of the app. The `accessToken` should be included in an Authorization header as the `Bearer ${accessToken}` when making requests at the Fauna GraphQL endpoint.
+2. The new user opens the confirmation email and clicks the link, which opens the callback URL with the added `data` URL parameter. Your frontend app must decode the `email` and `token` from this `data` parameter, as shown above, then hit an API endpoint that calls the [`setPassword`](./docs/index.md#setpassword) function. This function returns an object containing the `accessSecret`, `refreshSecret` and `user` object. The endpoint should set the `refreshSecret` on a session cookie and return the `accessSecret` and `user` data back to the frontend.
+3. You frontend should store a reference to the `accessSecret` and `user` data, then redirect the user as appropriate, usually to the main dashboard of the app. The `accessSecret` should be included in an Authorization header as the `Bearer ${accessSecret}` when making requests at the Fauna GraphQL endpoint.
 
 ### Reset a password
 
@@ -219,15 +225,15 @@ Step 2 and 3 are the same as when signing up a new user.
 ### Sign in with magic link
 
 1. An existing user visits your sign in page and enters the email address they registered previously with. Your frontend app hits an API endpoint that calls the [`sendConfirmationEmail`](./docs/index.md#sendconfirmationemail) function, which creates an email confirmation token for the User entity that matches the given email address and sends the confirmation email as described above.
-2. The new user opens the confirmation email and clicks the link, which opens the callback URL with the added `data` URL parameter. Your frontend app must decode the `email` and `token` from this `data` parameter, as shown above, then hit an API endpoint that calls the [`loginWithMagicLink`](./docs/index.md#loginwithmagiclink) function. This function returns an object containing the `accessToken`, `refreshToken` and `user` object. The endpoint should set the `refreshToken` on a session cookie and return the `accessToken` and `user` data back to the frontend.
+2. The new user opens the confirmation email and clicks the link, which opens the callback URL with the added `data` URL parameter. Your frontend app must decode the `email` and `token` from this `data` parameter, as shown above, then hit an API endpoint that calls the [`loginWithMagicLink`](./docs/index.md#loginwithmagiclink) function. This function returns an object containing the `accessSecret`, `refreshSecret` and `user` object. The endpoint should set the `refreshSecret` on a session cookie and return the `accessSecret` and `user` data back to the frontend.
 
 Step 3 is the same as when signing up a new user.
 
 ## Tokens
 
-When a user logs in with the [`login`](./docs/index.md#login) function, they receive an `accessToken`, `refreshToken` and `user` object. The `accessToken` provides identity-based access to your Fauna database, which means you can use it to authenticate requests to the Fauna GraphQL endpoint as well as to authenticate a Fauna client from the [faunadb](https://www.npmjs.com/package/faunadb) JavaScript driver, or any of the other [drivers](https://docs.fauna.com/fauna/current/drivers/). In Fauna's terminology, the `accessToken` is technically a "token secret." You can read more on Fauna tokens [here](https://docs.fauna.com/fauna/current/security/tokens).
+When a user logs in with the [`login`](./docs/index.md#login) function, they receive an `accessSecret`, `refreshSecret` and `user` object. The `accessSecret` provides identity-based access to your Fauna database, which means you can use it to authenticate requests to the Fauna GraphQL endpoint as well as to authenticate a Fauna client from the [faunadb](https://www.npmjs.com/package/faunadb) JavaScript driver, or any of the other [drivers](https://docs.fauna.com/fauna/current/drivers/). In Fauna's terminology, the `accessSecret` is technically a "token secret." You can read more on Fauna tokens [here](https://docs.fauna.com/fauna/current/security/tokens).
 
-Access tokens expire in 10 minutes. When a request to the Fauna GraphQL endpoint fails due to an expired token, your frontend app should hit an API endpoint that calls the [`rotateTokens`](./docs/index.md#rotatetokens) function. This function takes the `refreshToken` and uses it to get a new pair of `accessToken` and `refreshToken` values. Your endpoint handler should set the new `refreshToken` on the session cookie so that it can be used in the future to repeat the token rotation process. It should return the `accessToken` to the frontend app so that it can be used to authenticate further Fauna requests.
+Access tokens expire in 10 minutes. When a request to the Fauna GraphQL endpoint fails due to an expired token, your frontend app should hit an API endpoint that calls the [`rotateTokens`](./docs/index.md#rotatetokens) function. This function takes the `refreshSecret` and uses it to get a new pair of `accessSecret` and `refreshSecret` values. Your endpoint handler should set the new `refreshSecret` on the session cookie so that it can be used in the future to repeat the token rotation process. It should return the `accessSecret` to the frontend app so that it can be used to authenticate further Fauna requests.
 
 ## Sending emails
 

@@ -1,10 +1,19 @@
 import fauna from 'faunadb';
 
+import type { TokenCollectionQueryResult } from '../../../src/types';
+
 const q = fauna.query;
 const { Get, Paginate, Tokens, Lambda, Var } = q;
 
-export async function verifyTokens(expect, adminClient, tokenConfig) {
-    const allTokens = await adminClient.query(
+export async function verifyTokens(
+    expect: jest.Expect,
+    adminClient: fauna.Client,
+    tokenConfig: {
+        access: number;
+        refresh: number;
+    },
+) {
+    const allTokens = await adminClient.query<TokenCollectionQueryResult>(
         q.Map(Paginate(Tokens()), Lambda(['t'], Get(Var('t')))),
     );
 
@@ -18,11 +27,11 @@ export async function verifyTokens(expect, adminClient, tokenConfig) {
 }
 
 export async function verifyRefreshTokensLogout(
-    expect,
-    adminClient,
-    loggedOut,
+    expect: jest.Expect,
+    adminClient: fauna.Client,
+    loggedOutCount: number,
 ) {
-    const allTokens = await adminClient.query(
+    const allTokens = await adminClient.query<TokenCollectionQueryResult>(
         q.Map(Paginate(Tokens()), Lambda(['t'], Get(Var('t')))),
     );
 
@@ -30,7 +39,7 @@ export async function verifyRefreshTokensLogout(
         allTokens.data.filter(
             t => t.data.type === 'refresh' && t.data.loggedOut,
         ).length,
-    ).toEqual(loggedOut);
+    ).toEqual(loggedOutCount);
 }
 
 export async function getAccessToken(adminClient) {

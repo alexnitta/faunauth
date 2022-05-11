@@ -8,8 +8,8 @@ export default CreateFunction({
     name: 'loginWithMagicLink',
     body: Query(
         Lambda(
-            ['email', 'token'],
-            LoginWithMagicLink(Var('email'), Var('token')),
+            ['email', 'secret'],
+            LoginWithMagicLink(Var('email'), Var('secret')),
         ),
     ),
     role: 'admin',

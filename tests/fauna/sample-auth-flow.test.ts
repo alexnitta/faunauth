@@ -5,7 +5,15 @@ import {
     setupTestDatabase,
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
-import { FAUNA_TEST_TIMEOUT } from './constants';
+import { FAUNA_TEST_TIMEOUT } from '../constants';
+import type {
+    TestContext,
+    CreateKeyResult,
+    FaunaLoginResult,
+    SetUp,
+    TearDown,
+    Maybe,
+} from '../../src/types';
 
 const q = fauna.query;
 const { Call, CreateKey, Role } = q;
@@ -16,8 +24,8 @@ const clientDomain = process.env.FAUNADB_DOMAIN
     ? process.env.FAUNADB_DOMAIN
     : 'db.fauna.com';
 
-const setUp = async testName => {
-    const context = {};
+const setUp: SetUp = async testName => {
+    const context: TestContext = { databaseClients: null };
     const databaseClients = await setupTestDatabase(fauna, testName);
     const adminClient = databaseClients.childClient;
 
@@ -47,7 +55,7 @@ const setUp = async testName => {
     return context;
 };
 
-const tearDown = async (testName, context) => {
+const tearDown: TearDown = async (testName, context) => {
     await destroyTestDatabase(
         q,
         testName,
@@ -67,11 +75,11 @@ describe('sample flow from refresh-tokens-advanced blueprint', () => {
 
         const context = await setUp(testName);
 
-        const sampleAuthFlow = async () => {
+        const sampleAuthFlow = async (): Promise<Maybe<fauna.Client>> => {
             const client = context.databaseClients.childClient;
-            const publicKey = await client.query(
-                CreateKey({ role: Role('public') }),
-            );
+            const publicKey = await client.query<
+                CreateKeyResult<{ role: fauna.values.Ref }>
+            >(CreateKey({ role: Role('public') }));
             const publicClient = new fauna.Client({
                 secret: publicKey.secret,
                 domain: clientDomain,
@@ -81,42 +89,46 @@ describe('sample flow from refresh-tokens-advanced blueprint', () => {
                 Call('register', 'verysecure', {
                     email: 'user@domain.com',
                     locale: 'en-US',
-                    details: {
-                        invitedBy: 'foo-user-id',
-                        toGroup: 'foo-group-id',
-                    },
                 }),
             );
 
-            const loginResult = await publicClient.query(
-                Call('login', 'user@domain.com', 'verysecure'),
-            );
+            const loginResult = await publicClient.query<
+                false | FaunaLoginResult
+            >(Call('login', 'user@domain.com', 'verysecure'));
 
-            let accessClient = new fauna.Client({
-                secret: loginResult.tokens.access.secret,
-                domain: clientDomain,
-            });
+            if (loginResult) {
+                let accessClient = new fauna.Client({
+                    secret: loginResult.tokens.access.secret,
+                    domain: clientDomain,
+                });
 
-            let refreshClient = new fauna.Client({
-                secret: loginResult.tokens.refresh.secret,
-                domain: clientDomain,
-            });
+                let refreshClient = new fauna.Client({
+                    secret: loginResult.tokens.refresh.secret,
+                    domain: clientDomain,
+                });
 
-            const refreshResult = await refreshClient.query(Call('refresh'));
+                const refreshResult = await refreshClient.query<
+                    false | FaunaLoginResult
+                >(Call('refresh'));
 
-            accessClient = new fauna.Client({
-                secret: refreshResult.tokens.access.secret,
-                domain: clientDomain,
-            });
+                if (refreshResult) {
+                    accessClient = new fauna.Client({
+                        secret: refreshResult.tokens.access.secret,
+                        domain: clientDomain,
+                    });
 
-            refreshClient = new fauna.Client({
-                secret: refreshResult.tokens.refresh.secret,
-                domain: clientDomain,
-            });
+                    refreshClient = new fauna.Client({
+                        secret: refreshResult.tokens.refresh.secret,
+                        domain: clientDomain,
+                    });
 
-            refreshClient.query(Call('logout', false));
+                    refreshClient.query(Call('logout', false));
+                }
 
-            return accessClient;
+                return accessClient;
+            }
+
+            return null;
         };
 
         await expect(sampleAuthFlow()).resolves.toBeInstanceOf(fauna.Client);

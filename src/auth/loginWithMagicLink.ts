@@ -19,20 +19,18 @@ export interface LoginWithMagicLinkInput {
      */
     publicFaunaKey: string | null;
     /**
-     * Token that was previously created in the database
+     * Secret for a token that was previously created in the database
      */
-    token: string;
+    secret: string;
 }
 
 /**
- * Log in a user via a link sent in an email. The link contains an encoded token which must be
- * passed to this function as the `token` argument. This function checks the token to see if an exact
- * match for the token exists in the database which:
- * - has not expired
- * - belongs to the user associated with the given email
- * If these conditions are met, the user is logged in. The returned data will include an
- * `accessToken`, `refreshToken` and `user` object including the user's `id` as well as any other
- * data on the User document.
+ * Log in a user via a link sent in an email. The link contains an encoded secret which must be
+ * passed to this function as the `secret` argument. This function checks the secret to see if a
+ * token exists in the database which matches the secret, has not expired, and belongs to the user
+ * associated with the given email. If these conditions are met, the user is logged in. The returned
+ * data will include an `accessSecret`, `refreshSecret` and `user` object including the user's `id`
+ * as well as any other data on the User document.
  *
  * The `input.email` is converted to lowercase, so it is case-insensitive.
  * @returns - {@link ServerLoginResult}
@@ -40,7 +38,7 @@ export interface LoginWithMagicLinkInput {
 export async function loginWithMagicLink(
     input: LoginWithMagicLinkInput,
 ): Promise<ServerLoginResult> {
-    const { clientConfig, publicFaunaKey, token } = input;
+    const { clientConfig, publicFaunaKey, secret } = input;
 
     const email = input.email.toLowerCase();
 
@@ -57,7 +55,7 @@ export async function loginWithMagicLink(
 
     try {
         loginResult = await client.query<FaunaLoginResult | false>(
-            q.Call('loginWithMagicLink', email, token),
+            q.Call('loginWithMagicLink', email, secret),
         );
     } catch {
         throw new Error(errors.failedToSetPassword);
@@ -74,8 +72,8 @@ export async function loginWithMagicLink(
     } = loginResult;
 
     return {
-        accessToken: access.secret,
-        refreshToken: refresh.secret,
+        accessSecret: access.secret,
+        refreshSecret: refresh.secret,
         user: {
             id,
             ...account.data,

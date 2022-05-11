@@ -16,7 +16,7 @@ export interface LogoutInput {
     /**
      * The user's refresh token secret
      */
-    refreshToken: string;
+    refreshSecret: string;
 }
 
 /**
@@ -27,13 +27,13 @@ export interface LogoutInput {
 export async function logout({
     clientConfig,
     logoutAll,
-    refreshToken,
+    refreshSecret,
 }: LogoutInput): Promise<boolean> {
-    if (!refreshToken) return false;
+    if (!refreshSecret) return false;
 
     const client = new faunadb.Client({
         ...clientConfig,
-        secret: refreshToken,
+        secret: refreshSecret,
     });
 
     try {

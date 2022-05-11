@@ -8,11 +8,11 @@ export default CreateFunction({
     name: 'setPassword',
     body: Query(
         Lambda(
-            ['email', 'newPassword', 'checkSecret'],
+            ['email', 'newPassword', 'secret'],
             SetPasswordForAccount(
                 Var('email'),
                 Var('newPassword'),
-                Var('checkSecret'),
+                Var('secret'),
             ),
         ),
     ),

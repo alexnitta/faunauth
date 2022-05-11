@@ -6,15 +6,24 @@ import {
     setupTestDatabase,
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
-import { FAUNA_TEST_TIMEOUT } from './constants';
+import { FAUNA_TEST_TIMEOUT } from '../constants';
+import type {
+    TestContext,
+    FaunaLoginResult,
+    TokenCollectionQueryResult,
+    SetUp,
+    TearDown,
+} from '../../src/types';
 
 const q = fauna.query;
 const { Call, Paginate, Tokens, Lambda, Get, Var } = q;
 
 jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
-const setUp = async testName => {
-    const context = {};
+const setUp: SetUp = async testName => {
+    const context: TestContext = {
+        databaseClients: null,
+    };
 
     context.databaseClients = await setupTestDatabase(fauna, testName);
 
@@ -34,8 +43,6 @@ const setUp = async testName => {
             email: 'user@domain.com',
             username: 'user',
             locale: 'en-US',
-            invitedBy: 'foo-user-id',
-            toGroup: 'foo-group-id',
         }),
     );
 
@@ -44,20 +51,20 @@ const setUp = async testName => {
             email: 'user2@domain.com',
             username: 'user2',
             locale: 'en-US',
-            invitedBy: 'foo-user-id',
-            toGroup: 'foo-group-id',
         }),
     );
 
     return context;
 };
 
-const tearDown = async (testName, context) => {
+const tearDown: TearDown = async (testName, context) => {
     await destroyTestDatabase(
         q,
         testName,
         context.databaseClients.parentClient,
     );
+
+    context.databaseClients = null;
 
     return true;
 };
@@ -70,13 +77,15 @@ describe('login()', () => {
         expect.assertions(3);
 
         const client = context.databaseClients.childClient;
-        const loginResult = await client.query(
+        const loginResult = await client.query<false | FaunaLoginResult>(
             Call('login', 'user@domain.com', 'verysecure'),
         );
 
-        expect(loginResult.tokens.access).toBeTruthy();
-        expect(loginResult.tokens.refresh).toBeTruthy();
-        expect(loginResult.account).toBeTruthy();
+        if (loginResult) {
+            expect(loginResult.tokens?.access).toBeTruthy();
+            expect(loginResult.tokens.refresh).toBeTruthy();
+            expect(loginResult.account).toBeTruthy();
+        }
 
         await tearDown(testName, context);
     });
@@ -88,13 +97,15 @@ describe('login()', () => {
         expect.assertions(3);
 
         const client = context.databaseClients.childClient;
-        const loginResult = await client.query(
+        const loginResult = await client.query<false | FaunaLoginResult>(
             Call('loginWithUsername', 'user', 'verysecure'),
         );
 
-        expect(loginResult.tokens.access).toBeTruthy();
-        expect(loginResult.tokens.refresh).toBeTruthy();
-        expect(loginResult.account).toBeTruthy();
+        if (loginResult) {
+            expect(loginResult.tokens.access).toBeTruthy();
+            expect(loginResult.tokens.refresh).toBeTruthy();
+            expect(loginResult.account).toBeTruthy();
+        }
 
         await tearDown(testName, context);
     });
@@ -106,7 +117,7 @@ describe('login()', () => {
         expect.assertions(1);
 
         const client = context.databaseClients.childClient;
-        const loginResult = await client.query(
+        const loginResult = await client.query<false | FaunaLoginResult>(
             Call('login', 'user@domain.com', 'wrong'),
         );
 
@@ -122,7 +133,7 @@ describe('login()', () => {
         expect.assertions(1);
 
         const client = context.databaseClients.childClient;
-        const loginResult = await client.query(
+        const loginResult = await client.query<false | FaunaLoginResult>(
             Call('login', 'notuser@domain.com', 'verysecure'),
         );
 
@@ -138,7 +149,7 @@ describe('login()', () => {
         expect.assertions(1);
 
         const client = context.databaseClients.childClient;
-        const loginResult = await client.query(
+        const loginResult = await client.query<false | FaunaLoginResult>(
             Call('loginWithUsername', 'notuser', 'verysecure'),
         );
 
@@ -154,7 +165,7 @@ describe('login()', () => {
         expect.assertions(3);
 
         const client = context.databaseClients.childClient;
-        let allTokens = await client.query(
+        let allTokens = await client.query<TokenCollectionQueryResult>(
             q.Map(Paginate(Tokens()), Lambda(['t'], Get(Var('t')))),
         );
 
@@ -165,7 +176,7 @@ describe('login()', () => {
         await client.query(Call('login', 'user@domain.com', 'verysecure'));
         await client.query(Call('login', 'user2@domain.com', 'verysecure'));
 
-        allTokens = await client.query(
+        allTokens = await client.query<TokenCollectionQueryResult>(
             q.Map(Paginate(Tokens()), Lambda(['t'], Get(Var('t')))),
         );
 

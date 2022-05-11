@@ -1,7 +1,7 @@
 import { Maybe } from './general';
 
 export interface CollectionQueryResult<Data> {
-    ref: import('faunadb').Expr;
+    ref: import('faunadb').values.Ref;
     ts: number;
     data: Data;
 }
@@ -11,13 +11,14 @@ export interface CollectionQueryResultMap<Data> {
 }
 
 export interface TokenQueryResult {
-    ref: import('faunadb').Expr;
+    ref: import('faunadb').values.Ref;
     ts: number;
     instance: import('faunadb').Expr;
     data: {
         type: string;
         email?: string;
         used: boolean;
+        loggedOut?: boolean;
     };
     ttl: {
         '@ts': string;
@@ -25,13 +26,12 @@ export interface TokenQueryResult {
     // eslint-disable-next-line camelcase
     hashed_secret: string;
 }
-
 export interface TokenCollectionQueryResult {
     data: TokenQueryResult[];
 }
 
 export interface TokenResult {
-    ref: import('faunadb').Expr;
+    ref: import('faunadb').values.Ref;
     ts: number;
     instance: import('faunadb').Expr;
     data: {
@@ -43,6 +43,22 @@ export interface TokenResult {
         '@ts': string;
     };
     secret: string;
+}
+
+/**
+ * https://docs.fauna.com/fauna/current/api/fql/functions/createkey?lang=javascript
+ */
+export interface CreateKeyResult<Data> {
+    database: import('faunadb').values.Ref;
+    ref: import('faunadb').values.Ref;
+    role: string;
+    instance: import('faunadb').Expr;
+    data: Data;
+    name: string;
+    ts: number;
+    secret: string;
+    // eslint-disable-next-line camelcase
+    hashed_secret: string;
 }
 
 export interface FaunaLoginResult {
@@ -63,15 +79,15 @@ export interface FaunaRefreshResult {
 }
 
 /**
- * A ClientLoginResult only exposes the accessToken so that a malicious actor cannot acquire new
- * tokens by stealing a refreshToken from the browser's local persistence.
+ * A ClientLoginResult only exposes the accessSecret so that a malicious actor cannot acquire new
+ * tokens by stealing a refreshSecret from the browser's local persistence.
  */
 export interface ClientLoginResult {
     /**
      * A token that can be used to authenticate further requests against the public Fauna APIs.
      * Fauna's docs refer to this as a 'secret'; from the client perspective it's a JWT.
      */
-    accessToken: string;
+    accessSecret: string;
     /**
      * Details for the user that was signed in
      */
@@ -79,28 +95,29 @@ export interface ClientLoginResult {
 }
 
 /**
- * A ServerLoginResult exposes both the accessToken and the refreshToken so they can be stored in
+ * A ServerLoginResult exposes both the accessSecret and the refreshSecret so they can be stored in
  * a secure, HTTP-only session cookie, and later used to acquire new tokens.
  */
 export interface ServerLoginResult extends ClientLoginResult {
     /**
-     * A token that can be used to acquire a new pair of accessToken / refreshToken values. Fauna's
-     * docs refer to this as a 'secret'; from the client perspective it's a JWT.
+     * A secret that can be used to acquire a new pair of accessSecret / refreshSecret values.
+     * Fauna's docs refer to this as a 'secret'; from the client perspective it's a JWT.
      */
-    refreshToken: string;
+    refreshSecret: string;
 }
 
 export interface TokenPair {
     /**
-     * A token that can be used to authenticate further requests against the public Fauna APIs.
+     * A secret that can be used to authenticate further requests against the public Fauna APIs.
      * Fauna's docs refer to this as a 'secret'; from the client perspective it's a JWT.
      */
-    accessToken: string;
+    accessSecret: string;
     /**
-     * A token that can be used to acquire a new pair of accessToken / refreshToken values. Fauna's
+     * A secret that can be used to acquire a new pair of accessSecret / refreshSecret values.
+     * Fauna's
      * docs refer to this as a 'secret'; from the client perspective it's a JWT.
      */
-    refreshToken: string;
+    refreshSecret: string;
 }
 
 export interface UserData {
@@ -114,7 +131,7 @@ export interface UserData {
      */
     confirmedEmail: boolean;
     /**
-     * Any other details about the user
+     * Any other application-specific details about the user
      */
     details: Record<string, string | number | boolean | null>;
     /**
@@ -137,11 +154,11 @@ export interface UserData {
 export interface UpdateUserResult {
     data: UserData;
     ts: number;
-    ref: import('faunadb').Expr;
+    ref: import('faunadb').values.Ref;
 }
 
 export interface Token<Data> {
-    ref: import('faunadb').Expr;
+    ref: import('faunadb').values.Ref;
     ts: number;
     instance: import('faunadb').Expr;
     data: Data;
@@ -158,3 +175,29 @@ export interface CreateTokenResult {
     account: CollectionQueryResult<UserData>;
     token: Token<{ type: string; email: string }>;
 }
+
+export interface AnomalyError {
+    code: string;
+    message: string;
+}
+
+export interface AnomalyData {
+    account: UserData;
+    action: string;
+    error: AnomalyError;
+    token: Token<{ type: string; email: string }>;
+}
+
+export interface Anomaly {
+    data: AnomalyData;
+}
+
+export interface User {
+    data: UserData;
+}
+
+export type AnomalyCollectionQueryResult = CollectionQueryResult<Anomaly[]>;
+
+export type UserCollectionQueryResult = CollectionQueryResult<User[]>;
+
+export type RefreshResult = false | FaunaLoginResult | AnomalyError;

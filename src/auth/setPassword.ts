@@ -83,8 +83,8 @@ export async function setPassword(
     } = setPasswordResult;
 
     return {
-        accessToken: access.secret,
-        refreshToken: refresh.secret,
+        accessSecret: access.secret,
+        refreshSecret: refresh.secret,
         user: {
             id,
             ...account.data,

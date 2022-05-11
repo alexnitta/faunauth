@@ -109,10 +109,10 @@ export function VerifyRefreshToken(
   Invalidate/Delete/Logout of tokens
  */
 export function InvalidateRefreshToken(
-    refreshTokenRef: ExprArg,
+    refreshSecretRef: ExprArg,
     gracePeriodSeconds?: number,
 ) {
-    return Update(refreshTokenRef, {
+    return Update(refreshSecretRef, {
         data: {
             used: true,
             gracePeriodUntil: TimeAdd(
@@ -124,16 +124,16 @@ export function InvalidateRefreshToken(
     });
 }
 
-function InvalidateAccessToken(refreshTokenRef: ExprArg) {
+function InvalidateAccessToken(refreshSecretRef: ExprArg) {
     return If(
-        Exists(Match(Index('access_token_by_refresh_token'), refreshTokenRef)),
+        Exists(Match(Index('access_token_by_refresh_token'), refreshSecretRef)),
         Delete(
             Select(
                 ['ref'],
                 Get(
                     Match(
                         Index('access_token_by_refresh_token'),
-                        refreshTokenRef,
+                        refreshSecretRef,
                     ),
                 ),
             ),
@@ -142,14 +142,14 @@ function InvalidateAccessToken(refreshTokenRef: ExprArg) {
     );
 }
 
-function LogoutRefreshToken(refreshTokenRef: ExprArg) {
-    return Update(refreshTokenRef, { data: { loggedOut: true } });
+function LogoutRefreshToken(refreshSecretRef: ExprArg) {
+    return Update(refreshSecretRef, { data: { loggedOut: true } });
 }
 
-export function LogoutAccessAndRefreshToken(refreshTokenRef: ExprArg) {
+export function LogoutAccessAndRefreshToken(refreshSecretRef: ExprArg) {
     return Do(
-        InvalidateAccessToken(refreshTokenRef),
-        LogoutRefreshToken(refreshTokenRef),
+        InvalidateAccessToken(refreshSecretRef),
+        LogoutRefreshToken(refreshSecretRef),
     );
 }
 
@@ -158,7 +158,7 @@ export function LogoutAccessAndRefreshToken(refreshTokenRef: ExprArg) {
  */
 export function CreateAccessToken(
     accountRef: ExprArg,
-    refreshTokenRef: ExprArg,
+    refreshSecretRef: ExprArg,
     ttlSeconds?: number,
 ) {
     return Create(Tokens(), {
@@ -169,7 +169,7 @@ export function CreateAccessToken(
             type: 'access',
             // We store which refresh token that created the access tokens which allows us to easily invalidate
             // all access tokens created by a specific refresh token.
-            refresh: refreshTokenRef,
+            refresh: refreshSecretRef,
         },
         // access tokens live for 10 minutes, which is typically a good lifetime for short-lived tokens.
         ttl: TimeAdd(

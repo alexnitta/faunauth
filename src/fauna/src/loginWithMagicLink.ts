@@ -3,7 +3,7 @@ import type { Expr } from 'faunadb';
 import { CreateTokensForAccount } from './tokens';
 import { VerifyAccountExists } from './identity';
 import {
-    VerifyEmailConfirmationTokenForAccount,
+    VerifyEmailConfirmationSecretForAccount,
     InvalidateEmailConfirmationTokensForAccount,
 } from './emailConfirmation';
 
@@ -11,11 +11,11 @@ const q = faunadb.query;
 const { And, If, Do } = q;
 
 /**
- * Sign in a user via a link sent in an email. The link contains an encoded token which must be
- * passed to this function as the `token` argument.
+ * Sign in a user via a link sent in an email. The link contains an encoded secret which must be
+ * passed to this function as the `secret` argument. Throws an error if the secret is invalid.
  * @param email - the user's email address
- * @param token - the email verification token secret that was sent to the user's email account
- * within an encoded link
+ * @param secret - the email verification secret that was sent to the user's email account within an
+ * encoded link
  * @param accessTtlSeconds - access token time to live in seconds
  * @param refreshLifetimeSeconds - number of seconds from now that will set refresh token's
  * `.validUntil` property
@@ -25,7 +25,7 @@ const { And, If, Do } = q;
  */
 export function LoginWithMagicLink(
     email: string,
-    token: string,
+    secret: string,
     accessTtlSeconds?: number,
     refreshLifetimeSeconds?: number,
     refreshReclaimtimeSeconds?: number,
@@ -35,8 +35,8 @@ export function LoginWithMagicLink(
         And(
             // Whether the account exists
             VerifyAccountExists(email),
-            // Whether the email confirmation token secret is valid
-            VerifyEmailConfirmationTokenForAccount(email, token),
+            // Whether the email confirmation secret is valid
+            VerifyEmailConfirmationSecretForAccount(email, secret),
         ),
         // If so:
         Do(

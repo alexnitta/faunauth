@@ -15,7 +15,7 @@ export default CreateFunction({
         Lambda(
             ['email', 'password'],
             // Login with modified ttls.
-            // email, password, accessTokenTtl, refreshLifetimeSeconds, refreshReclaimtimeSeconds
+            // email, password, accessSecretTtl, refreshLifetimeSeconds, refreshReclaimtimeSeconds
             Login(
                 Var('email'),
                 Var('password'),
