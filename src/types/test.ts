@@ -6,6 +6,7 @@ export type TestContext = {
         parentClient: import('faunadb').Client;
     }>;
     secret?: string;
+    testDocumentRef?: import('faunadb').values.Ref;
 };
 
 export type SetUp = (testName: string) => Promise<TestContext>;

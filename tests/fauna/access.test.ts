@@ -8,14 +8,22 @@ import {
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
 import { FAUNA_TEST_TIMEOUT } from '../constants';
+import type {
+    TestContext,
+    FaunaLoginResult,
+    SetUp,
+    TearDown,
+} from '../../src/types';
 
 const q = fauna.query;
 const { Call, Create, Collection, Get, Paginate, Documents } = q;
 
 jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
-const setUp = async testName => {
-    const context = {};
+const setUp: SetUp = async testName => {
+    const context: TestContext = {
+        databaseClients: null,
+    };
     // Set up the child database and retrieve both parent and child Fauna clients
     context.databaseClients = await setupTestDatabase(fauna, testName);
     const client = context.databaseClients.childClient;
@@ -34,7 +42,7 @@ const setUp = async testName => {
         'tests/fauna/resources/functions/_login-modified.js',
     ]);
     // create some data in the test collection
-    const testDocument = await client.query(
+    const testDocument = await client.query<{ ref: fauna.values.Ref }>(
         Create(Collection('dinos'), { data: { hello: 'world' } }),
     );
 
@@ -52,7 +60,7 @@ const setUp = async testName => {
     return context;
 };
 
-const tearDown = async (testName, context) => {
+const tearDown: TearDown = async (testName, context) => {
     // Destroy the child database to clean up (using the parentClient)
     await destroyTestDatabase(
         q,
@@ -71,15 +79,20 @@ describe('access token behavior', () => {
         expect.assertions(2);
 
         const client = context.databaseClients.childClient;
-        const loginResult = await client.query(
+        const loginResult = await client.query<false | FaunaLoginResult>(
             Call('login-modified', 'user@domain.com', 'verysecure'),
         );
-        const accessSecret = loginResult.tokens.access.secret;
-        const loggedInClient = getClient(fauna, accessSecret);
-        const doc = await loggedInClient.query(Get(context.testDocumentRef));
 
-        expect(doc.data).toBeTruthy();
-        expect(doc.data.hello).toBe('world');
+        if (loginResult) {
+            const accessSecret = loginResult.tokens.access.secret;
+            const loggedInClient = getClient(fauna, accessSecret);
+            const doc = await loggedInClient.query(
+                Get(context.testDocumentRef),
+            );
+
+            expect(doc.data).toBeTruthy();
+            expect(doc.data.hello).toBe('world');
+        }
 
         await tearDown(testName, context);
     });
@@ -91,30 +104,32 @@ describe('access token behavior', () => {
         expect.assertions(3);
 
         const client = context.databaseClients.childClient;
-        const loginResult = await client.query(
+        const loginResult = await client.query<false | FaunaLoginResult>(
             Call('login-modified', 'user@domain.com', 'verysecure'),
         );
 
-        const accessSecret = loginResult.tokens.access.secret;
-        const loggedInClient = getClient(fauna, accessSecret);
+        if (loginResult) {
+            const accessSecret = loginResult.tokens.access.secret;
+            const loggedInClient = getClient(fauna, accessSecret);
 
-        // wait 11s
-        await delay(11000);
+            // wait 11s
+            await delay(11000);
 
-        // we can no longer get the document with this token
-        await expect(
-            loggedInClient.query(Get(context.testDocumentRef)),
-        ).rejects.toThrow(fauna.errors.Unauthorized);
+            // we can no longer get the document with this token
+            await expect(
+                loggedInClient.query(Get(context.testDocumentRef)),
+            ).rejects.toThrow(fauna.errors.Unauthorized);
 
-        // nor can we paginate the collection
-        await expect(
-            loggedInClient.query(Paginate(Documents(Collection('dinos')))),
-        ).rejects.toThrow(fauna.errors.Unauthorized);
+            // nor can we paginate the collection
+            await expect(
+                loggedInClient.query(Paginate(Documents(Collection('dinos')))),
+            ).rejects.toThrow(fauna.errors.Unauthorized);
 
-        // we can no longer access the token document itself, not even with the admin key.
-        await expect(
-            client.query(Get(loginResult.tokens.access.ref)),
-        ).rejects.toThrow(fauna.errors.NotFound);
+            // we can no longer access the token document itself, not even with the admin key.
+            await expect(
+                client.query(Get(loginResult.tokens.access.ref)),
+            ).rejects.toThrow(fauna.errors.NotFound);
+        }
 
         await tearDown(testName, context);
     });
@@ -127,13 +142,16 @@ describe('access token behavior', () => {
 
         await expect(async () => {
             const client = context.databaseClients.childClient;
-            const loginResult = await client.query(
+            const loginResult = await client.query<false | FaunaLoginResult>(
                 Call('login-modified', 'user@domain.com', 'verysecure'),
             );
-            const refreshSecret = loginResult.tokens.refresh.secret;
-            const refreshClient = getClient(fauna, refreshSecret);
 
-            await refreshClient.query(Get(context.testDocumentRef));
+            if (loginResult) {
+                const refreshSecret = loginResult.tokens.refresh.secret;
+                const refreshClient = getClient(fauna, refreshSecret);
+
+                await refreshClient.query(Get(context.testDocumentRef));
+            }
         }).rejects.toThrow(fauna.errors.PermissionDenied);
 
         await tearDown(testName, context);
