@@ -6,14 +6,17 @@ import {
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
 import { FAUNA_TEST_TIMEOUT } from '../constants';
+import type { FaunaLoginResult, SetUp, TearDown } from '../../src/types';
 
 const q = fauna.query;
 const { Call } = q;
 
 jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
-const setUp = async testName => {
-    const context = {};
+const setUp: SetUp = async testName => {
+    const context = {
+        databaseClients: null,
+    };
 
     context.databaseClients = await setupTestDatabase(fauna, testName);
 
@@ -40,7 +43,7 @@ const setUp = async testName => {
     return context;
 };
 
-const tearDown = async (testName, context) => {
+const tearDown: TearDown = async (testName, context) => {
     await destroyTestDatabase(
         q,
         testName,
@@ -58,7 +61,9 @@ describe('changePassword()', () => {
         expect.assertions(6);
 
         const client = context.databaseClients.childClient;
-        const changePasswordResult = await client.query(
+        const changePasswordResult = await client.query<
+            false | FaunaLoginResult
+        >(
             Call(
                 'changePassword',
                 'user@domain.com',
@@ -67,17 +72,21 @@ describe('changePassword()', () => {
             ),
         );
 
-        expect(changePasswordResult.tokens.access).toBeTruthy();
-        expect(changePasswordResult.tokens.refresh).toBeTruthy();
-        expect(changePasswordResult.account).toBeTruthy();
+        if (changePasswordResult) {
+            expect(changePasswordResult.tokens.access).toBeTruthy();
+            expect(changePasswordResult.tokens.refresh).toBeTruthy();
+            expect(changePasswordResult.account).toBeTruthy();
+        }
 
-        const loginResult = await client.query(
+        const loginResult = await client.query<false | FaunaLoginResult>(
             Call('login', 'user@domain.com', 'supersecret'),
         );
 
-        expect(loginResult.tokens.access).toBeTruthy();
-        expect(loginResult.tokens.refresh).toBeTruthy();
-        expect(loginResult.account).toBeTruthy();
+        if (loginResult) {
+            expect(loginResult.tokens.access).toBeTruthy();
+            expect(loginResult.tokens.refresh).toBeTruthy();
+            expect(loginResult.account).toBeTruthy();
+        }
 
         await tearDown(testName, context);
     });
