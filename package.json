@@ -37,7 +37,7 @@
         "prepack": "npx rimraf dist && tsc",
         "semantic-release": "semantic-release",
         "test": "dotenv -e .env -- cross-var vitest",
-        "test-ci": "jest",
+        "test-ci": "vitest",
         "test-watch": "dotenv -e .env -- cross-var vitest --watch"
     },
     "devDependencies": {

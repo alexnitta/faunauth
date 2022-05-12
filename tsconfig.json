@@ -19,7 +19,7 @@
         "noImplicitAny": true,
         "baseUrl": ".",
         "outDir": "./dist",
-        "types": ["node", "jest"]
+        "types": ["node"]
     },
     "include": ["src/**/*.js", "src/**/*.ts", "fauna"],
     "exclude": ["node_modules", "tmp", "fauna/temp/**/*", "src/cli"]

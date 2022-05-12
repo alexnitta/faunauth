@@ -6,7 +6,7 @@ const q = fauna.query;
 const { Get, Paginate, Tokens, Lambda, Var } = q;
 
 export async function verifyTokens(
-    expect: jest.Expect,
+    expect: typeof import('vitest')['expect'],
     adminClient: fauna.Client,
     tokenConfig: {
         access: number;
@@ -27,7 +27,7 @@ export async function verifyTokens(
 }
 
 export async function verifyRefreshTokensLogout(
-    expect: jest.Expect,
+    expect: typeof import('vitest')['expect'],
     adminClient: fauna.Client,
     loggedOutCount: number,
 ) {
