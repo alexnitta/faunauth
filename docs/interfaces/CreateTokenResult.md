@@ -17,7 +17,7 @@
 
 #### Defined in
 
-[types/auth.ts:158](https://github.com/alexnitta/faunauth/blob/13b973e/src/types/auth.ts#L158)
+[types/auth.ts:175](https://github.com/alexnitta/faunauth/blob/5138961/src/types/auth.ts#L175)
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 #### Defined in
 
-[types/auth.ts:159](https://github.com/alexnitta/faunauth/blob/13b973e/src/types/auth.ts#L159)
+[types/auth.ts:176](https://github.com/alexnitta/faunauth/blob/5138961/src/types/auth.ts#L176)

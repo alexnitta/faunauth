@@ -6,31 +6,32 @@
 
 ### Properties
 
-- [accessToken](TokenPair.md#accesstoken)
-- [refreshToken](TokenPair.md#refreshtoken)
+- [accessSecret](TokenPair.md#accesssecret)
+- [refreshSecret](TokenPair.md#refreshsecret)
 
 ## Properties
 
-### accessToken
+### accessSecret
 
-• **accessToken**: `string`
+• **accessSecret**: `string`
 
-A token that can be used to authenticate further requests against the public Fauna APIs.
+A secret that can be used to authenticate further requests against the public Fauna APIs.
 Fauna's docs refer to this as a 'secret'; from the client perspective it's a JWT.
 
 #### Defined in
 
-[types/auth.ts:98](https://github.com/alexnitta/faunauth/blob/13b973e/src/types/auth.ts#L98)
+[types/auth.ts:114](https://github.com/alexnitta/faunauth/blob/5138961/src/types/auth.ts#L114)
 
 ___
 
-### refreshToken
+### refreshSecret
 
-• **refreshToken**: `string`
+• **refreshSecret**: `string`
 
-A token that can be used to acquire a new pair of accessToken / refreshToken values. Fauna's
+A secret that can be used to acquire a new pair of accessSecret / refreshSecret values.
+Fauna's
 docs refer to this as a 'secret'; from the client perspective it's a JWT.
 
 #### Defined in
 
-[types/auth.ts:103](https://github.com/alexnitta/faunauth/blob/13b973e/src/types/auth.ts#L103)
+[types/auth.ts:120](https://github.com/alexnitta/faunauth/blob/5138961/src/types/auth.ts#L120)
