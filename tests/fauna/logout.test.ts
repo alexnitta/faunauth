@@ -20,9 +20,6 @@ import type {
 const q = fauna.query;
 const { Call, Create, Collection, Get } = q;
 
-// This test seems to time out when running all tests, so I'm increasing the timeout value here
-jest.setTimeout(60 * 1000 * 3);
-
 const setUp: SetUp = async testName => {
     const context: TestContext = {
         databaseClients: {
