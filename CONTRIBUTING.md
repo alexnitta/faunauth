@@ -60,8 +60,8 @@ We follow a few important conventions:
 -   `yarn dev`: run tsc in watch mode to compile TypeScript to JavaScript in `/dist` when you make changes
 -   `yarn format`: automatically format code with eslint and prettier
 -   `yarn lint`: run eslint
--   `yarn test`: run the unit tests with jest
--   `yarn test-watch`: run the unit tests with jest in watch mode
+-   `yarn test`: run the unit tests with vitest
+-   `yarn test-watch`: run the unit tests with vitest in watch mode
 
 ## Unit testing
 
@@ -69,4 +69,4 @@ If your changes are touching any of the core functionality, they should include 
 
 The general approach to testing features that rely on Fauna is to run tests against a live Fauna database. This is time-consuming, but ensures that we're testing against production conditions. It's a good idea to set up a Fauna database just for testing purposes, and then use the use the Fauna dashboard to create a new key with the "Admin" role. Save this key somewhere secure (i.e. in a password manager); you won't see it again. Before running tests, be sure to create a `.env` file that contains this value as the `FAUNA_ADMIN_KEY`.
 
-Note that we're using some helper functions to set up and tear down Fauna database instances during each test run. To keep these databases isolated from each other, we're using a pattern that is slightly different than the usual Jest `beforeEach` and `afterEach` functions will support. As noted in this [issue](https://github.com/facebook/jest/issues/7823), there is no way to pass context between `it` or `test` functions and the `beforeEach` and `afterEach` hooks. Such context passing is supported in [ava](https://github.com/avajs/ava), which is the testing library that was used in the [tests for the original example code](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-advanced/tests). To replicate this pattern, we're using some functions called `setUp` and `tearDown` that allow us to create isolated contexts (each with their own database instances) within each `it` or `test` block. These `setUp` functions can take a long time to run, but there are issues with trying to use the `it.concurrent` feature in Jest, so unfortunately that's a fact of life for now.
+Note that we're using some helper functions to set up and tear down Fauna database instances during each test run. To keep these databases isolated from each other, we're using a pattern that is slightly different than the usual vitest `beforeEach` and `afterEach` functions will support. We're using some functions called `setUp` and `tearDown` that allow us to create isolated contexts (each with their own database instances) within each `it` or `test` block. These `setUp` functions can take a long time to run, but unfortunately that's a fact of life for now.

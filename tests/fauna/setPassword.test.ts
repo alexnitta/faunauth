@@ -4,7 +4,6 @@ import {
     setupTestDatabase,
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
-import { FAUNA_TEST_TIMEOUT } from '../constants';
 import {
     TestContext,
     TokenResult,
@@ -15,8 +14,6 @@ import {
 
 const q = fauna.query;
 const { Call } = q;
-
-jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
 const setUp: SetUp = async testName => {
     const context: TestContext = {

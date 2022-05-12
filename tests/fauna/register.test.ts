@@ -5,7 +5,6 @@ import {
     populateDatabaseSchemaFromFiles,
     getClient,
 } from './helpers/_setup-db';
-import { FAUNA_TEST_TIMEOUT } from '../constants';
 import type {
     CreateKeyResult,
     SetUp,
@@ -16,8 +15,6 @@ import type {
 const q = fauna.query;
 const { Call, Paginate, Documents, Collection, Lambda, Get, CreateKey, Role } =
     q;
-
-jest.setTimeout(FAUNA_TEST_TIMEOUT);
 
 const setUp: SetUp = async testName => {
     const context = {
