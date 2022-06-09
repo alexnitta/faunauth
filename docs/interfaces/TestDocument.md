@@ -16,4 +16,4 @@
 
 #### Defined in
 
-[types/test.ts:21](https://github.com/alexnitta/faunauth/blob/5138961/src/types/test.ts#L21)
+[types/test.ts:21](https://github.com/alexnitta/faunauth/blob/fca71dc/src/types/test.ts#L21)
