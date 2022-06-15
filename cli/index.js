@@ -18,8 +18,21 @@ program
     .description(createPublicKeyDescription)
     .option(
         '-r, --region-group <regionGroup>',
-        'Fauna region group. Options include "classic", "us", "eu", and "preview".',
+        'Fauna region group, used to set a connection domain for the database.\n' +
+            'Options include "classic", "us", "eu", and "preview".\n' +
+            'If you provide this option, do not provide the --domain (-d) option.',
         'us',
+    )
+    .option(
+        '-d, --domain <domain>',
+        'Fauna connection domain. If provided, this overrides any domain set by\n' +
+            'providing the --region-group (-r) option.',
+    )
+    .option('-p, --port <port>', 'Fauna connection port.', '443')
+    .option(
+        '-s, --scheme <scheme>',
+        'Fauna connection scheme. Options are "http" or "https".',
+        'https',
     )
     .action(createPublicKey);
 
