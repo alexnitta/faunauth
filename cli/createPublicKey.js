@@ -28,27 +28,62 @@ const createPublicKey = async input => {
         return;
     }
 
-    const lowercaseRegionGroup = (
-        input.regionGroup ? input.regionGroup : 'us'
-    ).toLowerCase();
+    const inputDomain = input.domain ? input.domain : null;
 
-    if (domainMap[lowercaseRegionGroup] === undefined) {
+    let domain = '';
+
+    if (inputDomain !== null) {
+        domain = inputDomain;
+    } else {
+        const lowercaseRegionGroup = (
+            input.regionGroup ? input.regionGroup : 'us'
+        ).toLowerCase();
+
+        domain = domainMap[lowercaseRegionGroup]
+            ? domainMap[lowercaseRegionGroup]
+            : undefined;
+
+        if (domain === undefined) {
+            console.log(
+                `\nFailed to create key; region group "${
+                    input.regionGroup
+                }" is not recognized. Valid options are: ${Object.keys(
+                    domainMap,
+                ).join(', ')}`,
+            );
+
+            return;
+        }
+    }
+
+    const portInput = input.port ? input.port : '443';
+
+    let port = null;
+
+    try {
+        port = parseInt(portInput, 10);
+    } catch {
+        console.log('\nFailed to create key; port must be an integer.');
+
+        return;
+    }
+
+    const scheme = input.scheme ? input.scheme : 'http';
+
+    if (!['http', 'https'].includes(scheme)) {
         console.log(
-            `\nFailed to create key; region group "${
-                input.regionGroup
-            }" is not recognized. Valid options are: ${Object.keys(
-                domainMap,
-            ).join(', ')}`,
+            '\nFailed to create key; scheme must be either "http" or "https".',
         );
 
         return;
     }
 
-    const domain = domainMap[lowercaseRegionGroup]
-        ? domainMap[lowercaseRegionGroup]
-        : undefined;
-
-    const client = new faunadb.Client({ secret: adminKey, domain });
+    const client = new faunadb.Client({
+        secret: adminKey,
+        domain,
+        port,
+        scheme,
+    });
 
     try {
         const response = await client.query(
@@ -56,14 +91,14 @@ const createPublicKey = async input => {
         );
 
         console.log(
-            `\nCreated key for "${publicRoleName}" role:\n${response.secret}\n`,
+            `\nCreated a key for the role "${publicRoleName}" with the secret: ${response.secret}\n`,
         );
 
         console.log(
-            '\nMake sure to save this key somewhere safe, such as in a password manager.',
+            '\nMake sure to save this secret somewhere safe, such as in a password manager.',
         );
     } catch (err) {
-        console.log('\nFailed to create key; encountered an error:\n', err);
+        console.log('\nFailed to create secret; encountered an error:\n', err);
 
         console.log(
             '\nMake sure the "public" role exists before you run this command.',
