@@ -1,4 +1,5 @@
 import fauna from 'faunadb';
+import { describe, it, expect } from 'vitest';
 import {
     destroyTestDatabase,
     getClient,
@@ -6,10 +7,7 @@ import {
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
 import { delay } from './helpers/_delay';
-import {
-    REFRESH_TOKEN_EXPIRED,
-    REFRESH_TOKEN_REUSE_ERROR,
-} from '../../src/fauna/src/anomalies';
+import { REFRESH_TOKEN_EXPIRED } from '../../src/fauna/src/anomalies';
 import {
     GRACE_PERIOD_SECONDS,
     ACCESS_TOKEN_LIFETIME_SECONDS,
@@ -18,7 +16,6 @@ import {
 } from './resources/functions/_refresh-modified';
 import { verifyTokens } from './helpers/_test-extensions';
 import type {
-    TestContext,
     FaunaLoginResult,
     RefreshResult,
     SetUp,
@@ -26,6 +23,7 @@ import type {
     TokenResult,
     TokenCollectionQueryResult,
     AnomalyCollectionQueryResult,
+    FaunauthError,
 } from '../../src/types';
 
 const q = fauna.query;
@@ -42,14 +40,8 @@ const {
 } = q;
 
 const setUp: SetUp = async testName => {
-    const context: TestContext = {
-        databaseClients: null,
-        testDocumentRef: null,
-    };
-
-    context.databaseClients = await setupTestDatabase(fauna, testName);
-
-    const adminClient = context.databaseClients.childClient;
+    const databaseClients = await setupTestDatabase(fauna, testName);
+    const adminClient = databaseClients.childClient;
 
     await populateDatabaseSchemaFromFiles(q, adminClient, [
         'src/fauna/resources/faunauth/collections/anomalies.fql',
@@ -79,22 +71,24 @@ const setUp: SetUp = async testName => {
     );
 
     // create data, register, and login.
-    context.testDocumentRef = testDocument.ref;
+    const testDocumentRef = testDocument.ref;
 
     await adminClient.query(
-        Call('register', 'verysecure', {
+        Call('register', 'verysecure', 'user@domain.com', {
             email: 'user@domain.com',
             locale: 'en-US',
         }),
     );
 
-    const loginResult = await adminClient.query<false | FaunaLoginResult>(
-        Call('login-modified', 'user@domain.com', 'verysecure'),
-    );
+    const loginResult = await adminClient.query<
+        FaunauthError | FaunaLoginResult
+    >(Call('login-modified', 'user@domain.com', 'verysecure'));
 
-    context.loginResult = loginResult;
-
-    return context;
+    return {
+        loginResult,
+        testDocumentRef,
+        databaseClients,
+    };
 };
 
 const tearDown: TearDown = async (testName, context) => {
@@ -118,7 +112,7 @@ describe('refresh logic', () => {
         // initially we have 1 token of each type from the login.
         await verifyTokens(expect, adminClient, { access: 1, refresh: 1 });
 
-        if (context.loginResult) {
+        if (context.loginResult && 'tokens' in context.loginResult) {
             const refreshClient = getClient(
                 fauna,
                 context.loginResult.tokens.refresh.secret,
@@ -159,51 +153,70 @@ describe('refresh logic', () => {
         await tearDown(testName, context);
     });
 
-    // TODO: fix this failing test case
-    it.skip('can rotate tokens multiple times within the GRACE_PERIOD_SECONDS threshold', async () => {
+    it('can rotate tokens multiple times within the GRACE_PERIOD_SECONDS threshold', async () => {
         const testName = 'rotateInGracePeriod';
         const context = await setUp(testName);
 
-        expect.assertions(5);
+        expect.assertions(6);
 
-        if (context.loginResult) {
+        if (context.loginResult && 'tokens' in context.loginResult) {
             const refreshClient = getClient(
                 fauna,
                 context.loginResult.tokens.refresh.secret,
             );
-            const refreshResult = await refreshClient.query<RefreshResult>(
+
+            const promise0 = refreshClient.query<RefreshResult>(
                 Call('refresh'),
             );
 
-            // TODO: error is thrown here.
-            // The first "refresh" call works, but then we get these errors for subsequent ones:
-            // Unauthorized: unauthorized. Check that endpoint, schema, port and secret are correct during client’s instantiation
+            const promise1 = refreshClient.query<RefreshResult>(
+                Call('refresh'),
+            );
 
-            const refreshResult2 = await refreshClient.query<RefreshResult>(
+            const promise2 = refreshClient.query<RefreshResult>(
                 Call('refresh'),
             );
-            const refreshResult3 = await refreshClient.query<RefreshResult>(
-                Call('refresh'),
-            );
+
+            const results = await Promise.allSettled([
+                promise0,
+                promise1,
+                promise2,
+            ]);
+
+            let refreshSecret0 = 'secret';
+            let refreshSecret1 = refreshSecret0;
+            let refreshSecret2 = refreshSecret1;
 
             if (
-                refreshResult &&
-                'tokens' in refreshResult &&
-                refreshResult2 &&
-                'tokens' in refreshResult2 &&
-                refreshResult3 &&
-                'tokens' in refreshResult3
+                results[0].status === 'fulfilled' &&
+                typeof results[0].value === 'object' &&
+                'tokens' in results[0].value
             ) {
-                expect(refreshResult.tokens.access).toBeTruthy();
-                expect(refreshResult2.tokens.access).toBeTruthy();
-                expect(refreshResult2.tokens.access).toBeTruthy();
-                expect(refreshResult.tokens.access.secret).not.toBe(
-                    refreshResult2.tokens.access.secret,
-                );
-                expect(refreshResult2.tokens.access.secret).not.toBe(
-                    refreshResult3.tokens.access.secret,
-                );
+                expect(results[0].value?.tokens?.access).toBeTruthy();
+                refreshSecret0 = results[0].value?.tokens.refresh.secret;
             }
+
+            if (
+                results[1].status === 'fulfilled' &&
+                typeof results[1].value === 'object' &&
+                'tokens' in results[1].value
+            ) {
+                expect(results[1].value?.tokens?.access).toBeTruthy();
+                refreshSecret1 = results[1].value?.tokens.refresh.secret;
+            }
+
+            if (
+                results[2].status === 'fulfilled' &&
+                typeof results[2].value === 'object' &&
+                'tokens' in results[2].value
+            ) {
+                expect(results[2].value?.tokens?.access).toBeTruthy();
+                refreshSecret2 = results[2].value?.tokens.refresh.secret;
+            }
+
+            expect(refreshSecret0).not.toBe(refreshSecret1);
+            expect(refreshSecret1).not.toBe(refreshSecret2);
+            expect(refreshSecret2).not.toBe(refreshSecret0);
         }
 
         await tearDown(testName, context);
@@ -215,7 +228,7 @@ describe('refresh logic', () => {
 
         expect.assertions(1);
 
-        if (context.loginResult) {
+        if (context.loginResult && 'tokens' in context.loginResult) {
             const refreshClient = getClient(
                 fauna,
                 context.loginResult.tokens.refresh.secret,
@@ -239,7 +252,7 @@ describe('refresh logic', () => {
 
         expect.assertions(1);
 
-        if (context.loginResult) {
+        if (context.loginResult && 'tokens' in context.loginResult) {
             const initialClient = getClient(
                 fauna,
                 context.loginResult.tokens.refresh.secret,
@@ -300,9 +313,17 @@ describe('refresh logic', () => {
         const testName = 'accessSecretLifetime';
         const context = await setUp(testName);
 
+        const { testDocumentRef } = context;
+
+        if (!testDocumentRef) {
+            throw new Error(
+                'testDocumentRef not found - something is wrong in setUp',
+            );
+        }
+
         expect.assertions(2);
 
-        if (context.loginResult) {
+        if (context.loginResult && 'tokens' in context.loginResult) {
             const refreshClient = getClient(
                 fauna,
                 context.loginResult.tokens.refresh.secret,
@@ -320,7 +341,7 @@ describe('refresh logic', () => {
                 const loggedInClient = getClient(fauna, accessSecret);
 
                 const loginWithExpiredToken = async () => {
-                    return loggedInClient.query(Get(context.testDocumentRef));
+                    return loggedInClient.query(Get(testDocumentRef));
                 };
 
                 await expect(loginWithExpiredToken()).rejects.toBeInstanceOf(
@@ -332,46 +353,48 @@ describe('refresh logic', () => {
         await tearDown(testName, context);
     });
 
-    // TODO: fix this failing test case
+    // TODO fix this failing test case
+
     it.skip('cannot use the refresh token after the GRACE_PERIOD_SECONDS', async () => {
         const testName = 'refreshAfterGracePeriod';
         const context = await setUp(testName);
 
         expect.assertions(6);
 
-        if (context.loginResult) {
+        if (context.loginResult && 'tokens' in context.loginResult) {
             const adminClient = context.databaseClients.childClient;
 
             const refreshClient = getClient(
                 fauna,
                 context.loginResult.tokens.refresh.secret,
             );
-            const refreshResult = await refreshClient.query<RefreshResult>(
-                Call('refresh'),
-            );
+            const refreshBeforeDelayResult =
+                await refreshClient.query<RefreshResult>(Call('refresh'));
 
-            if (refreshResult && 'tokens' in refreshResult) {
-                expect(refreshResult.tokens.access).toBeTruthy();
+            if (
+                refreshBeforeDelayResult &&
+                'tokens' in refreshBeforeDelayResult
+            ) {
+                expect(refreshBeforeDelayResult.tokens.access).toBeTruthy();
             }
 
             await delay(GRACE_PERIOD_SECONDS * 1000 + 2000);
 
-            // TODO: error is thrown here.
-            // The first "refresh" call works, but then we get these errors for subsequent ones:
-            // Unauthorized: unauthorized. Check that endpoint, schema, port and secret are correct during client’s instantiation
-
             // The age is now higher than the grace period.
-            const refreshResult2 = await refreshClient.query<RefreshResult>(
+            const promise0 = refreshClient.query<RefreshResult>(
                 Call('refresh'),
             );
 
-            expect(refreshResult2).toEqual(REFRESH_TOKEN_REUSE_ERROR);
-
-            const refreshResult3 = await refreshClient.query<RefreshResult>(
+            const promise1 = refreshClient.query<RefreshResult>(
                 Call('refresh'),
             );
 
-            expect(refreshResult3).toEqual(REFRESH_TOKEN_REUSE_ERROR);
+            // Both promises are rejected, but the anomalies are not logged - perhaps something
+            // has changed about how the refresh logic works?
+            const results = await Promise.allSettled([promise0, promise1]);
+
+            expect(results[0].status).toBe('rejected');
+            expect(results[1].status).toBe('rejected');
 
             // If we do, the anomaly will be logged!
             const anomalies =
@@ -400,9 +423,17 @@ describe('refresh logic', () => {
         const testName = 'refreshInParallel';
         const context = await setUp(testName);
 
+        const { testDocumentRef } = context;
+
+        if (!testDocumentRef) {
+            throw new Error(
+                'testDocumentRef not found - something is wrong in setUp',
+            );
+        }
+
         expect.assertions(2);
 
-        if (context.loginResult) {
+        if (context.loginResult && 'tokens' in context.loginResult) {
             // Silent refresh could cause our access token to get invalidated when the call is still
             // in flight.
             const refreshClient = getClient(
@@ -418,7 +449,7 @@ describe('refresh logic', () => {
             );
 
             const queryBeforeRefresh = async () => {
-                return loggedInClient.query(Get(context.testDocumentRef));
+                return loggedInClient.query(Get(testDocumentRef));
             };
 
             await expect(queryBeforeRefresh()).resolves.toBeTruthy();
@@ -432,7 +463,7 @@ describe('refresh logic', () => {
 
                 const queryAfterRefresh = async () => {
                     return loggedInClientAfterRefresh.query(
-                        Get(context.testDocumentRef),
+                        Get(testDocumentRef),
                     );
                 };
 

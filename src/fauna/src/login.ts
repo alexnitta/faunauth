@@ -2,6 +2,8 @@ import faunadb from 'faunadb';
 import type { Expr } from 'faunadb';
 import { CreateTokensForAccount } from './tokens';
 import { IdentifyAccount, VerifyAccountExists } from './identity';
+import { errors } from './errors';
+import { FaunauthError } from '../../types';
 
 const q = faunadb.query;
 const { If, And } = q;
@@ -21,7 +23,7 @@ export function Login(
     accessTtlSeconds?: number,
     refreshLifetimeSeconds?: number,
     refreshReclaimtimeSeconds?: number,
-): Expr | false {
+): Expr | FaunauthError {
     return If(
         // First check whether the account exists and the account can be identified with the
         // email/password
@@ -33,7 +35,9 @@ export function Login(
             refreshLifetimeSeconds,
             refreshReclaimtimeSeconds,
         ),
-        // if not, return false
-        false,
+        // if not, return an error
+        {
+            error: errors.invalidEmailOrPassword,
+        },
     );
 }

@@ -5,6 +5,7 @@ import {
     IdentifyAccountByUsername,
     VerifyAccountExistsByUsername,
 } from './identity';
+import { errors } from './errors';
 
 const q = faunadb.query;
 const { If, And } = q;
@@ -34,7 +35,9 @@ export function LoginWithUsername(
             refreshLifetimeSeconds,
             refreshReclaimtimeSeconds,
         ),
-        // if not, return false
-        false,
+        // if not, return an error
+        {
+            error: errors.invalidUsernameOrPassword,
+        },
     );
 }

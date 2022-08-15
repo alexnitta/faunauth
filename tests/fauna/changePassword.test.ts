@@ -1,22 +1,19 @@
 import fauna from 'faunadb';
+import { describe, it, expect } from 'vitest';
 import {
     destroyTestDatabase,
     setupTestDatabase,
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
 import type { FaunaLoginResult, SetUp, TearDown } from '../../src/types';
+import { errors } from '../../src/fauna/src/errors';
 
 const q = fauna.query;
 const { Call } = q;
 
 const setUp: SetUp = async testName => {
-    const context = {
-        databaseClients: null,
-    };
-
-    context.databaseClients = await setupTestDatabase(fauna, testName);
-
-    const client = context.databaseClients.childClient;
+    const databaseClients = await setupTestDatabase(fauna, testName);
+    const client = databaseClients.childClient;
 
     await populateDatabaseSchemaFromFiles(q, client, [
         'src/fauna/resources/faunauth/collections/User.fql',
@@ -29,14 +26,16 @@ const setUp: SetUp = async testName => {
     ]);
 
     await client.query(
-        Call('register', 'verysecure', {
+        Call('register', 'verysecure', 'user@domain.com', {
             email: 'user@domain.com',
             username: 'user',
             locale: 'en-US',
         }),
     );
 
-    return context;
+    return {
+        databaseClients,
+    };
 };
 
 const tearDown: TearDown = async (testName, context) => {
@@ -94,19 +93,18 @@ describe('changePassword()', () => {
         expect.assertions(1);
 
         const client = context.databaseClients.childClient;
-        const changePasswordWithWrongOldPassword = async () =>
-            client.query(
-                Call(
-                    'changePassword',
-                    'user@domain.com',
-                    'wrongoldpassword',
-                    'supersecret',
-                ),
-            );
+        const changePasswordResult = await client.query(
+            Call(
+                'changePassword',
+                'user@domain.com',
+                'wrongoldpassword',
+                'supersecret',
+            ),
+        );
 
-        await expect(
-            changePasswordWithWrongOldPassword(),
-        ).rejects.toBeInstanceOf(fauna.errors.BadRequest);
+        expect(changePasswordResult).toEqual({
+            error: errors.invalidOldPassword,
+        });
 
         await tearDown(testName, context);
     });

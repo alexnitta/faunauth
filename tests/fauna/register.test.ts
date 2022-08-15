@@ -1,4 +1,5 @@
 import fauna from 'faunadb';
+import { describe, it, expect } from 'vitest';
 import {
     destroyTestDatabase,
     setupTestDatabase,
@@ -11,18 +12,15 @@ import type {
     TearDown,
     UserCollectionQueryResult,
 } from '../../src/types';
+import { errors } from '../../src/fauna/src/errors';
 
 const q = fauna.query;
 const { Call, Paginate, Documents, Collection, Lambda, Get, CreateKey, Role } =
     q;
 
 const setUp: SetUp = async testName => {
-    const context = {
-        databaseClients: null,
-    };
-
-    context.databaseClients = await setupTestDatabase(fauna, testName);
-    const client = context.databaseClients.childClient;
+    const databaseClients = await setupTestDatabase(fauna, testName);
+    const client = databaseClients.childClient;
 
     await populateDatabaseSchemaFromFiles(q, client, [
         'src/fauna/resources/faunauth/collections/User.fql',
@@ -35,14 +33,16 @@ const setUp: SetUp = async testName => {
         'src/fauna/resources/faunauth/roles/public.fql',
     ]);
 
-    return context;
+    return {
+        databaseClients,
+    };
 };
 
 const tearDown: TearDown = async (testName, context) => {
     await destroyTestDatabase(
         fauna.query,
         testName,
-        context.databaseClients.parentClient,
+        context.databaseClients?.parentClient ?? null,
     );
 
     return true;
@@ -52,12 +52,11 @@ describe('register()', () => {
     it('can verify account was created', async () => {
         const testName = 'verifyAccountCreation';
         const context = await setUp(testName);
-
         const client = context.databaseClients.childClient;
 
         // We now have a register function which we can call
         await client.query(
-            Call('register', 'verysecure', {
+            Call('register', 'verysecure', 'user@domain.com', {
                 email: 'user@domain.com',
                 locale: 'en-US',
             }),
@@ -85,13 +84,18 @@ describe('register()', () => {
         const testName = 'registerWithPublicKey';
         const context = await setUp(testName);
 
-        const client = context.databaseClients.childClient;
+        const client = context.databaseClients?.childClient ?? null;
+
+        if (client === null) {
+            return;
+        }
+
         const key = await client.query<
             CreateKeyResult<{ role: fauna.values.Ref }>
         >(CreateKey({ role: Role('public') }));
         const publicClient = getClient(fauna, key.secret);
         const res = await publicClient.query(
-            Call('register', 'verysecure', {
+            Call('register', 'verysecure', 'user@domain.com', {
                 email: 'user@domain.com',
                 locale: 'en-US',
             }),
@@ -107,12 +111,13 @@ describe('register()', () => {
         const context = await setUp(testName);
 
         const client = context.databaseClients.childClient;
+
         const key = await client.query<
             CreateKeyResult<{ role: fauna.values.Ref }>
         >(CreateKey({ role: Role('public') }));
         const publicClient = getClient(fauna, key.secret);
         const res = await publicClient.query(
-            Call('register', 'verysecure', {
+            Call('register', 'verysecure', 'user@domain.com', {
                 email: 'user@domain.com',
                 locale: 'en-US',
             }),
@@ -120,18 +125,16 @@ describe('register()', () => {
 
         expect(res).toBeTruthy();
 
-        const registerWithDuplicateEmail = async () => {
-            return publicClient.query(
-                Call('register', 'verysecure', {
-                    email: 'user@domain.com',
-                    locale: 'en-US',
-                }),
-            );
-        };
-
-        await expect(registerWithDuplicateEmail()).rejects.toBeInstanceOf(
-            fauna.errors.BadRequest,
+        const duplicateRegisterResult = await publicClient.query(
+            Call('register', 'verysecure', 'user@domain.com', {
+                email: 'user@domain.com',
+                locale: 'en-US',
+            }),
         );
+
+        expect(duplicateRegisterResult).toEqual({
+            error: errors.userAlreadyExists,
+        });
 
         await tearDown(testName, context);
     });

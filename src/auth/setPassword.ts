@@ -1,7 +1,11 @@
-import faunadb, { query as q, errors as faunaErrors } from 'faunadb';
+import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import type { ServerLoginResult, FaunaLoginResult } from '../types/auth';
+import type {
+    ServerLoginResult,
+    FaunaLoginResult,
+    FaunauthError,
+} from '../types';
 import { errors } from '../fauna/src/errors';
 export interface SetPasswordInput {
     /**
@@ -57,23 +61,20 @@ export async function setPassword(
         secret: publicFaunaKey,
     });
 
-    let setPasswordResult: FaunaLoginResult | false = false;
+    let setPasswordResult: FaunaLoginResult | FaunauthError = {
+        error: errors.unknownServerError,
+    };
 
     try {
-        setPasswordResult = await client.query<FaunaLoginResult>(
-            q.Call('setPassword', email, password, token),
-        );
-    } catch (e) {
-        const error = e as faunaErrors.BadRequest;
-        const message =
-            error?.requestResult?.responseContent?.errors?.[0]?.description ??
-            errors.failedToSetPassword;
-
-        throw new Error(message);
+        setPasswordResult = await client.query<
+            FaunaLoginResult | FaunauthError
+        >(q.Call('setPassword', email, password, token));
+    } catch {
+        throw new Error(errors.unknownServerError);
     }
 
-    if (!setPasswordResult) {
-        throw new Error(errors.failedToSetPassword);
+    if ('error' in setPasswordResult) {
+        throw new Error(setPasswordResult.error);
     }
 
     const {

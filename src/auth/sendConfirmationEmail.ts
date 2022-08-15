@@ -8,6 +8,7 @@ import type {
     AuthInputWithEmailTemplate,
     AuthInputWithCustomEmail,
     CreateTokenResult,
+    FaunauthError,
 } from '../types';
 
 export interface BaseRequestPasswordResetInput {
@@ -77,18 +78,20 @@ export async function sendConfirmationEmail<SendEmailResult>(
         secret: publicFaunaKey,
     });
 
-    let createTokenResult: CreateTokenResult | false = false;
+    let createTokenResult: CreateTokenResult | FaunauthError = {
+        error: errors.unknownServerError,
+    };
 
     try {
-        createTokenResult = await client.query<CreateTokenResult | false>(
-            q.Call('createEmailConfirmationToken', email),
-        );
+        createTokenResult = await client.query<
+            CreateTokenResult | FaunauthError
+        >(q.Call('createEmailConfirmationToken', email));
     } catch {
         throw new Error(errors.failedToCreateToken);
     }
 
-    if (!createTokenResult) {
-        throw new Error(errors.userDoesNotExist);
+    if ('error' in createTokenResult) {
+        throw new Error(createTokenResult.error);
     }
 
     const {

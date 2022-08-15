@@ -1,4 +1,6 @@
 import fauna from 'faunadb';
+import { describe, it, expect } from 'vitest';
+
 import { verifyTokens } from './helpers/_test-extensions';
 import {
     destroyTestDatabase,
@@ -6,24 +8,19 @@ import {
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
 import type {
-    TestContext,
     FaunaLoginResult,
     TokenCollectionQueryResult,
     SetUp,
     TearDown,
 } from '../../src/types';
+import { errors } from '../../src/fauna/src/errors';
 
 const q = fauna.query;
 const { Call, Paginate, Tokens, Lambda, Get, Var } = q;
 
 const setUp: SetUp = async testName => {
-    const context: TestContext = {
-        databaseClients: null,
-    };
-
-    context.databaseClients = await setupTestDatabase(fauna, testName);
-
-    const client = context.databaseClients.childClient;
+    const databaseClients = await setupTestDatabase(fauna, testName);
+    const client = databaseClients.childClient;
 
     await populateDatabaseSchemaFromFiles(q, client, [
         'src/fauna/resources/faunauth/collections/User.fql',
@@ -35,7 +32,7 @@ const setUp: SetUp = async testName => {
     ]);
 
     await client.query(
-        Call('register', 'verysecure', {
+        Call('register', 'verysecure', 'user@domain.com', {
             email: 'user@domain.com',
             username: 'user',
             locale: 'en-US',
@@ -43,14 +40,16 @@ const setUp: SetUp = async testName => {
     );
 
     await client.query(
-        Call('register', 'verysecure', {
+        Call('register', 'verysecure', 'user2@domain.com', {
             email: 'user2@domain.com',
             username: 'user2',
             locale: 'en-US',
         }),
     );
 
-    return context;
+    return {
+        databaseClients,
+    };
 };
 
 const tearDown: TearDown = async (testName, context) => {
@@ -59,8 +58,6 @@ const tearDown: TearDown = async (testName, context) => {
         testName,
         context.databaseClients.parentClient,
     );
-
-    context.databaseClients = null;
 
     return true;
 };
@@ -117,7 +114,9 @@ describe('login()', () => {
             Call('login', 'user@domain.com', 'wrong'),
         );
 
-        expect(loginResult).toBe(false);
+        expect(loginResult).toStrictEqual({
+            error: errors.invalidEmailOrPassword,
+        });
 
         await tearDown(testName, context);
     });
@@ -133,7 +132,9 @@ describe('login()', () => {
             Call('login', 'notuser@domain.com', 'verysecure'),
         );
 
-        expect(loginResult).toBe(false);
+        expect(loginResult).toStrictEqual({
+            error: errors.invalidEmailOrPassword,
+        });
 
         await tearDown(testName, context);
     });
@@ -149,7 +150,9 @@ describe('login()', () => {
             Call('loginWithUsername', 'notuser', 'verysecure'),
         );
 
-        expect(loginResult).toBe(false);
+        expect(loginResult).toStrictEqual({
+            error: errors.invalidUsernameOrPassword,
+        });
 
         await tearDown(testName, context);
     });

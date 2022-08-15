@@ -36,8 +36,8 @@
         "precommit": "lint-staged",
         "prepack": "npx rimraf dist && tsc",
         "semantic-release": "semantic-release",
-        "test": "dotenv -e .env -- cross-var vitest",
-        "test-ci": "vitest",
+        "test": "dotenv -e .env -- cross-var vitest --run",
+        "test-ci": "vitest --run",
         "test-watch": "dotenv -e .env -- cross-var vitest --watch"
     },
     "devDependencies": {
@@ -67,7 +67,7 @@
         "typedoc-plugin-markdown": "^3.11.14",
         "typescript": "4.3.5",
         "vite-tsconfig-paths": "^3.4.1",
-        "vitest": "^0.12.4"
+        "vitest": "^0.21.1"
     },
     "dependencies": {
         "@fauna-labs/fauna-schema-migrate": "^2.2.1",

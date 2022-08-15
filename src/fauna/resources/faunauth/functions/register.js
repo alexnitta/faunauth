@@ -8,8 +8,8 @@ export default CreateFunction({
     name: 'register',
     body: Query(
         Lambda(
-            ['password', 'data'],
-            RegisterAccount(Var('password'), Var('data')),
+            ['password', 'email', 'data'],
+            RegisterAccount(Var('password'), Var('email'), Var('data')),
         ),
     ),
     role: 'server',

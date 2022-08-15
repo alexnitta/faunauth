@@ -1,16 +1,17 @@
 import fauna from 'faunadb';
+import { describe, test, expect } from 'vitest';
 import {
     destroyTestDatabase,
     setupTestDatabase,
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
 import type {
-    TestContext,
     CreateKeyResult,
     FaunaLoginResult,
     SetUp,
     TearDown,
     Maybe,
+    FaunauthError,
 } from '../../src/types';
 
 const q = fauna.query;
@@ -21,11 +22,9 @@ const clientDomain = process.env.FAUNADB_DOMAIN
     : 'db.fauna.com';
 
 const setUp: SetUp = async testName => {
-    const context: TestContext = { databaseClients: null };
     const databaseClients = await setupTestDatabase(fauna, testName);
-    const adminClient = databaseClients.childClient;
 
-    await populateDatabaseSchemaFromFiles(q, adminClient, [
+    await populateDatabaseSchemaFromFiles(q, databaseClients.childClient, [
         'src/fauna/resources/faunauth/collections/anomalies.fql',
         'src/fauna/resources/faunauth/collections/dinos.fql',
         'src/fauna/resources/faunauth/collections/User.fql',
@@ -46,9 +45,9 @@ const setUp: SetUp = async testName => {
         'src/fauna/resources/faunauth/roles/refresh.js',
     ]);
 
-    context.databaseClients = databaseClients;
-
-    return context;
+    return {
+        databaseClients,
+    };
 };
 
 const tearDown: TearDown = async (testName, context) => {
@@ -82,17 +81,17 @@ describe('sample flow from refresh-tokens-advanced blueprint', () => {
             });
 
             await publicClient.query(
-                Call('register', 'verysecure', {
+                Call('register', 'verysecure', 'user@domain.com', {
                     email: 'user@domain.com',
                     locale: 'en-US',
                 }),
             );
 
             const loginResult = await publicClient.query<
-                false | FaunaLoginResult
+                FaunauthError | FaunaLoginResult
             >(Call('login', 'user@domain.com', 'verysecure'));
 
-            if (loginResult) {
+            if ('tokens' in loginResult) {
                 let accessClient = new fauna.Client({
                     secret: loginResult.tokens.access.secret,
                     domain: clientDomain,

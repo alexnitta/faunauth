@@ -4,6 +4,7 @@ import {
     InvalidateEmailConfirmationToken,
 } from './tokens';
 import { GetAccountByEmail, VerifyAccountExists } from './identity';
+import { errors } from './errors';
 
 const q = faunadb.query;
 const {
@@ -49,8 +50,10 @@ export function CreateEmailConfirmationTokenForAccount(
         And(VerifyAccountExists(email)),
         // if so, save and return the email confirmation token
         SaveEmailConfirmationToken(email, ttlSeconds),
-        // if not, return false
-        false,
+        // if not, return an error
+        {
+            error: errors.userDoesNotExist,
+        },
     );
 }
 

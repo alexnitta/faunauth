@@ -11,7 +11,7 @@ import {
     generateMigrationLetObject,
 } from '@fauna-labs/fauna-schema-migrate';
 
-import { CreateKeyResult } from '../../../src/types';
+import { CreateKeyResult, Maybe, DatabaseClients } from '../../../src/types';
 
 const fullPath = path.resolve(process.cwd(), '.env');
 
@@ -46,7 +46,7 @@ export const deleteMigrationDir = async () => {
 export const setupTestDatabase = async (
     fauna: { Client: typeof Client; query: typeof query },
     testName: string,
-) => {
+): Promise<DatabaseClients> => {
     const {
         CreateKey,
         CreateDatabase,
@@ -58,7 +58,16 @@ export const setupTestDatabase = async (
         Database,
     } = fauna.query;
 
-    const client = getClient(fauna, process.env.FAUNA_ADMIN_KEY);
+    const adminKey = process.env.FAUNA_ADMIN_KEY;
+
+    if (adminKey === undefined) {
+        throw new Error(
+            'Could not read process.env.FAUNA_ADMIN_KEY. Please make sure your .env file includes this value.',
+        );
+    }
+
+    const client = getClient(fauna, adminKey);
+
     const key = await client.query<
         CreateKeyResult<{ database: typeof Ref; role: string }>
     >(
@@ -78,8 +87,12 @@ export const setupTestDatabase = async (
 export const destroyTestDatabase = async (
     q: typeof query,
     testName: string,
-    parentClient: Client,
+    parentClient: Maybe<Client>,
 ) => {
+    if (parentClient === null) {
+        return null;
+    }
+
     const { Do, If, Exists, Delete, Database } = q;
     await parentClient.query(
         Do(

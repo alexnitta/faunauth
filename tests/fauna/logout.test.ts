@@ -1,4 +1,5 @@
 import fauna from 'faunadb';
+import { describe, test, expect } from 'vitest';
 import {
     verifyRefreshTokensLogout,
     verifyTokens,
@@ -10,7 +11,6 @@ import {
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
 import type {
-    TestContext,
     FaunaLoginResult,
     SetUp,
     TearDown,
@@ -21,14 +21,6 @@ const q = fauna.query;
 const { Call, Create, Collection, Get } = q;
 
 const setUp: SetUp = async testName => {
-    const context: TestContext = {
-        databaseClients: {
-            childClient: null,
-            parentClient: null,
-        },
-        testDocumentRef: null,
-    };
-
     const databaseClients = await setupTestDatabase(fauna, testName);
     const adminClient = databaseClients.childClient;
 
@@ -60,23 +52,23 @@ const setUp: SetUp = async testName => {
     ).ref;
 
     await adminClient.query(
-        Call('register', 'verysecure', {
+        Call('register', 'verysecure', 'user@domain.com', {
             email: 'user@domain.com',
             locale: 'en-US',
         }),
     );
 
     await adminClient.query(
-        Call('register', 'verysecure', {
+        Call('register', 'verysecure', 'foo@other.com', {
             email: 'foo@other.com',
             locale: 'en-US',
         }),
     );
 
-    context.testDocumentRef = testDocumentRef;
-    context.databaseClients = databaseClients;
-
-    return context;
+    return {
+        testDocumentRef,
+        databaseClients,
+    };
 };
 
 const tearDown: TearDown = async (testName, context) => {
@@ -93,6 +85,13 @@ describe('logout()', () => {
     test('with all=false only logs out the current session', async () => {
         const testName = 'allEqualsFalse';
         const context = await setUp(testName);
+        const { testDocumentRef } = context;
+
+        if (!testDocumentRef) {
+            throw new Error(
+                'testDocumentRef not found - something is wrong in setUp',
+            );
+        }
 
         expect.assertions(11);
 
@@ -130,7 +129,7 @@ describe('logout()', () => {
                 (
                     await loggedInClientUser1.query<{
                         data: TestDocument;
-                    }>(Get(context.testDocumentRef))
+                    }>(Get(testDocumentRef))
                 ).data,
             ).toBeTruthy();
 
@@ -138,7 +137,7 @@ describe('logout()', () => {
                 (
                     await loggedInClientUser2.query<{
                         data: TestDocument;
-                    }>(Get(context.testDocumentRef))
+                    }>(Get(testDocumentRef))
                 ).data,
             ).toBeTruthy();
 
@@ -146,7 +145,7 @@ describe('logout()', () => {
                 (
                     await loggedInClientOtherUser.query<{
                         data: TestDocument;
-                    }>(Get(context.testDocumentRef))
+                    }>(Get(testDocumentRef))
                 ).data,
             ).toBeTruthy();
 
@@ -166,7 +165,7 @@ describe('logout()', () => {
             await verifyRefreshTokensLogout(expect, client, 1);
 
             const fetchPrivateData = async () => {
-                return loggedInClientUser1.query(Get(context.testDocumentRef));
+                return loggedInClientUser1.query(Get(testDocumentRef));
             };
 
             // We can no longer fetch the data.
@@ -179,7 +178,7 @@ describe('logout()', () => {
                 (
                     await loggedInClientUser2.query<{
                         data: TestDocument;
-                    }>(Get(context.testDocumentRef))
+                    }>(Get(testDocumentRef))
                 ).data,
             ).toBeTruthy();
 
@@ -187,7 +186,7 @@ describe('logout()', () => {
                 (
                     await loggedInClientOtherUser.query<{
                         data: TestDocument;
-                    }>(Get(context.testDocumentRef))
+                    }>(Get(testDocumentRef))
                 ).data,
             ).toBeTruthy();
         }
@@ -198,6 +197,14 @@ describe('logout()', () => {
     test('with all=true logs out all sessions for that account', async () => {
         const testName = 'allEqualsTrue';
         const context = await setUp(testName);
+
+        const { testDocumentRef } = context;
+
+        if (!testDocumentRef) {
+            throw new Error(
+                'testDocumentRef not found - something is wrong in setUp',
+            );
+        }
 
         expect.assertions(11);
 
@@ -235,7 +242,7 @@ describe('logout()', () => {
                 (
                     await loggedInClientUser1.query<{
                         data: TestDocument;
-                    }>(Get(context.testDocumentRef))
+                    }>(Get(testDocumentRef))
                 ).data,
             ).toBeTruthy();
 
@@ -243,7 +250,7 @@ describe('logout()', () => {
                 (
                     await loggedInClientUser2.query<{
                         data: TestDocument;
-                    }>(Get(context.testDocumentRef))
+                    }>(Get(testDocumentRef))
                 ).data,
             ).toBeTruthy();
 
@@ -251,7 +258,7 @@ describe('logout()', () => {
                 (
                     await loggedInClientOtherUser.query<{
                         data: TestDocument;
-                    }>(Get(context.testDocumentRef))
+                    }>(Get(testDocumentRef))
                 ).data,
             ).toBeTruthy();
 
@@ -272,17 +279,13 @@ describe('logout()', () => {
             // We can no longer fetch the data.
             await expect(async () => {
                 console.log(
-                    await loggedInClientUser1.query(
-                        Get(context.testDocumentRef),
-                    ),
+                    await loggedInClientUser1.query(Get(testDocumentRef)),
                 );
             }).rejects.toThrow(fauna.errors.Unauthorized);
 
             await expect(async () => {
                 console.log(
-                    await loggedInClientUser2.query(
-                        Get(context.testDocumentRef),
-                    ),
+                    await loggedInClientUser2.query(Get(testDocumentRef)),
                 );
             }).rejects.toThrow(fauna.errors.Unauthorized);
 
@@ -291,7 +294,7 @@ describe('logout()', () => {
                 (
                     await loggedInClientOtherUser.query<{
                         data: Record<string, unknown>;
-                    }>(Get(context.testDocumentRef))
+                    }>(Get(testDocumentRef))
                 ).data,
             ).toBeTruthy();
         }

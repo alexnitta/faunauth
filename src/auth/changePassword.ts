@@ -2,7 +2,11 @@ import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
 import { errors } from '../fauna/src/errors';
-import type { FaunaLoginResult, ServerLoginResult } from '../types/auth';
+import type {
+    FaunaLoginResult,
+    ServerLoginResult,
+    FaunauthError,
+} from '../types';
 
 export interface ChangePasswordInput {
     /**
@@ -50,9 +54,13 @@ export async function changePassword(
         secret: publicFaunaKey,
     });
 
-    const changePasswordResult = await client.query<FaunaLoginResult>(
-        q.Call('changePassword', email, oldPassword, newPassword),
-    );
+    const changePasswordResult = await client.query<
+        FaunauthError | FaunaLoginResult
+    >(q.Call('changePassword', email, oldPassword, newPassword));
+
+    if ('error' in changePasswordResult) {
+        throw new Error(changePasswordResult.error);
+    }
 
     const {
         tokens: { access, refresh },
