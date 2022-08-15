@@ -32,7 +32,7 @@ https://docs.fauna.com/fauna/current/api/fql/functions/createkey?lang=javascript
 
 #### Defined in
 
-[types/auth.ts:56](https://github.com/alexnitta/faunauth/blob/5b231ad/src/types/auth.ts#L56)
+[types/auth.ts:56](https://github.com/alexnitta/faunauth/blob/c913d73/src/types/auth.ts#L56)
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 #### Defined in
 
-[types/auth.ts:52](https://github.com/alexnitta/faunauth/blob/5b231ad/src/types/auth.ts#L52)
+[types/auth.ts:52](https://github.com/alexnitta/faunauth/blob/c913d73/src/types/auth.ts#L52)
 
 ___
 
@@ -52,7 +52,7 @@ ___
 
 #### Defined in
 
-[types/auth.ts:61](https://github.com/alexnitta/faunauth/blob/5b231ad/src/types/auth.ts#L61)
+[types/auth.ts:61](https://github.com/alexnitta/faunauth/blob/c913d73/src/types/auth.ts#L61)
 
 ___
 
@@ -62,7 +62,7 @@ ___
 
 #### Defined in
 
-[types/auth.ts:55](https://github.com/alexnitta/faunauth/blob/5b231ad/src/types/auth.ts#L55)
+[types/auth.ts:55](https://github.com/alexnitta/faunauth/blob/c913d73/src/types/auth.ts#L55)
 
 ___
 
@@ -72,7 +72,7 @@ ___
 
 #### Defined in
 
-[types/auth.ts:57](https://github.com/alexnitta/faunauth/blob/5b231ad/src/types/auth.ts#L57)
+[types/auth.ts:57](https://github.com/alexnitta/faunauth/blob/c913d73/src/types/auth.ts#L57)
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 #### Defined in
 
-[types/auth.ts:53](https://github.com/alexnitta/faunauth/blob/5b231ad/src/types/auth.ts#L53)
+[types/auth.ts:53](https://github.com/alexnitta/faunauth/blob/c913d73/src/types/auth.ts#L53)
 
 ___
 
@@ -92,7 +92,7 @@ ___
 
 #### Defined in
 
-[types/auth.ts:54](https://github.com/alexnitta/faunauth/blob/5b231ad/src/types/auth.ts#L54)
+[types/auth.ts:54](https://github.com/alexnitta/faunauth/blob/c913d73/src/types/auth.ts#L54)
 
 ___
 
@@ -102,7 +102,7 @@ ___
 
 #### Defined in
 
-[types/auth.ts:59](https://github.com/alexnitta/faunauth/blob/5b231ad/src/types/auth.ts#L59)
+[types/auth.ts:59](https://github.com/alexnitta/faunauth/blob/c913d73/src/types/auth.ts#L59)
 
 ___
 
@@ -112,4 +112,4 @@ ___
 
 #### Defined in
 
-[types/auth.ts:58](https://github.com/alexnitta/faunauth/blob/5b231ad/src/types/auth.ts#L58)
+[types/auth.ts:58](https://github.com/alexnitta/faunauth/blob/c913d73/src/types/auth.ts#L58)
