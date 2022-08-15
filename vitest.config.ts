@@ -6,8 +6,7 @@ import { FAUNA_TEST_TIMEOUT } from './tests/constants';
 export default defineConfig({
     plugins: [tsconfigPaths()],
     test: {
-        globals: true,
         testTimeout: FAUNA_TEST_TIMEOUT,
-        watchIgnore: ['.*\\/node_modules\\/.*', '.*\\/build\\/.*'],
+        watchExclude: ['.*\\/node_modules\\/.*', '.*\\/build\\/.*'],
     },
 });
