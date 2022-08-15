@@ -22,7 +22,7 @@ const init = ({ overwrite = false }) => {
                 return;
             }
 
-            console.log('Copying JS files from faunauth/dist...\n');
+            console.log('Copying JS files from faunauth/dist/fauna/...\n');
 
             console.log(stdout);
 
