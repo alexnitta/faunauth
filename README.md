@@ -260,7 +260,7 @@ login({
 }).catch(e => {
     // In JavaScript, any expression can be thrown, so we have to check if
     // it's an error.
-    if (e instanceof Error && e.message === errors.invalidUserOrPassword) {
+    if (e instanceof Error && e.message === errors.invalidEmailOrPassword) {
         // Show the user a message about invalid credentials
     } else {
         // Show the user some other error message

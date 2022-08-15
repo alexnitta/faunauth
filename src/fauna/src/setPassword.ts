@@ -12,7 +12,7 @@ import {
 import { errors } from './errors';
 
 const q = faunadb.query;
-const { Abort, Update, Do, Select, If } = q;
+const { Update, Do, Select, If } = q;
 
 /**
  * Set a user's password via a secret sent in an email confirmation link.
@@ -35,14 +35,16 @@ export function SetPasswordForAccount(
     refreshReclaimtimeSeconds?: number,
 ) {
     return If(
-        // If the new password is already in use,
-        IdentifyAccount(email, newPassword),
-        // abort the operation
-        Abort(errors.passwordAlreadyInUse),
-        // If the new password is not already in use,
+        // If the user exists,
+        VerifyAccountExists(email),
         If(
-            // If the user exists,
-            VerifyAccountExists(email),
+            // If the new password is already in use,
+            IdentifyAccount(email, newPassword),
+            // return an error
+            {
+                error: errors.passwordAlreadyInUse,
+            },
+            // If the new password is not already in use,
             If(
                 // And the email confirmation secret is valid,
                 VerifyEmailConfirmationSecretForAccount(email, secret),
@@ -66,11 +68,15 @@ export function SetPasswordForAccount(
                         refreshReclaimtimeSeconds,
                     ),
                 ),
-                // If the email confirmation token is invalid, abort the operation
-                Abort(errors.invalidEmailConfirmationToken),
+                // If the email confirmation token is invalid, return an error
+                {
+                    error: errors.invalidEmailConfirmationToken,
+                },
             ),
-            // If the user does not exist, abort the operation
-            Abort(errors.userDoesNotExist),
         ),
+        // If the user does not exist, return an error
+        {
+            error: errors.userDoesNotExist,
+        },
     );
 }

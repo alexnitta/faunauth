@@ -2,7 +2,11 @@ import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
 import { errors } from '../fauna/src/errors';
-import type { ServerLoginResult, FaunaLoginResult } from '../types';
+import type {
+    ServerLoginResult,
+    FaunaLoginResult,
+    FaunauthError,
+} from '../types';
 
 export interface BaseLoginInput {
     /**
@@ -61,28 +65,30 @@ export async function login(input: LoginInput): Promise<ServerLoginResult> {
         secret: publicFaunaKey,
     });
 
-    let loginResult: FaunaLoginResult | false = false;
+    let loginResult: FaunaLoginResult | FaunauthError = {
+        error: errors.unknownServerError,
+    };
 
     try {
         if ('email' in input) {
             const email = input.email.toLowerCase();
 
-            loginResult = await client.query<FaunaLoginResult | false>(
+            loginResult = await client.query<FaunaLoginResult | FaunauthError>(
                 q.Call('login', email, password),
             );
         } else {
             const username = input.username.toLowerCase();
 
-            loginResult = await client.query<FaunaLoginResult | false>(
+            loginResult = await client.query<FaunaLoginResult | FaunauthError>(
                 q.Call('loginWithUsername', username, password),
             );
         }
     } catch {
-        throw new Error(errors.invalidUserOrPassword);
+        throw new Error(errors.unknownServerError);
     }
 
-    if (!loginResult) {
-        throw new Error(errors.invalidUserOrPassword);
+    if ('error' in loginResult) {
+        throw new Error(loginResult.error);
     }
 
     const {

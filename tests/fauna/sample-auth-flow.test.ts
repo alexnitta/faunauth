@@ -6,12 +6,12 @@ import {
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
 import type {
-    TestContext,
     CreateKeyResult,
     FaunaLoginResult,
     SetUp,
     TearDown,
     Maybe,
+    FaunauthError,
 } from '../../src/types';
 
 const q = fauna.query;
@@ -81,17 +81,17 @@ describe('sample flow from refresh-tokens-advanced blueprint', () => {
             });
 
             await publicClient.query(
-                Call('register', 'verysecure', {
+                Call('register', 'verysecure', 'user@domain.com', {
                     email: 'user@domain.com',
                     locale: 'en-US',
                 }),
             );
 
             const loginResult = await publicClient.query<
-                false | FaunaLoginResult
+                FaunauthError | FaunaLoginResult
             >(Call('login', 'user@domain.com', 'verysecure'));
 
-            if (loginResult) {
+            if ('tokens' in loginResult) {
                 let accessClient = new fauna.Client({
                     secret: loginResult.tokens.access.secret,
                     domain: clientDomain,

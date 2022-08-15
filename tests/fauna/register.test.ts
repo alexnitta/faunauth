@@ -133,8 +133,7 @@ describe('register()', () => {
         );
 
         expect(duplicateRegisterResult).toEqual({
-            type: 'error',
-            message: errors.userAlreadyExists,
+            error: errors.userAlreadyExists,
         });
 
         await tearDown(testName, context);

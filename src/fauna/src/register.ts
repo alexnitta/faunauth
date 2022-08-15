@@ -23,8 +23,7 @@ export function RegisterAccount(
         VerifyAccountExists(email),
         // return an error
         {
-            type: 'error',
-            message: errors.userAlreadyExists,
+            error: errors.userAlreadyExists,
         },
         // If the account doesn't exist, create it
         Create(Collection('User'), {

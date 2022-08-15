@@ -1,7 +1,11 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import type { ServerLoginResult, FaunaLoginResult } from '../types/auth';
+import type {
+    ServerLoginResult,
+    FaunaLoginResult,
+    FaunauthError,
+} from '../types';
 import { errors } from '../fauna/src/errors';
 
 export interface LoginWithMagicLinkInput {
@@ -51,18 +55,20 @@ export async function loginWithMagicLink(
         secret: publicFaunaKey,
     });
 
-    let loginResult: FaunaLoginResult | false = false;
+    let loginResult: FaunaLoginResult | FaunauthError = {
+        error: errors.unknownServerError,
+    };
 
     try {
-        loginResult = await client.query<FaunaLoginResult | false>(
+        loginResult = await client.query<FaunaLoginResult | FaunauthError>(
             q.Call('loginWithMagicLink', email, secret),
         );
     } catch {
-        throw new Error(errors.failedToSetPassword);
+        throw new Error(errors.unknownServerError);
     }
 
-    if (!loginResult) {
-        throw new Error(errors.failedToSetPassword);
+    if ('error' in loginResult) {
+        throw new Error(loginResult.error);
     }
 
     const {

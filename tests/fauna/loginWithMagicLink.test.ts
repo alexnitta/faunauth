@@ -8,13 +8,14 @@ import {
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
 import type {
-    TestContext,
+    FaunauthError,
     FaunaLoginResult,
     TokenCollectionQueryResult,
     TokenResult,
     SetUp,
     TearDown,
 } from '../../src/types';
+import { errors } from '../../src/fauna/src/errors';
 
 const q = fauna.query;
 const { Call, Paginate, Lambda, Get, Var, Tokens } = q;
@@ -34,7 +35,7 @@ const setUp: SetUp = async testName => {
     ]);
 
     await client.query(
-        Call('register', 'verysecure', {
+        Call('register', 'verysecure', 'user@domain.com', {
             email: 'user@domain.com',
             username: 'user',
             locale: 'en-US',
@@ -72,15 +73,11 @@ describe('loginWithMagicLink()', () => {
 
         const client = context.databaseClients.childClient;
 
-        const loginResult = await client.query<false | FaunaLoginResult>(
-            Call(
-                'loginWithMagicLink',
-                'user@domain.com',
-                context?.secret ?? '',
-            ),
-        );
+        const loginResult = await client.query<
+            FaunauthError | FaunaLoginResult
+        >(Call('loginWithMagicLink', 'user@domain.com', context?.secret ?? ''));
 
-        if (loginResult) {
+        if ('tokens' in loginResult) {
             expect(loginResult.tokens.access).toBeTruthy();
             expect(loginResult.tokens.refresh).toBeTruthy();
             expect(loginResult.account).toBeTruthy();
@@ -116,7 +113,9 @@ describe('loginWithMagicLink()', () => {
         expect.assertions(1);
 
         const client = context.databaseClients.childClient;
-        const loginResult = await client.query<false | FaunaLoginResult>(
+        const loginResult = await client.query<
+            FaunauthError | FaunaLoginResult
+        >(
             Call(
                 'loginWithMagicLink',
                 'nonuser@domain.com',
@@ -124,7 +123,9 @@ describe('loginWithMagicLink()', () => {
             ),
         );
 
-        expect(loginResult).toBe(false);
+        expect(loginResult).toStrictEqual({
+            error: errors.invalidEmailOrSecret,
+        });
 
         await tearDown(testName, context);
     });
@@ -146,7 +147,7 @@ describe('loginWithMagicLink()', () => {
         // Initially there are no access or refresh tokens.
         expect(accessAndRefreshTokens.length).toEqual(0);
 
-        await client.query<false | FaunaLoginResult>(
+        await client.query<FaunauthError | FaunaLoginResult>(
             Call(
                 'loginWithMagicLink',
                 'user@domain.com',

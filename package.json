@@ -36,8 +36,8 @@
         "precommit": "lint-staged",
         "prepack": "npx rimraf dist && tsc",
         "semantic-release": "semantic-release",
-        "test": "dotenv -e .env -- cross-var vitest",
-        "test-ci": "vitest",
+        "test": "dotenv -e .env -- cross-var vitest --run",
+        "test-ci": "vitest --run",
         "test-watch": "dotenv -e .env -- cross-var vitest --watch"
     },
     "devDependencies": {

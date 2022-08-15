@@ -52,14 +52,14 @@ const setUp: SetUp = async testName => {
     ).ref;
 
     await adminClient.query(
-        Call('register', 'verysecure', {
+        Call('register', 'verysecure', 'user@domain.com', {
             email: 'user@domain.com',
             locale: 'en-US',
         }),
     );
 
     await adminClient.query(
-        Call('register', 'verysecure', {
+        Call('register', 'verysecure', 'foo@other.com', {
             email: 'foo@other.com',
             locale: 'en-US',
         }),

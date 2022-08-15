@@ -4,7 +4,7 @@ import { GetAccountByEmail, IdentifyAccount } from './identity';
 import { errors } from './errors';
 
 const q = faunadb.query;
-const { Abort, Update, Do, Select, If } = q;
+const { Update, Do, Select, If } = q;
 
 /**
  * Change a user's password when they know their old password.
@@ -44,7 +44,9 @@ export function ChangePasswordForAccount(
                 refreshReclaimtimeSeconds,
             ),
         ),
-        // If the old password is invalid, abort the operation
-        Abort(errors.invalidOldPassword),
+        // If the old password is invalid, return an error
+        {
+            error: errors.invalidOldPassword,
+        },
     );
 }

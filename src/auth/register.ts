@@ -92,7 +92,7 @@ export async function register<SendEmailResult>(
 
     try {
         userResult = await client.query<
-            CollectionQueryResult<UserData | FaunauthError>
+            CollectionQueryResult<UserData> | FaunauthError
         >(
             q.Call('register', password, email, {
                 confirmedEmail: false,
@@ -103,8 +103,8 @@ export async function register<SendEmailResult>(
             }),
         );
 
-        if ('type' in userResult.data && userResult.data.type === 'error') {
-            throw new Error(userResult.data.message);
+        if ('error' in userResult) {
+            throw new Error(userResult.error);
         }
     } catch {
         throw new Error(errors.failedToRegisterUser);
@@ -196,7 +196,7 @@ export async function register<SendEmailResult>(
         }
 
         throw sendEmailResult;
-    } else {
-        return sendEmailResult;
     }
+
+    return sendEmailResult;
 }

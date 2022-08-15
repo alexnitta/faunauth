@@ -26,6 +26,7 @@ import type {
     TokenResult,
     TokenCollectionQueryResult,
     AnomalyCollectionQueryResult,
+    FaunauthError,
 } from '../../src/types';
 
 const q = fauna.query;
@@ -76,15 +77,15 @@ const setUp: SetUp = async testName => {
     const testDocumentRef = testDocument.ref;
 
     await adminClient.query(
-        Call('register', 'verysecure', {
+        Call('register', 'verysecure', 'user@domain.com', {
             email: 'user@domain.com',
             locale: 'en-US',
         }),
     );
 
-    const loginResult = await adminClient.query<false | FaunaLoginResult>(
-        Call('login-modified', 'user@domain.com', 'verysecure'),
-    );
+    const loginResult = await adminClient.query<
+        FaunauthError | FaunaLoginResult
+    >(Call('login-modified', 'user@domain.com', 'verysecure'));
 
     return {
         loginResult,
@@ -114,7 +115,7 @@ describe('refresh logic', () => {
         // initially we have 1 token of each type from the login.
         await verifyTokens(expect, adminClient, { access: 1, refresh: 1 });
 
-        if (context.loginResult) {
+        if (context.loginResult && 'tokens' in context.loginResult) {
             const refreshClient = getClient(
                 fauna,
                 context.loginResult.tokens.refresh.secret,
@@ -162,7 +163,7 @@ describe('refresh logic', () => {
 
         expect.assertions(5);
 
-        if (context.loginResult) {
+        if (context.loginResult && 'tokens' in context.loginResult) {
             const refreshClient = getClient(
                 fauna,
                 context.loginResult.tokens.refresh.secret,
@@ -211,7 +212,7 @@ describe('refresh logic', () => {
 
         expect.assertions(1);
 
-        if (context.loginResult) {
+        if (context.loginResult && 'tokens' in context.loginResult) {
             const refreshClient = getClient(
                 fauna,
                 context.loginResult.tokens.refresh.secret,
@@ -235,7 +236,7 @@ describe('refresh logic', () => {
 
         expect.assertions(1);
 
-        if (context.loginResult) {
+        if (context.loginResult && 'tokens' in context.loginResult) {
             const initialClient = getClient(
                 fauna,
                 context.loginResult.tokens.refresh.secret,
@@ -306,7 +307,7 @@ describe('refresh logic', () => {
 
         expect.assertions(2);
 
-        if (context.loginResult) {
+        if (context.loginResult && 'tokens' in context.loginResult) {
             const refreshClient = getClient(
                 fauna,
                 context.loginResult.tokens.refresh.secret,
@@ -343,7 +344,7 @@ describe('refresh logic', () => {
 
         expect.assertions(6);
 
-        if (context.loginResult) {
+        if (context.loginResult && 'tokens' in context.loginResult) {
             const adminClient = context.databaseClients.childClient;
 
             const refreshClient = getClient(
@@ -414,7 +415,7 @@ describe('refresh logic', () => {
 
         expect.assertions(2);
 
-        if (context.loginResult) {
+        if (context.loginResult && 'tokens' in context.loginResult) {
             // Silent refresh could cause our access token to get invalidated when the call is still
             // in flight.
             const refreshClient = getClient(

@@ -49,7 +49,7 @@ const setUp: SetUp = async testName => {
 
     // and register a user
     await databaseClients.childClient.query(
-        Call('register', 'verysecure', {
+        Call('register', 'verysecure', 'user@domain.com', {
             confirmedEmail: false,
             email: 'user@domain.com',
             locale: 'en-US',

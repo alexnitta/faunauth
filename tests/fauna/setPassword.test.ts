@@ -11,6 +11,7 @@ import {
     SetUp,
     TearDown,
 } from '../../src/types';
+import { errors } from '../../src/fauna/src/errors';
 
 const q = fauna.query;
 const { Call } = q;
@@ -31,7 +32,7 @@ const setUp: SetUp = async testName => {
     ]);
 
     await databaseClients.childClient.query(
-        Call('register', 'verysecure', {
+        Call('register', 'verysecure', 'user@domain.com', {
             email: 'user@domain.com',
             username: 'user',
             locale: 'en-US',
@@ -117,21 +118,23 @@ describe('setPassword()', () => {
         expect.assertions(1);
 
         const client = context.databaseClients.childClient;
-        const setPasswordWithPreviouslyUsedNewPassword = async () =>
-            client.query(
-                Call('setPassword', 'user@domain.com', 'verysecure', secret),
-            );
+        const setPasswordResult = await client.query(
+            Call('setPassword', 'user@domain.com', 'verysecure', secret),
+        );
 
-        await expect(
-            setPasswordWithPreviouslyUsedNewPassword(),
-        ).rejects.toBeInstanceOf(fauna.errors.BadRequest);
+        expect(setPasswordResult).toStrictEqual({
+            error: errors.passwordAlreadyInUse,
+        });
 
         await tearDown(testName, context);
     });
 
     it('cannot set the password for a user that does not exist', async () => {
         const testName = 'userDoesNotExist';
-        const context = await setUp(testName);
+        let context = await setUp(testName);
+        await tearDown(testName, context);
+        context = await setUp(testName);
+
         const { secret } = context;
 
         if (!secret) {
@@ -143,26 +146,22 @@ describe('setPassword()', () => {
         expect.assertions(1);
 
         const client = context.databaseClients.childClient;
-        const setPasswordForNonUser = async () =>
-            client.query(
-                Call(
-                    'setPassword',
-                    'notauser@domain.com',
-                    'verysecure',
-                    secret,
-                ),
-            );
-
-        await expect(setPasswordForNonUser()).rejects.toBeInstanceOf(
-            fauna.errors.BadRequest,
+        const setPasswordResult = await client.query(
+            Call('setPassword', 'notauser@domain.com', 'supersecret', secret),
         );
+
+        expect(setPasswordResult).toStrictEqual({
+            error: errors.userDoesNotExist,
+        });
 
         await tearDown(testName, context);
     });
 
     it('cannot set the password with an invalid token', async () => {
         const testName = 'invalidToken';
-        const context = await setUp(testName);
+        let context = await setUp(testName);
+        await tearDown(testName, context);
+        context = await setUp(testName);
 
         expect.assertions(1);
 
@@ -172,7 +171,7 @@ describe('setPassword()', () => {
                 Call(
                     'setPassword',
                     'user@domain.com',
-                    'verysecure',
+                    'supersecret',
                     'invalidtoken',
                 ),
             );

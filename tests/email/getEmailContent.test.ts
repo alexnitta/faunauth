@@ -1,3 +1,5 @@
+import { test, expect } from 'vitest';
+
 import { getEmailContent } from '../../src/email/getEmailContent';
 import { SHORT_TEST_TIMEOUT } from '../constants';
 

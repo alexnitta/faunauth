@@ -6,6 +6,7 @@ import {
     VerifyEmailConfirmationSecretForAccount,
     InvalidateEmailConfirmationTokensForAccount,
 } from './emailConfirmation';
+import { errors } from './errors';
 
 const q = faunadb.query;
 const { And, If, Do } = q;
@@ -50,7 +51,9 @@ export function LoginWithMagicLink(
                 refreshReclaimtimeSeconds,
             ),
         ),
-        // If not, return false
-        false,
+        // If not, return an error
+        {
+            error: errors.invalidEmailOrSecret,
+        },
     );
 }

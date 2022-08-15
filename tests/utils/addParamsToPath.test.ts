@@ -1,3 +1,5 @@
+import { describe, it, expect } from 'vitest';
+
 import { addParamsToPath } from '../../src/utils';
 import { SHORT_TEST_TIMEOUT } from '../constants';
 
