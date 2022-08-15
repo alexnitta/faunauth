@@ -7,10 +7,7 @@ import {
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
 import { delay } from './helpers/_delay';
-import {
-    REFRESH_TOKEN_EXPIRED,
-    REFRESH_TOKEN_REUSE_ERROR,
-} from '../../src/fauna/src/anomalies';
+import { REFRESH_TOKEN_EXPIRED } from '../../src/fauna/src/anomalies';
 import {
     GRACE_PERIOD_SECONDS,
     ACCESS_TOKEN_LIFETIME_SECONDS,
