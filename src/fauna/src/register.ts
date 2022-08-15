@@ -5,7 +5,7 @@ import { errors } from './errors';
 import type { UserData } from '../../types';
 
 const q = faunadb.query;
-const { Abort, Create, Collection, If } = q;
+const { Create, Collection, If } = q;
 
 /**
  * Register a new user
@@ -13,14 +13,19 @@ const { Abort, Create, Collection, If } = q;
  * @param data - the new user data
  * @returns a ref for the new User entity
  */
-export function RegisterAccount(password: string, data: UserData) {
-    const { email } = data;
-
+export function RegisterAccount(
+    password: string,
+    email: string,
+    data: UserData,
+) {
     return If(
         // If the account already exists,
         VerifyAccountExists(email),
-        // throw an error
-        Abort(errors.userAlreadyExists),
+        // return an error
+        {
+            type: 'error',
+            message: errors.userAlreadyExists,
+        },
         // If the account doesn't exist, create it
         Create(Collection('User'), {
             credentials: { password },

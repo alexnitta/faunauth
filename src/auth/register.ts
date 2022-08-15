@@ -1,4 +1,4 @@
-import faunadb, { query as q, errors as faunaErrors } from 'faunadb';
+import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
 import { errors } from '../fauna/src/errors';
@@ -10,6 +10,7 @@ import type {
     Token,
     UserData,
     Maybe,
+    FaunauthError,
 } from '../types';
 import { addParamsToPath } from '../utils';
 
@@ -90,8 +91,10 @@ export async function register<SendEmailResult>(
     let userResult = null;
 
     try {
-        userResult = await client.query<CollectionQueryResult<UserData>>(
-            q.Call('register', password, {
+        userResult = await client.query<
+            CollectionQueryResult<UserData | FaunauthError>
+        >(
+            q.Call('register', password, email, {
                 confirmedEmail: false,
                 details,
                 email,
@@ -99,21 +102,11 @@ export async function register<SendEmailResult>(
                 username,
             }),
         );
-    } catch (e) {
-        const error = e as faunaErrors.BadRequest;
 
-        const description =
-            // Looks like there is an error in the official Fauna type defs; the `cause` array is
-            // not shown in the type defs but exists in the response.
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            error?.requestResult?.responseContent?.errors?.[0]?.cause?.[0]
-                ?.description;
-
-        if (description === errors.userAlreadyExists) {
-            throw new Error(errors.userAlreadyExists);
+        if ('type' in userResult.data && userResult.data.type === 'error') {
+            throw new Error(userResult.data.message);
         }
-
+    } catch {
         throw new Error(errors.failedToRegisterUser);
     }
 
