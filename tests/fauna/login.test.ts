@@ -1,4 +1,6 @@
 import fauna from 'faunadb';
+import { describe, it, expect } from 'vitest';
+
 import { verifyTokens } from './helpers/_test-extensions';
 import {
     destroyTestDatabase,
@@ -6,7 +8,6 @@ import {
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
 import type {
-    TestContext,
     FaunaLoginResult,
     TokenCollectionQueryResult,
     SetUp,
@@ -17,13 +18,8 @@ const q = fauna.query;
 const { Call, Paginate, Tokens, Lambda, Get, Var } = q;
 
 const setUp: SetUp = async testName => {
-    const context: TestContext = {
-        databaseClients: null,
-    };
-
-    context.databaseClients = await setupTestDatabase(fauna, testName);
-
-    const client = context.databaseClients.childClient;
+    const databaseClients = await setupTestDatabase(fauna, testName);
+    const client = databaseClients.childClient;
 
     await populateDatabaseSchemaFromFiles(q, client, [
         'src/fauna/resources/faunauth/collections/User.fql',
@@ -50,7 +46,9 @@ const setUp: SetUp = async testName => {
         }),
     );
 
-    return context;
+    return {
+        databaseClients,
+    };
 };
 
 const tearDown: TearDown = async (testName, context) => {
@@ -59,8 +57,6 @@ const tearDown: TearDown = async (testName, context) => {
         testName,
         context.databaseClients.parentClient,
     );
-
-    context.databaseClients = null;
 
     return true;
 };

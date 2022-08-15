@@ -1,4 +1,5 @@
 import fauna from 'faunadb';
+import { describe, test, expect } from 'vitest';
 import {
     destroyTestDatabase,
     setupTestDatabase,
@@ -21,11 +22,9 @@ const clientDomain = process.env.FAUNADB_DOMAIN
     : 'db.fauna.com';
 
 const setUp: SetUp = async testName => {
-    const context: TestContext = { databaseClients: null };
     const databaseClients = await setupTestDatabase(fauna, testName);
-    const adminClient = databaseClients.childClient;
 
-    await populateDatabaseSchemaFromFiles(q, adminClient, [
+    await populateDatabaseSchemaFromFiles(q, databaseClients.childClient, [
         'src/fauna/resources/faunauth/collections/anomalies.fql',
         'src/fauna/resources/faunauth/collections/dinos.fql',
         'src/fauna/resources/faunauth/collections/User.fql',
@@ -46,9 +45,9 @@ const setUp: SetUp = async testName => {
         'src/fauna/resources/faunauth/roles/refresh.js',
     ]);
 
-    context.databaseClients = databaseClients;
-
-    return context;
+    return {
+        databaseClients,
+    };
 };
 
 const tearDown: TearDown = async (testName, context) => {

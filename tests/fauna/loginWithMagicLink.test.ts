@@ -1,4 +1,6 @@
 import fauna from 'faunadb';
+import { describe, it, expect } from 'vitest';
+
 import { verifyTokens } from './helpers/_test-extensions';
 import {
     destroyTestDatabase,
@@ -18,13 +20,9 @@ const q = fauna.query;
 const { Call, Paginate, Lambda, Get, Var, Tokens } = q;
 
 const setUp: SetUp = async testName => {
-    const context: TestContext = {
-        databaseClients: null,
-    };
+    const databaseClients = await setupTestDatabase(fauna, testName);
 
-    context.databaseClients = await setupTestDatabase(fauna, testName);
-
-    const client = context.databaseClients.childClient;
+    const client = databaseClients.childClient;
 
     await populateDatabaseSchemaFromFiles(q, client, [
         'src/fauna/resources/faunauth/collections/User.fql',
@@ -47,9 +45,12 @@ const setUp: SetUp = async testName => {
         Call('createEmailConfirmationToken', 'user@domain.com'),
     );
 
-    context.secret = createTokenResult.token.secret;
+    const secret = createTokenResult.token.secret;
 
-    return context;
+    return {
+        databaseClients,
+        secret,
+    };
 };
 
 const tearDown: TearDown = async (testName, context) => {
@@ -72,7 +73,11 @@ describe('loginWithMagicLink()', () => {
         const client = context.databaseClients.childClient;
 
         const loginResult = await client.query<false | FaunaLoginResult>(
-            Call('loginWithMagicLink', 'user@domain.com', context.secret),
+            Call(
+                'loginWithMagicLink',
+                'user@domain.com',
+                context?.secret ?? '',
+            ),
         );
 
         if (loginResult) {
@@ -112,7 +117,11 @@ describe('loginWithMagicLink()', () => {
 
         const client = context.databaseClients.childClient;
         const loginResult = await client.query<false | FaunaLoginResult>(
-            Call('loginWithMagicLink', 'nonuser@domain.com', context.secret),
+            Call(
+                'loginWithMagicLink',
+                'nonuser@domain.com',
+                context?.secret ?? '',
+            ),
         );
 
         expect(loginResult).toBe(false);
@@ -138,7 +147,11 @@ describe('loginWithMagicLink()', () => {
         expect(accessAndRefreshTokens.length).toEqual(0);
 
         await client.query<false | FaunaLoginResult>(
-            Call('loginWithMagicLink', 'user@domain.com', context.secret),
+            Call(
+                'loginWithMagicLink',
+                'user@domain.com',
+                context?.secret ?? '',
+            ),
         );
 
         // Each login creates 2 tokens, one access, one refresh.

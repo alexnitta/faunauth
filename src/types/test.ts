@@ -1,10 +1,12 @@
 import type { FaunaLoginResult, Maybe } from '.';
 
+export interface DatabaseClients {
+    childClient: import('faunadb').Client;
+    parentClient: import('faunadb').Client;
+}
+
 export type TestContext = {
-    databaseClients: Maybe<{
-        childClient: import('faunadb').Client;
-        parentClient: import('faunadb').Client;
-    }>;
+    databaseClients: DatabaseClients;
     secret?: string;
     testDocumentRef?: Maybe<import('faunadb').values.Ref>;
     loginResult?: false | FaunaLoginResult;

@@ -1,4 +1,5 @@
 import fauna from 'faunadb';
+import { describe, test, expect } from 'vitest';
 import { delay } from './helpers/_delay';
 import {
     destroyTestDatabase,
@@ -18,14 +19,15 @@ const q = fauna.query;
 const { Call, Create, Collection, Get, Paginate, Documents } = q;
 
 const setUp: SetUp = async testName => {
-    const context: TestContext = {
-        databaseClients: null,
-    };
     // Set up the child database and retrieve both parent and child Fauna clients
-    context.databaseClients = await setupTestDatabase(fauna, testName);
-    const client = context.databaseClients.childClient;
+    const databaseClients = await setupTestDatabase(fauna, testName);
 
-    await populateDatabaseSchemaFromFiles(q, client, [
+    const context: TestContext = {
+        databaseClients,
+        testDocumentRef: null,
+    };
+
+    await populateDatabaseSchemaFromFiles(q, databaseClients.childClient, [
         'src/fauna/resources/faunauth/collections/dinos.fql',
         'src/fauna/resources/faunauth/collections/User.fql',
         'src/fauna/resources/faunauth/functions/createEmailConfirmationToken.js',
@@ -39,14 +41,14 @@ const setUp: SetUp = async testName => {
         'tests/fauna/resources/functions/_login-modified.js',
     ]);
     // create some data in the test collection
-    const testDocument = await client.query<{ ref: fauna.values.Ref }>(
-        Create(Collection('dinos'), { data: { hello: 'world' } }),
-    );
+    const testDocument = await databaseClients.childClient.query<{
+        ref: fauna.values.Ref;
+    }>(Create(Collection('dinos'), { data: { hello: 'world' } }));
 
     context.testDocumentRef = testDocument.ref;
 
     // and register a user
-    await client.query(
+    await databaseClients.childClient.query(
         Call('register', 'verysecure', {
             confirmedEmail: false,
             email: 'user@domain.com',
@@ -80,7 +82,7 @@ describe('access token behavior', () => {
             Call('login-modified', 'user@domain.com', 'verysecure'),
         );
 
-        if (loginResult) {
+        if (loginResult && context.testDocumentRef) {
             const accessSecret = loginResult.tokens.access.secret;
             const loggedInClient = getClient(fauna, accessSecret);
             const doc = await loggedInClient.query<{ data: TestDocument }>(
@@ -105,7 +107,7 @@ describe('access token behavior', () => {
             Call('login-modified', 'user@domain.com', 'verysecure'),
         );
 
-        if (loginResult) {
+        if (loginResult && context.testDocumentRef) {
             const accessSecret = loginResult.tokens.access.secret;
             const loggedInClient = getClient(fauna, accessSecret);
 
@@ -143,7 +145,7 @@ describe('access token behavior', () => {
                 Call('login-modified', 'user@domain.com', 'verysecure'),
             );
 
-            if (loginResult) {
+            if (loginResult && context.testDocumentRef) {
                 const refreshSecret = loginResult.tokens.refresh.secret;
                 const refreshClient = getClient(fauna, refreshSecret);
 

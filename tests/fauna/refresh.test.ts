@@ -1,4 +1,5 @@
 import fauna from 'faunadb';
+import { describe, it, expect } from 'vitest';
 import {
     destroyTestDatabase,
     getClient,
@@ -18,7 +19,6 @@ import {
 } from './resources/functions/_refresh-modified';
 import { verifyTokens } from './helpers/_test-extensions';
 import type {
-    TestContext,
     FaunaLoginResult,
     RefreshResult,
     SetUp,
@@ -42,14 +42,8 @@ const {
 } = q;
 
 const setUp: SetUp = async testName => {
-    const context: TestContext = {
-        databaseClients: null,
-        testDocumentRef: null,
-    };
-
-    context.databaseClients = await setupTestDatabase(fauna, testName);
-
-    const adminClient = context.databaseClients.childClient;
+    const databaseClients = await setupTestDatabase(fauna, testName);
+    const adminClient = databaseClients.childClient;
 
     await populateDatabaseSchemaFromFiles(q, adminClient, [
         'src/fauna/resources/faunauth/collections/anomalies.fql',
@@ -79,7 +73,7 @@ const setUp: SetUp = async testName => {
     );
 
     // create data, register, and login.
-    context.testDocumentRef = testDocument.ref;
+    const testDocumentRef = testDocument.ref;
 
     await adminClient.query(
         Call('register', 'verysecure', {
@@ -92,9 +86,11 @@ const setUp: SetUp = async testName => {
         Call('login-modified', 'user@domain.com', 'verysecure'),
     );
 
-    context.loginResult = loginResult;
-
-    return context;
+    return {
+        loginResult,
+        testDocumentRef,
+        databaseClients,
+    };
 };
 
 const tearDown: TearDown = async (testName, context) => {
@@ -300,6 +296,14 @@ describe('refresh logic', () => {
         const testName = 'accessSecretLifetime';
         const context = await setUp(testName);
 
+        const { testDocumentRef } = context;
+
+        if (!testDocumentRef) {
+            throw new Error(
+                'testDocumentRef not found - something is wrong in setUp',
+            );
+        }
+
         expect.assertions(2);
 
         if (context.loginResult) {
@@ -320,7 +324,7 @@ describe('refresh logic', () => {
                 const loggedInClient = getClient(fauna, accessSecret);
 
                 const loginWithExpiredToken = async () => {
-                    return loggedInClient.query(Get(context.testDocumentRef));
+                    return loggedInClient.query(Get(testDocumentRef));
                 };
 
                 await expect(loginWithExpiredToken()).rejects.toBeInstanceOf(
@@ -400,6 +404,14 @@ describe('refresh logic', () => {
         const testName = 'refreshInParallel';
         const context = await setUp(testName);
 
+        const { testDocumentRef } = context;
+
+        if (!testDocumentRef) {
+            throw new Error(
+                'testDocumentRef not found - something is wrong in setUp',
+            );
+        }
+
         expect.assertions(2);
 
         if (context.loginResult) {
@@ -418,7 +430,7 @@ describe('refresh logic', () => {
             );
 
             const queryBeforeRefresh = async () => {
-                return loggedInClient.query(Get(context.testDocumentRef));
+                return loggedInClient.query(Get(testDocumentRef));
             };
 
             await expect(queryBeforeRefresh()).resolves.toBeTruthy();
@@ -432,7 +444,7 @@ describe('refresh logic', () => {
 
                 const queryAfterRefresh = async () => {
                     return loggedInClientAfterRefresh.query(
-                        Get(context.testDocumentRef),
+                        Get(testDocumentRef),
                     );
                 };
 

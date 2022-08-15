@@ -1,11 +1,11 @@
 import fauna from 'faunadb';
+import { describe, it, expect } from 'vitest';
 import {
     destroyTestDatabase,
     setupTestDatabase,
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
 import {
-    TestContext,
     TokenResult,
     FaunaLoginResult,
     SetUp,
@@ -16,15 +16,9 @@ const q = fauna.query;
 const { Call } = q;
 
 const setUp: SetUp = async testName => {
-    const context: TestContext = {
-        databaseClients: null,
-    };
+    const databaseClients = await setupTestDatabase(fauna, testName);
 
-    context.databaseClients = await setupTestDatabase(fauna, testName);
-
-    const client = context.databaseClients.childClient;
-
-    await populateDatabaseSchemaFromFiles(q, client, [
+    await populateDatabaseSchemaFromFiles(q, databaseClients.childClient, [
         'src/fauna/resources/faunauth/collections/User.fql',
         'src/fauna/resources/faunauth/functions/createEmailConfirmationToken.js',
         'src/fauna/resources/faunauth/functions/login.js',
@@ -36,7 +30,7 @@ const setUp: SetUp = async testName => {
         'src/fauna/resources/faunauth/indexes/users-by-username.fql',
     ]);
 
-    await client.query(
+    await databaseClients.childClient.query(
         Call('register', 'verysecure', {
             email: 'user@domain.com',
             username: 'user',
@@ -44,13 +38,16 @@ const setUp: SetUp = async testName => {
         }),
     );
 
-    const createTokenResult = await client.query<{ token: TokenResult }>(
-        Call('createEmailConfirmationToken', 'user@domain.com'),
-    );
+    const createTokenResult = await databaseClients.childClient.query<{
+        token: TokenResult;
+    }>(Call('createEmailConfirmationToken', 'user@domain.com'));
 
-    context.secret = createTokenResult.token.secret;
+    const secret = createTokenResult.token.secret;
 
-    return context;
+    return {
+        databaseClients,
+        secret,
+    };
 };
 
 const tearDown: TearDown = async (testName, context) => {
@@ -68,6 +65,14 @@ describe('setPassword()', () => {
         const testName = 'unusedNewPassword';
         const context = await setUp(testName);
 
+        const { secret } = context;
+
+        if (!secret) {
+            throw new Error(
+                'Could not find secret in context - check setUp function',
+            );
+        }
+
         expect.assertions(6);
 
         const client = context.databaseClients.childClient;
@@ -75,14 +80,7 @@ describe('setPassword()', () => {
         try {
             const setPasswordResult = await client.query<
                 false | FaunaLoginResult
-            >(
-                Call(
-                    'setPassword',
-                    'user@domain.com',
-                    'supersecret',
-                    context.secret,
-                ),
-            );
+            >(Call('setPassword', 'user@domain.com', 'supersecret', secret));
 
             if (setPasswordResult) {
                 expect(setPasswordResult.tokens.access).toBeTruthy();
@@ -108,18 +106,20 @@ describe('setPassword()', () => {
     it('cannot set the password when passing in a new password that was previously used', async () => {
         const testName = 'previouslyUsedNewPassword';
         const context = await setUp(testName);
+        const { secret } = context;
+
+        if (!secret) {
+            throw new Error(
+                'Could not find secret in context - check setUp function',
+            );
+        }
 
         expect.assertions(1);
 
         const client = context.databaseClients.childClient;
         const setPasswordWithPreviouslyUsedNewPassword = async () =>
             client.query(
-                Call(
-                    'setPassword',
-                    'user@domain.com',
-                    'verysecure',
-                    context.secret,
-                ),
+                Call('setPassword', 'user@domain.com', 'verysecure', secret),
             );
 
         await expect(
@@ -132,6 +132,13 @@ describe('setPassword()', () => {
     it('cannot set the password for a user that does not exist', async () => {
         const testName = 'userDoesNotExist';
         const context = await setUp(testName);
+        const { secret } = context;
+
+        if (!secret) {
+            throw new Error(
+                'Could not find secret in context - check setUp function',
+            );
+        }
 
         expect.assertions(1);
 
@@ -142,7 +149,7 @@ describe('setPassword()', () => {
                     'setPassword',
                     'notauser@domain.com',
                     'verysecure',
-                    context.secret,
+                    secret,
                 ),
             );
 
