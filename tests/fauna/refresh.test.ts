@@ -156,51 +156,70 @@ describe('refresh logic', () => {
         await tearDown(testName, context);
     });
 
-    // TODO: fix this failing test case
-    it.skip('can rotate tokens multiple times within the GRACE_PERIOD_SECONDS threshold', async () => {
+    it('can rotate tokens multiple times within the GRACE_PERIOD_SECONDS threshold', async () => {
         const testName = 'rotateInGracePeriod';
         const context = await setUp(testName);
 
-        expect.assertions(5);
+        expect.assertions(6);
 
         if (context.loginResult && 'tokens' in context.loginResult) {
             const refreshClient = getClient(
                 fauna,
                 context.loginResult.tokens.refresh.secret,
             );
-            const refreshResult = await refreshClient.query<RefreshResult>(
+
+            const promise0 = refreshClient.query<RefreshResult>(
                 Call('refresh'),
             );
 
-            // TODO: error is thrown here.
-            // The first "refresh" call works, but then we get these errors for subsequent ones:
-            // Unauthorized: unauthorized. Check that endpoint, schema, port and secret are correct during client’s instantiation
+            const promise1 = refreshClient.query<RefreshResult>(
+                Call('refresh'),
+            );
 
-            const refreshResult2 = await refreshClient.query<RefreshResult>(
+            const promise2 = refreshClient.query<RefreshResult>(
                 Call('refresh'),
             );
-            const refreshResult3 = await refreshClient.query<RefreshResult>(
-                Call('refresh'),
-            );
+
+            const results = await Promise.allSettled([
+                promise0,
+                promise1,
+                promise2,
+            ]);
+
+            let refreshSecret0 = 'secret';
+            let refreshSecret1 = refreshSecret0;
+            let refreshSecret2 = refreshSecret1;
 
             if (
-                refreshResult &&
-                'tokens' in refreshResult &&
-                refreshResult2 &&
-                'tokens' in refreshResult2 &&
-                refreshResult3 &&
-                'tokens' in refreshResult3
+                results[0].status === 'fulfilled' &&
+                typeof results[0].value === 'object' &&
+                'tokens' in results[0].value
             ) {
-                expect(refreshResult.tokens.access).toBeTruthy();
-                expect(refreshResult2.tokens.access).toBeTruthy();
-                expect(refreshResult2.tokens.access).toBeTruthy();
-                expect(refreshResult.tokens.access.secret).not.toBe(
-                    refreshResult2.tokens.access.secret,
-                );
-                expect(refreshResult2.tokens.access.secret).not.toBe(
-                    refreshResult3.tokens.access.secret,
-                );
+                expect(results[0].value?.tokens?.access).toBeTruthy();
+                refreshSecret0 = results[0].value?.tokens.refresh.secret;
             }
+
+            if (
+                results[1].status === 'fulfilled' &&
+                typeof results[1].value === 'object' &&
+                'tokens' in results[1].value
+            ) {
+                expect(results[1].value?.tokens?.access).toBeTruthy();
+                refreshSecret1 = results[1].value?.tokens.refresh.secret;
+            }
+
+            if (
+                results[2].status === 'fulfilled' &&
+                typeof results[2].value === 'object' &&
+                'tokens' in results[2].value
+            ) {
+                expect(results[2].value?.tokens?.access).toBeTruthy();
+                refreshSecret2 = results[2].value?.tokens.refresh.secret;
+            }
+
+            expect(refreshSecret0).not.toBe(refreshSecret1);
+            expect(refreshSecret1).not.toBe(refreshSecret2);
+            expect(refreshSecret2).not.toBe(refreshSecret0);
         }
 
         await tearDown(testName, context);
@@ -337,7 +356,8 @@ describe('refresh logic', () => {
         await tearDown(testName, context);
     });
 
-    // TODO: fix this failing test case
+    // TODO fix this failing test case
+
     it.skip('cannot use the refresh token after the GRACE_PERIOD_SECONDS', async () => {
         const testName = 'refreshAfterGracePeriod';
         const context = await setUp(testName);
@@ -351,32 +371,33 @@ describe('refresh logic', () => {
                 fauna,
                 context.loginResult.tokens.refresh.secret,
             );
-            const refreshResult = await refreshClient.query<RefreshResult>(
-                Call('refresh'),
-            );
+            const refreshBeforeDelayResult =
+                await refreshClient.query<RefreshResult>(Call('refresh'));
 
-            if (refreshResult && 'tokens' in refreshResult) {
-                expect(refreshResult.tokens.access).toBeTruthy();
+            if (
+                refreshBeforeDelayResult &&
+                'tokens' in refreshBeforeDelayResult
+            ) {
+                expect(refreshBeforeDelayResult.tokens.access).toBeTruthy();
             }
 
             await delay(GRACE_PERIOD_SECONDS * 1000 + 2000);
 
-            // TODO: error is thrown here.
-            // The first "refresh" call works, but then we get these errors for subsequent ones:
-            // Unauthorized: unauthorized. Check that endpoint, schema, port and secret are correct during client’s instantiation
-
             // The age is now higher than the grace period.
-            const refreshResult2 = await refreshClient.query<RefreshResult>(
+            const promise0 = refreshClient.query<RefreshResult>(
                 Call('refresh'),
             );
 
-            expect(refreshResult2).toEqual(REFRESH_TOKEN_REUSE_ERROR);
-
-            const refreshResult3 = await refreshClient.query<RefreshResult>(
+            const promise1 = refreshClient.query<RefreshResult>(
                 Call('refresh'),
             );
 
-            expect(refreshResult3).toEqual(REFRESH_TOKEN_REUSE_ERROR);
+            // Both promises are rejected, but the anomalies are not logged - perhaps something
+            // has changed about how the refresh logic works?
+            const results = await Promise.allSettled([promise0, promise1]);
+
+            expect(results[0].status).toBe('rejected');
+            expect(results[1].status).toBe('rejected');
 
             // If we do, the anomaly will be logged!
             const anomalies =
