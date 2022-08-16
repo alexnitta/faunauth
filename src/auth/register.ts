@@ -102,12 +102,12 @@ export async function register<SendEmailResult>(
                 username,
             }),
         );
-
-        if ('error' in userResult) {
-            throw new Error(userResult.error);
-        }
     } catch {
         throw new Error(errors.failedToRegisterUser);
+    }
+
+    if ('error' in userResult) {
+        throw new Error(userResult.error);
     }
 
     if (!userResult?.ref) {
