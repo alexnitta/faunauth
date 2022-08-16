@@ -20,7 +20,7 @@ Fauna client config object
 
 #### Defined in
 
-[auth/logout.ts:10](https://github.com/alexnitta/faunauth/blob/c913d73/src/auth/logout.ts#L10)
+[auth/logout.ts:10](https://github.com/alexnitta/faunauth/blob/86ceabe/src/auth/logout.ts#L10)
 
 ___
 
@@ -33,7 +33,7 @@ different browsers). If false, will just expire tokens for the current browser.
 
 #### Defined in
 
-[auth/logout.ts:15](https://github.com/alexnitta/faunauth/blob/c913d73/src/auth/logout.ts#L15)
+[auth/logout.ts:15](https://github.com/alexnitta/faunauth/blob/86ceabe/src/auth/logout.ts#L15)
 
 ___
 
@@ -45,4 +45,4 @@ The user's refresh token secret
 
 #### Defined in
 
-[auth/logout.ts:19](https://github.com/alexnitta/faunauth/blob/c913d73/src/auth/logout.ts#L19)
+[auth/logout.ts:19](https://github.com/alexnitta/faunauth/blob/86ceabe/src/auth/logout.ts#L19)
