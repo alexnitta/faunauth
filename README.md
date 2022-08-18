@@ -124,6 +124,8 @@ Optionally, you can also implement login with magic link by doing:
 10. Initiate a "magic link" flow with `sendConfirmationEmail`
 11. Finish a "magic link" flow with `loginWithMagicLink`
 
+If you need to create a user for testing purposes without confirming their email address, you can use the `registerAdmin` function, which uses a Fauna admin key secret. This function does not authenticate the user because it doesn't require email confirmation, so use it with caution and do not expose it in your public API.
+
 #### Secrets vs. tokens
 
 You'll notice that `faunauth` uses the names `accessSecret` and `refreshSecret` to refer to the strings that you will use for various authentication tasks. This is because Fauna exposes a document type which is named [`Token`](https://docs.fauna.com/fauna/current/security/tokens). Each `Token` has a `secret` which can be used to authenticate queries. From a frontend developer perspective, the secret behaves like a token; in other words, you set the Authorization header to `Bearer ${accessSecret}` to get access to the Fauna API.
