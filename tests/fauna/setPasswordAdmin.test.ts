@@ -5,12 +5,7 @@ import {
     setupTestDatabase,
     populateDatabaseSchemaFromFiles,
 } from './helpers/_setup-db';
-import {
-    TokenResult,
-    FaunaLoginResult,
-    SetUp,
-    TearDown,
-} from '../../src/types';
+import { FaunaLoginResult, SetUp, TearDown } from '../../src/types';
 import { errors } from '../../src/fauna/src/errors';
 
 const q = fauna.query;
@@ -26,6 +21,7 @@ const setUp: SetUp = async testName => {
         'src/fauna/resources/faunauth/functions/loginWithUsername.js',
         'src/fauna/resources/faunauth/functions/register.js',
         'src/fauna/resources/faunauth/functions/setPassword.js',
+        'src/fauna/resources/faunauth/functions/setPasswordAdmin.js',
         'src/fauna/resources/faunauth/indexes/tokens-by-type-email-and-used.fql',
         'src/fauna/resources/faunauth/indexes/users-by-email.fql',
         'src/fauna/resources/faunauth/indexes/users-by-username.fql',
@@ -39,15 +35,8 @@ const setUp: SetUp = async testName => {
         }),
     );
 
-    const createTokenResult = await databaseClients.childClient.query<{
-        token: TokenResult;
-    }>(Call('createEmailConfirmationToken', 'user@domain.com'));
-
-    const secret = createTokenResult.token.secret;
-
     return {
         databaseClients,
-        secret,
     };
 };
 
@@ -61,18 +50,10 @@ const tearDown: TearDown = async (testName, context) => {
     return true;
 };
 
-describe('setPassword()', () => {
+describe('setPasswordAdmin()', () => {
     it('can set the password when passing in an unused new password', async () => {
-        const testName = 'unusedNewPassword';
+        const testName = 'setPasswordAdmin_unusedNewPassword';
         const context = await setUp(testName);
-
-        const { secret } = context;
-
-        if (!secret) {
-            throw new Error(
-                'Could not find secret in context - check setUp function',
-            );
-        }
 
         expect.assertions(6);
 
@@ -81,7 +62,7 @@ describe('setPassword()', () => {
         try {
             const setPasswordResult = await client.query<
                 false | FaunaLoginResult
-            >(Call('setPassword', 'user@domain.com', 'supersecret', secret));
+            >(Call('setPasswordAdmin', 'user@domain.com', 'supersecret'));
 
             if (setPasswordResult) {
                 expect(setPasswordResult.tokens.access).toBeTruthy();
@@ -105,21 +86,14 @@ describe('setPassword()', () => {
     });
 
     it('cannot set the password when passing in a new password that was previously used', async () => {
-        const testName = 'previouslyUsedNewPassword';
+        const testName = 'setPasswordAdmin_previouslyUsedNewPassword';
         const context = await setUp(testName);
-        const { secret } = context;
-
-        if (!secret) {
-            throw new Error(
-                'Could not find secret in context - check setUp function',
-            );
-        }
 
         expect.assertions(1);
 
         const client = context.databaseClients.childClient;
         const setPasswordResult = await client.query(
-            Call('setPassword', 'user@domain.com', 'verysecure', secret),
+            Call('setPasswordAdmin', 'user@domain.com', 'verysecure'),
         );
 
         expect(setPasswordResult).toStrictEqual({
@@ -130,53 +104,19 @@ describe('setPassword()', () => {
     });
 
     it('cannot set the password for a user that does not exist', async () => {
-        const testName = 'userDoesNotExist';
-        let context = await setUp(testName);
-        await tearDown(testName, context);
-        context = await setUp(testName);
-
-        const { secret } = context;
-
-        if (!secret) {
-            throw new Error(
-                'Could not find secret in context - check setUp function',
-            );
-        }
-
-        expect.assertions(1);
-
-        const client = context.databaseClients.childClient;
-        const setPasswordResult = await client.query(
-            Call('setPassword', 'notauser@domain.com', 'supersecret', secret),
-        );
-
-        expect(setPasswordResult).toStrictEqual({
-            error: errors.userDoesNotExist,
-        });
-
-        await tearDown(testName, context);
-    });
-
-    it('cannot set the password with an invalid token', async () => {
-        const testName = 'invalidToken';
+        const testName = 'setPasswordAdmin_userDoesNotExist';
         const context = await setUp(testName);
 
         expect.assertions(1);
 
         const client = context.databaseClients.childClient;
-        const setPasswordWithInvalidToken = async () =>
-            client.query(
-                Call(
-                    'setPassword',
-                    'user@domain.com',
-                    'supersecret',
-                    'invalidtoken',
-                ),
-            );
-
-        await expect(setPasswordWithInvalidToken()).rejects.toBeInstanceOf(
-            fauna.errors.BadRequest,
+        const setPasswordResult = await client.query(
+            Call('setPasswordAdmin', 'notauser@domain.com', 'supersecret'),
         );
+
+        expect(setPasswordResult).toStrictEqual({
+            error: errors.userDoesNotExist,
+        });
 
         await tearDown(testName, context);
     });
