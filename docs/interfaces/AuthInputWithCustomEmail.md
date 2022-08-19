@@ -26,7 +26,7 @@ includes a Base64-encoded string containing the email and token.
 
 #### Defined in
 
-[types/email.ts:143](https://github.com/alexnitta/faunauth/blob/86ceabe/src/types/email.ts#L143)
+[types/email.ts:143](https://github.com/alexnitta/faunauth/blob/4737095/src/types/email.ts#L143)
 
 ___
 
@@ -38,4 +38,4 @@ See [SendCustomEmail](../index.md#sendcustomemail)
 
 #### Defined in
 
-[types/email.ts:147](https://github.com/alexnitta/faunauth/blob/86ceabe/src/types/email.ts#L147)
+[types/email.ts:147](https://github.com/alexnitta/faunauth/blob/4737095/src/types/email.ts#L147)
