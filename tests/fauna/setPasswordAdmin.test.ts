@@ -51,8 +51,8 @@ const tearDown: TearDown = async (testName, context) => {
 };
 
 describe('setPasswordAdmin()', () => {
-    it('can set the password when passing in an unused new password', async () => {
-        const testName = 'setPasswordAdmin_unusedNewPassword';
+    it('can set the password for a user that exists', async () => {
+        const testName = 'setPasswordAdmin_userExists';
         const context = await setUp(testName);
 
         expect.assertions(6);
@@ -82,24 +82,6 @@ describe('setPasswordAdmin()', () => {
         } catch (e) {
             console.log('e: ', JSON.stringify(e, null, 4));
         }
-        await tearDown(testName, context);
-    });
-
-    it('cannot set the password when passing in a new password that was previously used', async () => {
-        const testName = 'setPasswordAdmin_previouslyUsedNewPassword';
-        const context = await setUp(testName);
-
-        expect.assertions(1);
-
-        const client = context.databaseClients.childClient;
-        const setPasswordResult = await client.query(
-            Call('setPasswordAdmin', 'user@domain.com', 'verysecure'),
-        );
-
-        expect(setPasswordResult).toStrictEqual({
-            error: errors.passwordAlreadyInUse,
-        });
-
         await tearDown(testName, context);
     });
 
