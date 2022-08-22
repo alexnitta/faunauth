@@ -17,7 +17,7 @@
 
 #### Defined in
 
-[types/test.ts:4](https://github.com/alexnitta/faunauth/blob/4737095/src/types/test.ts#L4)
+[types/test.ts:4](https://github.com/alexnitta/faunauth/blob/b736586/src/types/test.ts#L4)
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 #### Defined in
 
-[types/test.ts:5](https://github.com/alexnitta/faunauth/blob/4737095/src/types/test.ts#L5)
+[types/test.ts:5](https://github.com/alexnitta/faunauth/blob/b736586/src/types/test.ts#L5)
