@@ -1,10 +1,6 @@
 import faunadb from 'faunadb';
 import { CreateTokensForAccount } from './tokens';
-import {
-    GetAccountByEmail,
-    VerifyAccountExists,
-    IdentifyAccount,
-} from './identity';
+import { GetAccountByEmail, VerifyAccountExists } from './identity';
 import { InvalidateEmailConfirmationTokensForAccount } from './emailConfirmation';
 import { errors } from './errors';
 
@@ -33,32 +29,24 @@ export function SetPasswordForAccountAdmin(
     return If(
         // If the user exists,
         VerifyAccountExists(email),
-        If(
-            // If the new password is already in use,
-            IdentifyAccount(email, newPassword),
-            // return an error
-            {
-                error: errors.passwordAlreadyInUse,
-            },
-            Do(
-                // Update the password and set `data.confirmedEmail: true`
-                Update(Select(['ref'], GetAccountByEmail(email)), {
-                    credentials: {
-                        password: newPassword,
-                    },
-                    data: {
-                        confirmedEmail: true,
-                    },
-                }),
-                // Invalidate all email confirmation tokens for the account
-                InvalidateEmailConfirmationTokensForAccount(email),
-                // Create and return a new pair of access/refresh tokens
-                CreateTokensForAccount(
-                    email,
-                    accessTtlSeconds,
-                    refreshLifetimeSeconds,
-                    refreshReclaimtimeSeconds,
-                ),
+        Do(
+            // Update the password and set `data.confirmedEmail: true`
+            Update(Select(['ref'], GetAccountByEmail(email)), {
+                credentials: {
+                    password: newPassword,
+                },
+                data: {
+                    confirmedEmail: true,
+                },
+            }),
+            // Invalidate all email confirmation tokens for the account
+            InvalidateEmailConfirmationTokensForAccount(email),
+            // Create and return a new pair of access/refresh tokens
+            CreateTokensForAccount(
+                email,
+                accessTtlSeconds,
+                refreshLifetimeSeconds,
+                refreshReclaimtimeSeconds,
             ),
         ),
         // If the user does not exist, return an error
