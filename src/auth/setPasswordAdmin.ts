@@ -3,13 +3,12 @@ import type { ClientConfig } from 'faunadb';
 
 import { errors } from '../fauna/src/errors';
 import type {
-    UserData,
     FaunauthError,
     FaunaLoginResult,
     ServerLoginResult,
 } from '../types';
 
-export interface RegisterAdminInput {
+export interface SetPasswordAdminInput {
     /**
      * Fauna client config object
      */
@@ -19,19 +18,19 @@ export interface RegisterAdminInput {
      */
     adminKey: string | null;
     /**
-     * Password for the new user
+     * Email address for the user who wants to reset their password
+     */
+    email: string;
+    /**
+     * New password to use
      */
     password: string;
-    /**
-     * Details for the new user - see {@link UserData}
-     */
-    userData: UserData;
 }
 
 /**
- * Register a user by creating a user in the User collection without verifying an email confirmation
- * token. This is intended for use only when creating an account as an administrator and only works
- * with a Fauna client that is authenticated with an admin key. Use this with caution.
+ * Set a user's password without verifying an email confirmation token. This is intended for
+ * administrative purposes only works with a Fauna client that is authenticated with an admin key.
+ * Use this with caution.
  *
  * A unique `input.userData.email` is required. If desired, you can provide a unique username on
  * `input.userData.username`. If you do this (or if you later modify the user by adding a username
@@ -42,19 +41,10 @@ export interface RegisterAdminInput {
  * are case-insensitive.
  * @returns a {@link ServerLoginResult}
  */
-export async function registerAdmin(
-    input: RegisterAdminInput,
+export async function setPasswordAdmin(
+    input: SetPasswordAdminInput,
 ): Promise<ServerLoginResult> {
-    const {
-        adminKey,
-        clientConfig,
-        password,
-        userData: { locale, details },
-    } = input;
-
-    const email = input.userData.email.toLowerCase();
-    const inputUsername = input.userData?.username ?? null;
-    const username = inputUsername ? inputUsername.toLowerCase() : null;
+    const { adminKey, clientConfig, password, email } = input;
 
     if (!adminKey) {
         throw new Error(errors.missingAdminKey);
@@ -65,20 +55,16 @@ export async function registerAdmin(
         secret: adminKey,
     });
 
-    let result = null;
+    let result: FaunaLoginResult | FaunauthError = {
+        error: errors.unknownServerError,
+    };
 
     try {
         result = await client.query<FaunaLoginResult | FaunauthError>(
-            q.Call('registerAdmin', password, email, {
-                confirmedEmail: false,
-                details,
-                email,
-                locale,
-                username,
-            }),
+            q.Call('setPasswordAdmin', email, password),
         );
     } catch {
-        throw new Error(errors.failedToRegisterUser);
+        throw new Error(errors.unknownServerError);
     }
 
     if ('error' in result) {

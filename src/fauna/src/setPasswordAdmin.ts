@@ -8,9 +8,9 @@ const q = faunadb.query;
 const { Update, Do, Select, If } = q;
 
 /**
- * Set a user's password without confirming their email address. This is intended for use only when
- * creating an account as an administrator; use this with caution and do not expose it in any public
- * endpoints.
+ * Set a user's password without confirming their email address. This is intended for administrative
+ * purposes only. The `setPasswordAdmin` UDF is not included in the 'public' role, so this function
+ * can only be called with an admin key.
  * @param email - the user's email address
  * @param newPassword - the new password
  * @param accessTtlSeconds - access token time to live in seconds

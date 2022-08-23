@@ -1,5 +1,5 @@
 import fauna from 'faunadb';
-import { describe, test, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import {
     destroyTestDatabase,
     setupTestDatabase,
@@ -31,6 +31,8 @@ const setUp: SetUp = async testName => {
         'src/fauna/resources/faunauth/functions/changePassword.js',
         'src/fauna/resources/faunauth/functions/createEmailConfirmationToken.js',
         'src/fauna/resources/faunauth/functions/login.js',
+        'src/fauna/resources/faunauth/functions/loginWithMagicLink.js',
+        'src/fauna/resources/faunauth/functions/loginWithUsername.js',
         'src/fauna/resources/faunauth/functions/logout.js',
         'src/fauna/resources/faunauth/functions/refresh.js',
         'src/fauna/resources/faunauth/functions/register.js',
@@ -65,7 +67,7 @@ const tearDown: TearDown = async (testName, context) => {
  * {@link https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/refresh-tokens-advanced}
  */
 describe('sample flow from refresh-tokens-advanced blueprint', () => {
-    test('resolves to a fauna.Client instance', async () => {
+    it('resolves to a fauna.Client instance', async () => {
         const testName = 'resolvesToClient';
 
         const context = await setUp(testName);

@@ -30,6 +30,7 @@ const setUp: SetUp = async testName => {
         'src/fauna/resources/faunauth/functions/loginWithUsername.js',
         'src/fauna/resources/faunauth/functions/logout.js',
         'src/fauna/resources/faunauth/functions/register.js',
+        'src/fauna/resources/faunauth/functions/registerAdmin.js',
         'src/fauna/resources/faunauth/functions/setPassword.js',
         'src/fauna/resources/faunauth/indexes/users-by-email.fql',
         'src/fauna/resources/faunauth/roles/public.fql',
@@ -50,16 +51,16 @@ const tearDown: TearDown = async (testName, context) => {
     return true;
 };
 
-describe('register()', () => {
+describe('registerAdmin()', () => {
     it('can verify account was created', async () => {
         expect.assertions(2);
-        const testName = 'verifyAccountCreation';
+        const testName = 'registerAdmin_verifyAccountCreation';
         const context = await setUp(testName);
         const client = context.databaseClients.childClient;
 
         // We now have a register function which we can call
         await client.query(
-            Call('register', 'verysecure', 'user@domain.com', {
+            Call('registerAdmin', 'verysecure', 'user@domain.com', {
                 email: 'user@domain.com',
                 locale: 'en-US',
             }),
@@ -83,41 +84,41 @@ describe('register()', () => {
         await tearDown(testName, context);
     });
 
-    it('can register with a key that uses the public role', async () => {
+    it('cannot register with a key that uses the public role', async () => {
         expect.assertions(1);
-        const testName = 'registerWithPublicKey';
+        const testName = 'registerAdmin_registerWithPublicKey';
         const context = await setUp(testName);
         const client = context.databaseClients.childClient;
 
         const key = await client.query<
             CreateKeyResult<{ role: fauna.values.Ref }>
         >(CreateKey({ role: Role('public') }));
-        const publicClient = getClient(fauna, key.secret);
-        const res = await publicClient.query(
-            Call('register', 'verysecure', 'user@domain.com', {
-                email: 'user@domain.com',
-                locale: 'en-US',
-            }),
-        );
 
-        expect(res).toBeTruthy();
+        const publicClient = getClient(fauna, key.secret);
+
+        const registerAdminWithPublicKey = async () =>
+            publicClient.query(
+                Call('registerAdmin', 'verysecure', 'user@domain.com', {
+                    email: 'user@domain.com',
+                    locale: 'en-US',
+                }),
+            );
+
+        await expect(registerAdminWithPublicKey()).rejects.toBeInstanceOf(
+            fauna.errors.PermissionDenied,
+        );
 
         await tearDown(testName, context);
     });
 
     it('cannot register a user twice with the same email address', async () => {
         expect.assertions(2);
-        const testName = 'registerDuplicateEmail';
+        const testName = 'registerAdmin_registerDuplicateEmail';
         const context = await setUp(testName);
-
         const client = context.databaseClients.childClient;
 
-        const key = await client.query<
-            CreateKeyResult<{ role: fauna.values.Ref }>
-        >(CreateKey({ role: Role('public') }));
-        const publicClient = getClient(fauna, key.secret);
-        const res = await publicClient.query(
-            Call('register', 'verysecure', 'user@domain.com', {
+        const res = await client.query(
+            Call('registerAdmin', 'verysecure', 'user@domain.com', {
                 email: 'user@domain.com',
                 locale: 'en-US',
             }),
@@ -125,8 +126,8 @@ describe('register()', () => {
 
         expect(res).toBeTruthy();
 
-        const duplicateRegisterResult = await publicClient.query(
-            Call('register', 'verysecure', 'user@domain.com', {
+        const duplicateRegisterResult = await client.query(
+            Call('registerAdmin', 'verysecure', 'user@domain.com', {
                 email: 'user@domain.com',
                 locale: 'en-US',
             }),

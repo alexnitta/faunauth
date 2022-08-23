@@ -49,6 +49,8 @@ const setUp: SetUp = async testName => {
         'src/fauna/resources/faunauth/collections/User.fql',
         'src/fauna/resources/faunauth/functions/createEmailConfirmationToken.js',
         'src/fauna/resources/faunauth/functions/login.js',
+        'src/fauna/resources/faunauth/functions/loginWithMagicLink.js',
+        'src/fauna/resources/faunauth/functions/loginWithUsername.js',
         'src/fauna/resources/faunauth/functions/logout.js',
         'src/fauna/resources/faunauth/functions/register.js',
         'src/fauna/resources/faunauth/functions/changePassword.js',

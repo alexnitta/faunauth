@@ -19,6 +19,18 @@ CreateRole({
         call: true
       }
     },
+        {
+      resource: Function('loginWithUsername'),
+      actions: {
+        call: true
+      }
+    },
+    {
+      resource: Function('loginWithMagicLink'),
+      actions: {
+        call: true
+      }
+    },
     {
       resource: Function('logout'),
       actions: {

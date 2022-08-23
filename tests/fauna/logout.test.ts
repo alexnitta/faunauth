@@ -1,5 +1,5 @@
 import fauna from 'faunadb';
-import { describe, test, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import {
     verifyRefreshTokensLogout,
     verifyTokens,
@@ -30,6 +30,8 @@ const setUp: SetUp = async testName => {
         'src/fauna/resources/faunauth/collections/User.fql',
         'src/fauna/resources/faunauth/functions/createEmailConfirmationToken.js',
         'src/fauna/resources/faunauth/functions/login.js',
+        'src/fauna/resources/faunauth/functions/loginWithMagicLink.js',
+        'src/fauna/resources/faunauth/functions/loginWithUsername.js',
         'src/fauna/resources/faunauth/functions/logout.js',
         'src/fauna/resources/faunauth/functions/refresh.js',
         'src/fauna/resources/faunauth/functions/register.js',
@@ -82,7 +84,7 @@ const tearDown: TearDown = async (testName, context) => {
 };
 
 describe('logout()', () => {
-    test('with all=false only logs out the current session', async () => {
+    it('with all=false only logs out the current session', async () => {
         const testName = 'allEqualsFalse';
         const context = await setUp(testName);
         const { testDocumentRef } = context;
@@ -194,7 +196,7 @@ describe('logout()', () => {
         await tearDown(testName, context);
     });
 
-    test('with all=true logs out all sessions for that account', async () => {
+    it('with all=true logs out all sessions for that account', async () => {
         const testName = 'allEqualsTrue';
         const context = await setUp(testName);
 
@@ -301,7 +303,7 @@ describe('logout()', () => {
         await tearDown(testName, context);
     });
 
-    test('tokens that are logged out can no longer be used to refresh or log out', async () => {
+    it('tokens that are logged out can no longer be used to refresh or log out', async () => {
         const testName = 'loggedOutTokens';
         const context = await setUp(testName);
 
