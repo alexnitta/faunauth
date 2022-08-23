@@ -70,7 +70,7 @@ export async function registerAdmin(
     try {
         result = await client.query<FaunaLoginResult | FaunauthError>(
             q.Call('registerAdmin', password, email, {
-                confirmedEmail: false,
+                confirmedEmail: true,
                 details,
                 email,
                 locale,
