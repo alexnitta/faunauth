@@ -1,5 +1,5 @@
 import fauna from 'faunadb';
-import { describe, test, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { delay } from './helpers/_delay';
 import {
     destroyTestDatabase,
@@ -71,7 +71,7 @@ const tearDown: TearDown = async (testName, context) => {
 };
 
 describe('access token behavior', () => {
-    test('within 10 seconds (ttl of access token), we can access data via the test membership role', async () => {
+    it('within 10 seconds (ttl of access token), we can access data via the test membership role', async () => {
         const testName = 'accessBeforeExpiration';
         const context = await setUp(testName);
 
@@ -96,7 +96,7 @@ describe('access token behavior', () => {
         await tearDown(testName, context);
     });
 
-    test('after 10 seconds (ttl of access token), we can no longer access data', async () => {
+    it('after 10 seconds (ttl of access token), we can no longer access data', async () => {
         const testName = 'accessAfterExpiration';
         const context = await setUp(testName);
 
@@ -133,7 +133,7 @@ describe('access token behavior', () => {
         await tearDown(testName, context);
     });
 
-    test('refresh tokens do not provide access to the data', async () => {
+    it('refresh tokens do not provide access to the data', async () => {
         const testName = 'refreshSecretPrivileges';
         const context = await setUp(testName);
 
