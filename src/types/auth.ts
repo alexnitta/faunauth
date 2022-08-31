@@ -124,7 +124,7 @@ export interface UserData {
     /**
      * The user ID - this is auto-generated when the user is created in Fauna.
      */
-    id?: string;
+    id: string;
     /**
      * True when this user's email address has been confirmed after signing up. This is not set to
      * false if a user requests a password reset.
