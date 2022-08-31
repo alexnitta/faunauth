@@ -9,6 +9,7 @@ import type {
     AuthInputWithCustomEmail,
     Token,
     UserData,
+    UserDataInput,
     Maybe,
     FaunauthError,
 } from '../types';
@@ -29,9 +30,9 @@ export interface BaseRegisterInput {
      */
     password: string;
     /**
-     * Details for the new user - see {@link UserData}
+     * Details for the new user - see {@link UserDataInput}
      */
-    userData: UserData;
+    userData: UserDataInput;
 }
 
 export type RegisterInput<SendEmailResult> = BaseRegisterInput &

@@ -3,7 +3,7 @@ import type { ClientConfig } from 'faunadb';
 
 import { errors } from '../fauna/src/errors';
 import type {
-    UserData,
+    UserDataInput,
     FaunauthError,
     FaunaLoginResult,
     ServerLoginResult,
@@ -23,9 +23,9 @@ export interface RegisterAdminInput {
      */
     password: string;
     /**
-     * Details for the new user - see {@link UserData}
+     * Details for the new user - see {@link UserDataInput}
      */
-    userData: UserData;
+    userData: UserDataInput;
 }
 
 /**

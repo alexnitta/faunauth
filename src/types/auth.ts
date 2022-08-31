@@ -151,6 +151,12 @@ export interface UserData {
     username: Maybe<string>;
 }
 
+/**
+ * Data for creating a new user. The `id` is not included because it is auto-generated when the user
+ * is created in Fauna.
+ */
+export type UserDataInput = Omit<UserData, 'id'>;
+
 export interface UpdateUserResult {
     data: UserData;
     ts: number;
