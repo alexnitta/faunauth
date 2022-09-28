@@ -4,13 +4,10 @@ Contributions are welcome! If you want to contribute, please read on.
 
 ## Installing dependencies
 
-We're using NodeJS 16.x and yarn 1.x. A good way to get started is to use [nvm](https://github.com/nvm-sh/nvm) to manage your Node version.
-
-1. Install [nvm](https://github.com/nvm-sh/nvm) to manage your NodeJS versions.
-2. Install NodeJS 16 with `nvm install 16`
-3. Set NodeJS 16 as your default version with `nvm alias default 16`, then run `nvm use default` to make sure you're using NodeJS 16.
-4. Install `yarn` globally with `npm i -g yarn`.
-5. Install all dependencies with `yarn`.
+1. Install [asdf](https://asdf-vm.com/guide/getting-started.html) to manage your NodeJS versions.
+2. Install NodeJS by running `asdf install` from within this repository.
+3. Install `yarn` globally with `npm i -g yarn`.
+4. Install all dependencies with `yarn`.
 
 ## Code Conventions
 
