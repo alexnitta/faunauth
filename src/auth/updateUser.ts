@@ -1,7 +1,7 @@
 import faunadb, { query as q } from 'faunadb';
 import type { ClientConfig } from 'faunadb';
 
-import type { UpdateUserResult } from '../types/auth';
+import type { UserResult } from '../types/auth';
 import { errors } from '../fauna/src/errors';
 
 const { Ref, Collection, Update } = q;
@@ -27,11 +27,9 @@ export interface UpdateUserInput {
 
 /**
  * Update data for the current user.
- * @returns a Promise that resolves to the {@link UpdateUserResult}
+ * @returns a Promise that resolves to the {@link UserResult}
  */
-export async function updateUser(
-    input: UpdateUserInput,
-): Promise<UpdateUserResult> {
+export async function updateUser(input: UpdateUserInput): Promise<UserResult> {
     const { accessSecret, clientConfig, data, userID } = input;
 
     if (!accessSecret) {
@@ -43,19 +41,19 @@ export async function updateUser(
         secret: accessSecret,
     });
 
-    let updateUserResult: UpdateUserResult | false = false;
+    let UserResult: UserResult | false = false;
 
     try {
-        updateUserResult = await client.query<UpdateUserResult>(
+        UserResult = await client.query<UserResult>(
             Update(Ref(Collection('User'), userID), { data }),
         );
     } catch {
         throw new Error(errors.failedToUpdateUser);
     }
 
-    if (!updateUserResult) {
+    if (!UserResult) {
         throw new Error(errors.failedToUpdateUser);
     }
 
-    return updateUserResult;
+    return UserResult;
 }

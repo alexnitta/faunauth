@@ -69,6 +69,18 @@ export default CreateRole({
                         ),
                     ),
                 ),
+                delete: Query(
+                    Lambda(
+                        ['oldData', 'newData', 'ref'],
+                        // Only a given user can delete its own data
+                        Let(
+                            {
+                                loggedInUserRef: CurrentIdentity(),
+                            },
+                            Equals(Var('loggedInUserRef'), Var('ref')),
+                        ),
+                    ),
+                ),
             },
         },
     ],
