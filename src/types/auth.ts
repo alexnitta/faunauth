@@ -157,7 +157,7 @@ export interface UserData {
  */
 export type UserDataInput = Omit<UserData, 'id'>;
 
-export interface UpdateUserResult {
+export interface UserResult {
     data: UserData;
     ts: number;
     ref: import('faunadb').values.Ref;
