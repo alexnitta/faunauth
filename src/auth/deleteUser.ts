@@ -15,7 +15,7 @@ export type DeleteUserInput = {
      * A Fauna secret. This can either be an accessSecret that was returned after authenticating the
      * user or a Fauna secret that has "admin" permissions.
      */
-    secret: string | null;
+    secret: string;
     /**
      * Email address of the user to delete. If email is not provided, userID must be provided.
      */
@@ -35,7 +35,7 @@ export async function deleteUser(input: DeleteUserInput): Promise<UserResult> {
     const { secret, clientConfig } = input;
 
     if (!secret) {
-        throw new Error(errors.missingAdminKey);
+        throw new Error(errors.missingSecret);
     }
 
     const client = new faunadb.Client({
