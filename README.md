@@ -109,22 +109,25 @@ import { login } from 'faunauth';
 
 To create a full set of authentication features, you will need to implement server-side logic that does the following:
 
-1. Sign up a new user with `register`. If you want users to be able to login with a username, they must provide both email, username and password. If you just want them to login with email, then only email and password are required.
-2. Confirm a new user's email address with `setPassword`
-3. Log in a user with `login` (works with either email address or username)
-4. Log out a user with `logout`
-5. Initiate a "forgot password" flow with `sendConfirmationEmail`
-6. Finish a "forgot password" flow with `setPassword`
-7. Change a password for a user that knows their password with `changePassword`
-8. Rotate the accessSecret / refreshSecret pair with `rotateTokens`
-9. Update non-password user details (email, etc.) with `updateUser`
+1. Sign up a new user with [`register`](./docs/index.md#register). If you want users to be able to login with a username, they must provide both email, username and password. If you just want them to login with email, then only email and password are required.
+2. Confirm a new user's email address with [`setPassword`](./docs/index.md#setpassword)
+3. Log in a user with [`login`](./docs/index.md#login) (works with either email address or username)
+4. Log out a user with [`logout`](./docs/index.md#logout)
+5. Initiate a "forgot password" flow with [`sendConfirmationEmail`](./docs/index.md#sendconfirmationemail)
+6. Finish a "forgot password" flow with [`setPassword`](./docs/index.md#setpassword)
+7. Change a password for a user that knows their password with [`changePassword`](./docs/index.md#changepassword)
+8. Rotate the accessSecret / refreshSecret pair with [`rotateTokens`](./docs/index.md#rotatetokens)
+9. Update non-password user details (email, etc.) with [`updateUser`](./docs/index.md#updateuser)
 
 Optionally, you can also implement login with magic link by doing:
 
-10. Initiate a "magic link" flow with `sendConfirmationEmail`
-11. Finish a "magic link" flow with `loginWithMagicLink`
+10. Initiate a "magic link" flow with [`sendConfirmationEmail`](./docs/index.md#sendconfirmationemail)
+11. Finish a "magic link" flow with [`loginWithMagicLink`](./docs/index.md#loginwithmagiclink)
 
-If you need to create a user for testing purposes without confirming their email address, you can use the `registerAdmin` function, which uses a Fauna admin key secret. This function does not authenticate the user because it doesn't require email confirmation, so use it with caution and do not expose it in your public API.
+Other available functions include:
+
+-   [`registerAdmin`](./docs/index.md#registeradmin]): allows you to create a user for testing purposes without confirming their email address. This uses a Fauna admin key secret and does not authenticate the user because it doesn't require email confirmation, so use it with caution and do not expose it in your public API.
+-   [`deleteUser`](./docs/index.md#deleteuser): deletes a user account. This function works with a `secret` that is either a Fauna admin key secret or an accessSecret. If it is an accessSecret, it must be associated with the same user that is being deleted.
 
 #### Secrets vs. tokens
 
