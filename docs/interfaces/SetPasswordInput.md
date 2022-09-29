@@ -22,7 +22,7 @@ Fauna client config object
 
 #### Defined in
 
-[auth/setPassword.ts:14](https://github.com/alexnitta/faunauth/blob/b5e2f1f/src/auth/setPassword.ts#L14)
+[auth/setPassword.ts:14](https://github.com/alexnitta/faunauth/blob/8cbba2b/src/auth/setPassword.ts#L14)
 
 ___
 
@@ -34,7 +34,7 @@ Email address for the user who wants to reset their password
 
 #### Defined in
 
-[auth/setPassword.ts:18](https://github.com/alexnitta/faunauth/blob/b5e2f1f/src/auth/setPassword.ts#L18)
+[auth/setPassword.ts:18](https://github.com/alexnitta/faunauth/blob/8cbba2b/src/auth/setPassword.ts#L18)
 
 ___
 
@@ -46,7 +46,7 @@ New password to use
 
 #### Defined in
 
-[auth/setPassword.ts:27](https://github.com/alexnitta/faunauth/blob/b5e2f1f/src/auth/setPassword.ts#L27)
+[auth/setPassword.ts:27](https://github.com/alexnitta/faunauth/blob/8cbba2b/src/auth/setPassword.ts#L27)
 
 ___
 
@@ -59,7 +59,7 @@ and resetting passwords
 
 #### Defined in
 
-[auth/setPassword.ts:23](https://github.com/alexnitta/faunauth/blob/b5e2f1f/src/auth/setPassword.ts#L23)
+[auth/setPassword.ts:23](https://github.com/alexnitta/faunauth/blob/8cbba2b/src/auth/setPassword.ts#L23)
 
 ___
 
@@ -71,4 +71,4 @@ Token that was previously created in the database
 
 #### Defined in
 
-[auth/setPassword.ts:31](https://github.com/alexnitta/faunauth/blob/b5e2f1f/src/auth/setPassword.ts#L31)
+[auth/setPassword.ts:31](https://github.com/alexnitta/faunauth/blob/8cbba2b/src/auth/setPassword.ts#L31)
