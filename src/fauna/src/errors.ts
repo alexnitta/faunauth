@@ -1,7 +1,6 @@
 export const errors = {
     failedToChangePassword: 'Failed to change password',
     failedToCreateToken: 'Failed to create token',
-    failedToDeleteUser: 'Failed to delete user',
     failedToLogout: 'Failed to log out',
     failedToRefreshToken: 'Failed to refresh token',
     failedToRegisterUser: 'Failed to register user',
