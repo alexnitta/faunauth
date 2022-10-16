@@ -4,7 +4,7 @@ import type { ClientConfig } from 'faunadb';
 import type { UserResult } from '../types/auth';
 import { errors } from '../fauna/src/errors';
 
-const { Ref, Collection, Delete, Get, Match, Index } = q;
+const { Ref, Collection, Delete, Get, Match, Index, If, Exists } = q;
 
 export type DeleteUserInput = {
     /**
@@ -43,33 +43,31 @@ export async function deleteUser(input: DeleteUserInput): Promise<UserResult> {
         secret,
     });
 
-    let deleteUserResult: UserResult | false = false;
+    let user = null;
 
     if (input.userID) {
-        try {
-            deleteUserResult = await client.query<UserResult>(
-                Delete(Ref(Collection('User'), input.userID)),
-            );
-        } catch {
-            throw new Error(errors.failedToDeleteUser);
-        }
+        user = await client.query<UserResult>(
+            If(
+                Exists(Ref(Collection('User'), input.userID)),
+                Get(Ref(Collection('User'), input.userID)),
+                null,
+            ),
+        );
     } else if (input.email) {
-        try {
-            const user = await client.query<UserResult>(
+        user = await client.query<UserResult>(
+            If(
+                Exists(Match(Index('users_by_email'), input.email)),
                 Get(Match(Index('users_by_email'), input.email)),
-            );
-
-            deleteUserResult = await client.query<UserResult>(Delete(user.ref));
-        } catch {
-            throw new Error(errors.failedToDeleteUser);
-        }
+                null,
+            ),
+        );
     } else {
         throw new Error(errors.missingEmailAndUserID);
     }
 
-    if (!deleteUserResult) {
-        throw new Error(errors.failedToDeleteUser);
+    if (user === null) {
+        throw new Error(errors.userDoesNotExist);
     }
 
-    return deleteUserResult;
+    return client.query<UserResult>(Delete(user.ref));
 }

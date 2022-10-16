@@ -4,10 +4,8 @@ Contributions are welcome! If you want to contribute, please read on.
 
 ## Installing dependencies
 
-1. Install [asdf](https://asdf-vm.com/guide/getting-started.html) to manage your NodeJS versions.
-2. Install NodeJS by running `asdf install` from within this repository.
-3. Install `yarn` globally with `npm i -g yarn`.
-4. Install all dependencies with `yarn`.
+1. Install [Volta](https://docs.volta.sh/guide/getting-started) to manage your Node versions. When you `cd` into the `faunauth` folder, Volta will use the versions of Node and Yarn specified in `package.json`.
+2. Install all dependencies with `yarn`.
 
 ## Code Conventions
 

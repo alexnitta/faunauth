@@ -20,8 +20,7 @@ export interface AddParamsToPathInput {
  * will be preserved.
  *
  * Search params are encoded to their UTF-8 equivalent by the `new URLSearchParams` constructor,
- * similar to how
- * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent}
+ * similar to how https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
  * works.
  * @param input - see {@link AddParamsToPathInput}
  * @returns the input.path with the input.params added as search params
