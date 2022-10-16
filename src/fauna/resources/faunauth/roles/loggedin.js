@@ -71,7 +71,7 @@ export default CreateRole({
                 ),
                 delete: Query(
                     Lambda(
-                        ['oldData', 'newData', 'ref'],
+                        ['ref'],
                         // Only a given user can delete its own data
                         Let(
                             {

@@ -10,12 +10,14 @@ jobs:
         name: Lint and Unit Test
         runs-on: ubuntu-latest
         steps:
+            - name: Cancel Previous Runs
+              uses: styfle/cancel-workflow-action@0.11.0
             - name: Checkout
               uses: actions/checkout@main
               with:
                   fetch-depth: 0
             - name: Use Node.js
-              uses: actions/setup-node@v2
+              uses: actions/setup-node@v3
               with:
                   node-version: 16.x
             - name: Install yarn
@@ -25,7 +27,7 @@ jobs:
               run: echo "::set-output name=dir::$(yarn cache dir)"
             - name: Restore yarn cache
               id: yarn-cache
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
                   key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
@@ -40,6 +42,7 @@ jobs:
             - name: Unit test
               env:
                   FAUNA_ADMIN_KEY: ${{ secrets.FAUNA_ADMIN_KEY }}
+                  FAUNADB_DOMAIN: db.us.fauna.com
               run: yarn test-ci
 
     generate_docs_and_release:
@@ -47,12 +50,14 @@ jobs:
         needs: lint_and_unit_test
         runs-on: ubuntu-latest
         steps:
+            - name: Cancel Previous Runs
+              uses: styfle/cancel-workflow-action@0.11.0
             - name: Checkout
               uses: actions/checkout@main
               with:
                   fetch-depth: 0
             - name: Use Node.js
-              uses: actions/setup-node@v2
+              uses: actions/setup-node@v3
               with:
                   node-version: 16.x
             - name: Install yarn
@@ -62,7 +67,7 @@ jobs:
               run: echo "::set-output name=dir::$(yarn cache dir)"
             - name: Restore yarn cache
               id: yarn-cache
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
                   key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
