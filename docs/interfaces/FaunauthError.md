@@ -16,4 +16,4 @@
 
 #### Defined in
 
-[types/errors.ts:2](https://github.com/alexnitta/faunauth/blob/8cbba2b/src/types/errors.ts#L2)
+[types/errors.ts:2](https://github.com/alexnitta/faunauth/blob/bbbbd0c/src/types/errors.ts#L2)

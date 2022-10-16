@@ -21,7 +21,7 @@ A Fauna secret that has "admin" permissions
 
 #### Defined in
 
-[auth/registerAdmin.ts:20](https://github.com/alexnitta/faunauth/blob/8cbba2b/src/auth/registerAdmin.ts#L20)
+[auth/registerAdmin.ts:20](https://github.com/alexnitta/faunauth/blob/bbbbd0c/src/auth/registerAdmin.ts#L20)
 
 ___
 
@@ -33,7 +33,7 @@ Fauna client config object
 
 #### Defined in
 
-[auth/registerAdmin.ts:16](https://github.com/alexnitta/faunauth/blob/8cbba2b/src/auth/registerAdmin.ts#L16)
+[auth/registerAdmin.ts:16](https://github.com/alexnitta/faunauth/blob/bbbbd0c/src/auth/registerAdmin.ts#L16)
 
 ___
 
@@ -45,7 +45,7 @@ Password for the new user
 
 #### Defined in
 
-[auth/registerAdmin.ts:24](https://github.com/alexnitta/faunauth/blob/8cbba2b/src/auth/registerAdmin.ts#L24)
+[auth/registerAdmin.ts:24](https://github.com/alexnitta/faunauth/blob/bbbbd0c/src/auth/registerAdmin.ts#L24)
 
 ___
 
@@ -57,4 +57,4 @@ Details for the new user - see [UserDataInput](../index.md#userdatainput)
 
 #### Defined in
 
-[auth/registerAdmin.ts:28](https://github.com/alexnitta/faunauth/blob/8cbba2b/src/auth/registerAdmin.ts#L28)
+[auth/registerAdmin.ts:28](https://github.com/alexnitta/faunauth/blob/bbbbd0c/src/auth/registerAdmin.ts#L28)
